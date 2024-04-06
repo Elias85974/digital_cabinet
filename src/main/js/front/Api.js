@@ -69,3 +69,31 @@ export const deleteUser = async (userId) => {
         throw error;
     }
 };
+
+// Function to get a simple "Hello, World" message
+export const getHelloWorld = async () => {
+    try {
+        const response = await fetch(`${API_URL}/hello`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.text();
+    } catch (error) {
+        console.error("Failed to fetch hello world:", error);
+        throw error;
+    }
+};
+
+// Function to get a webpage with the current date and time
+export const getWebV1 = async () => {
+    try {
+        const response = await fetch(`${API_URL}/web/v1`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.text();
+    } catch (error) {
+        console.error("Failed to fetch web v1:", error);
+        throw error;
+    }
+};

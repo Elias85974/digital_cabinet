@@ -120,8 +120,9 @@ public class Application {
 
             User u1 = User.create("ja1").lastName("pee").build();
             User u2 = User.create("ja2").lastName("pee").build();
+            User u3 = User.create("ja3").lastName("pee").build();
 
-            List<User> users = Arrays.asList(u1, u2);
+            List<User> users = Arrays.asList(u1, u2, u3);
             return gson.toJson(users);
         });
 

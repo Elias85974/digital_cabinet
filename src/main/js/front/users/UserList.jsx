@@ -5,13 +5,25 @@ import {createUser} from '../Api';
 const UsersList = () => {
     let [newUser, setNewUser] = useState({email: '', firstName: '', lastName: '', password: ''});
 
+    const isEmail = (email) =>
+        /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
+
     const handleInputChange = (field, value) => {
         setNewUser({...newUser, [field]: value});
     };
 
     const handleCreateUser = async () => {
         try {
-            createUser(newUser);
+            if (newUser.email && newUser.firstName && newUser.lastName && newUser.password) {
+                if (!isEmail(newUser.email)) {
+                    alert("Incorrect email format. Please try again.")
+                } else {
+                    createUser(newUser);
+                }
+            }
+            else {
+                alert("Please fill in all fields.")
+            }
             setNewUser({email: '', firstName: '', lastName: '', password: ''});
         } catch (error) {
             console.log("Error creating user:", error);
@@ -37,6 +49,7 @@ const UsersList = () => {
                     onChangeText={(value) => handleInputChange('lastName', value)}
                 />
                 <TextInput
+                    secureTextEntry={true}
                     placeholder="Password"
                     value={newUser.password}
                     onChangeText={(value) => handleInputChange('password', value)}

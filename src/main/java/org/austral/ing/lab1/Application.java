@@ -25,56 +25,7 @@ public class Application {
 
         storedBasicUser(entityManagerFactory);
 
-        /* 1. Basic Request */
-        Spark.get("/hello",
-                (req, resp) -> "Hello, World"
-        );
 
-        /* 2. Dynamic Content: Get Current Date & Time */
-        Spark.get("/web/v1",
-                (req, resp) -> {
-                    final String now = Instant.now().toString();
-                    return "<!DOCTYPE html>\n" +
-                            "<html lang=\"en\">\n" +
-                            "<head>\n" +
-                            "  <meta charset=\"UTF-8\">\n" +
-                            "  <title>Server side rendering v1</title>\n" +
-                            "</head>\n" +
-                            "<body>\n" +
-                            "\n" +
-                            "  <h1>Hora actual</h1>\n" +
-                            "  <h3>" + now + "</h3>  \n" +
-                            "\n" +
-                            "</body>\n" +
-                            "</html>";
-                }
-        );
-
-        /* 3. Dynamic Content: Show User Details - Url params */
-        Spark.get("/users/:name",
-                (req, resp) -> {
-                    final String name = capitalized(req.params("name"));
-
-                    final User user = User.create(name + "@gmail.com").firstName(name).lastName("Skywalker").build();
-
-                    resp.type("application/json");
-
-                    return user.asJson();
-                }
-        );
-
-        /* 4. Dynamic Content: Show User Details - Query params */
-        Spark.get("/users",
-                (req, resp) -> {
-                    final String name = capitalized(req.queryParams("name"));
-
-                    final User user = User.create(name + "@gmail.com").firstName(name).lastName("Skywalker").build();
-
-                    resp.type("application/json");
-
-                    return user.asJson();
-                }
-        );
 
         /* 5. Dynamic Content from Db */
         Spark.get("/persisted-users/:id",

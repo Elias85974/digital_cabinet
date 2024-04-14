@@ -10,9 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
 public class Application {
 
@@ -23,8 +21,8 @@ public class Application {
 
         Spark.port(4321);
 
-        storedBasicUser(entityManagerFactory);
-
+        // Commenting the line that saves Luke and Leia to the database
+        //storedBasicUser(entityManagerFactory);
 
 
         /* 5. Dynamic Content from Db */
@@ -64,17 +62,33 @@ public class Application {
             return user.asJson();
         });
 
-        Spark.get("/users1", "application/json", (req, resp) -> {
+        // Requesting a login with a user
+        Spark.post("/login", "application/json", (req, resp) -> {
+            final User user = User.fromJson(req.body());
 
-            resp.type("application/json");
-            resp.status(201);
+            /* Begin Business Logic */
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Users users = new Users(entityManager);
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            Optional<User> foundUserOptional = users.findByEmail(user.getEmail());
+            tx.commit();
+            entityManager.close();
+            /* End Business Logic */
 
-            User u1 = User.create("ja1").lastName("pee").build();
-            User u2 = User.create("ja2").lastName("pee").build();
-            User u3 = User.create("ja3").lastName("pee").build();
+            if (foundUserOptional.isEmpty()) {
+                resp.status(404);
+                return "User not found";
+            }
 
-            List<User> users = Arrays.asList(u1, u2, u3);
-            return gson.toJson(users);
+            User foundUser = foundUserOptional.get();
+
+            if (!foundUser.getPassword().equals(user.getPassword())) {
+                resp.status(401);
+                return "Invalid password";
+            }
+
+            return foundUser.asJson();
         });
 
         Spark.options("/*", (req, res) -> {

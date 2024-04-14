@@ -33,3 +33,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# DataBase files
+resources/META-INF/persistence.xml

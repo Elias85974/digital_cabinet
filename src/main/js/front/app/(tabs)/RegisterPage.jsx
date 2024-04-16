@@ -1,5 +1,5 @@
 import React, {useState } from 'react';
-import {View, ScrollView, TextInput, Button, Pressable, StyleSheet, Text} from 'react-native';
+import {View, ScrollView, TextInput, Pressable, StyleSheet, Text} from 'react-native';
 import {createUser} from '../Api';
 import {Link} from "expo-router";
 
@@ -19,7 +19,7 @@ export default function RegisterPage() {
                 if (!isEmail(newUser.email)) {
                     alert("Incorrect email format. Please try again.")
                 } else {
-                    createUser(newUser);
+                    await createUser(newUser);
                 }
             }
             else {

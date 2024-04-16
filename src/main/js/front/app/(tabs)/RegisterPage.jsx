@@ -33,40 +33,45 @@ export default function RegisterPage() {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 20}}>
+            <ScrollView style={{marginTop: 10} }>
                 <View>
                     <Text style={styles.title}>Sign Up</Text>
-                    <Text style={styles.info}>Please fill in all fields to create your user</Text>
-                    <TextInput style={styles.input}
-                        placeholder="Email"
-                        value={newUser.email}
-                        onChangeText={(value) => handleInputChange('email', value)}
-                    />
-                    <TextInput style={styles.input}
-                        placeholder="FirstName"
-                        value={newUser.firstName}
-                        onChangeText={(value) => handleInputChange('firstName', value)}
-                    />
-                    <TextInput style={styles.input}
-                        placeholder="LastName"
-                        value={newUser.lastName}
-                        onChangeText={(value) => handleInputChange('lastName', value)}
-                    />
-                    <TextInput style={styles.input}
-                        secureTextEntry={true}
-                        placeholder="Password"
-                        value={newUser.password}
-                        onChangeText={(value) => handleInputChange('password', value)}
-                    />
+                    <View style={styles.signInCont}>
+                        <Text style={styles.info}>Please fill in all fields to create your user</Text>
+                        <TextInput style={styles.input}
+                                   placeholder="Email"
+                                   value={newUser.email}
+                                   onChangeText={(value) => handleInputChange('email', value)}
+                        />
+                        <TextInput style={styles.input}
+                                   placeholder="FirstName"
+                                   value={newUser.firstName}
+                                   onChangeText={(value) => handleInputChange('firstName', value)}
+                        />
+                        <TextInput style={styles.input}
+                                   placeholder="LastName"
+                                   value={newUser.lastName}
+                                   onChangeText={(value) => handleInputChange('lastName', value)}
+                        />
+                        <TextInput style={styles.input}
+                                   secureTextEntry={true}
+                                   placeholder="Password"
+                                   value={newUser.password}
+                                   onChangeText={(value) => handleInputChange('password', value)}
+                        />
+                        <Pressable style={styles.link} onPress={handleCreateUser}>
+                            <Text style={{color: 'white'}}>Create User</Text>
+                        </Pressable>
+                    </View>
                     <p></p>
-                    <Button title="Create User" onPress={handleCreateUser}/>
-                    <p></p>
-                    <Pressable style={styles.link}>
-                        <Link href={"/LoginPage"}>Sign in</Link>
-                    </Pressable>
-                    <Pressable style={styles.link}>
-                        <Link href={"/"}>Go back</Link>
-                    </Pressable>
+                    <View style={styles.linksContainer}>
+                        <Pressable style={styles.link}>
+                            <Link href={"/LoginPage"} style={{color: 'white'}}>Log In</Link>
+                        </Pressable>
+                        <Pressable style={styles.link}>
+                            <Link href={"/"} style={{color: 'white'}}>Go back</Link>
+                        </Pressable>
+                    </View>
                 </View>
             </ScrollView>
         </View>
@@ -76,43 +81,66 @@ export default function RegisterPage() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#BFAC9B',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
     },
     link: {
-        marginTop: 20,
+        marginTop: 15,
+        marginBottom: 10,
+        color: '#F2EFE9',
+        textDecorationLine: 'underline',
+        textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#2fb2e8',
+        borderWidth: 3, // Add border
+        borderColor: '#717336', // Set border color
+        padding: 10, // Add some padding so the text isn't right up against the border
+        backgroundColor: '#717336', // Set background color
+        width: 200, // Set width
+        alignSelf: 'center',
+        alignContent: 'center',
+        borderRadius: 100,
+
     },
     input: {
         height: 40,
         margin: 12,
         borderWidth: 1,
         color: 'white',
-        backgroundColor: '#561dbd',
+        backgroundColor: '#4B5940',
         padding: 10,
         justifyContent: 'center',
         alignContent: 'center',
     },
     title: {
-        fontSize: 40,
+        fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
         marginTop: 20,
         marginBottom: 30,
-        color: '#333',
-        fontFamily: 'Georgia, serif',
-        lineHeight: 30,
+        color: '#1B1A26',
+        fontFamily: 'lucida grande',
+        lineHeight: 80,
     },
     info: {
-        fontSize: 15,
+        fontSize: 20,
+        fontFamily: 'lucida grande',
         textAlign: 'center',
         marginTop: 20,
-        marginBottom: 30,
-        color: '#333',
+        marginBottom: 20,
+        color: '#F2EFE9',
         lineHeight: 30,
+    },
+    linksContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    signInCont: {
+        backgroundColor: '#4B5940',
+        padding: 20,
+        borderRadius: 20,
+        width: 400,
+        alignSelf: 'center',
     }
 });

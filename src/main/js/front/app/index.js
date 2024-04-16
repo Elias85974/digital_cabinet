@@ -4,54 +4,70 @@ import {Link} from 'expo-router';
 // Main Page for now
 export default function index() {
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={styles.title}>Digital Cabinet</Text>
-            <Pressable style={styles.link}>
-                <Link href={{
-                    pathname: "/user/[id]",
-                    params: { id: 'bacon' }
-                }}>
-                    <Text style={styles.linkText}>View user</Text>
-                </Link>
-            </Pressable>
-            <Pressable style={styles.link}>
-                <Link href={"/RegisterPage"}>
-                    <Text style={styles.linkText}>Sign Up</Text>
-                </Link>
-            </Pressable>
-            <Pressable style={styles.link}>
-                <Link href={"/LoginPage"}>
-                    <Text style={styles.linkText}>Sign In</Text>
-                </Link>
-            </Pressable>
+            <View style={styles.linksContainer}>
+                <Pressable style={styles.link}>
+                    <Link href={{
+                        pathname: "/user/[id]",
+                        params: { id: 'bacon' }
+                    }}>
+                        <Text style={styles.linkText}>View user</Text>
+                    </Link>
+                </Pressable>
+                <Pressable style={styles.link}>
+                    <Link href={"/RegisterPage"}>
+                        <Text style={styles.linkText}>Sign Up</Text>
+                    </Link>
+                </Pressable>
+                <Pressable style={styles.link}>
+                    <Link href={"/LoginPage"}>
+                        <Text style={styles.linkText}>Log In</Text>
+                    </Link>
+                </Pressable>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     link: {
-        marginTop: 20,
-        color: 'blue',
+        marginTop: 25,
+        color: '#F2EFE9',
         textDecorationLine: 'underline',
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 1, // Add border
-        borderColor: 'black', // Set border color
+        borderWidth: 3, // Add border
+        borderColor: '#717336', // Set border color
         padding: 10, // Add some padding so the text isn't right up against the border
-        backgroundColor: '#1a39d6', // Set background color
+        backgroundColor: '#4B5940', // Set background color
+        width: 300, // Set width
+        alignSelf: 'center',
+        borderRadius: 100,
+
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'space-between',
+        backgroundColor: '#BFAC9B',
+        alignItems: 'center',
+    },
+    linksContainer: {
+        marginBottom: 60,
+        marginTop: 20,
     },
     linkText: {
         fontSize: 20,
-        color: 'white',
+        color: '#F2EFE9',
     },
     title: {
-        fontSize: 40,
+        fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 20,
-        marginBottom: 30,
-        color: '#333',
-        fontFamily: 'Georgia, serif',
-        lineHeight: 30,
+        marginTop: 30,
+        marginBottom: 50,
+        color: '#1B1A26',
+        fontFamily: 'lucida grande',
+        lineHeight: 80,
     }
 });

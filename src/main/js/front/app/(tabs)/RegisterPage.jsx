@@ -33,7 +33,7 @@ export default function RegisterPage() {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 10} }>
+            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.title}>Sign Up</Text>
                     <View style={styles.signInCont}>
@@ -60,7 +60,7 @@ export default function RegisterPage() {
                                    onChangeText={(value) => handleInputChange('password', value)}
                         />
                         <Pressable style={styles.link} onPress={handleCreateUser}>
-                            <Text style={{color: 'white'}}>Create User</Text>
+                            <Text style={{color: 'white', fontSize: 16}}>Create User</Text>
                         </Pressable>
                     </View>
                     <p></p>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,
-
+        fontSize: 16,
     },
     input: {
         height: 40,

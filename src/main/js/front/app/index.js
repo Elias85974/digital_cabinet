@@ -8,14 +8,6 @@ export default function index() {
             <Text style={styles.title}>Digital Cabinet</Text>
             <View style={styles.linksContainer}>
                 <Pressable style={styles.link}>
-                    <Link href={{
-                        pathname: "/user/[id]",
-                        params: { id: 'bacon' }
-                    }}>
-                        <Text style={styles.linkText}>View user</Text>
-                    </Link>
-                </Pressable>
-                <Pressable style={styles.link}>
                     <Link href={"/RegisterPage"}>
                         <Text style={styles.linkText}>Sign Up</Text>
                     </Link>
@@ -41,7 +33,7 @@ const styles = StyleSheet.create({
         borderColor: '#717336', // Set border color
         padding: 10, // Add some padding so the text isn't right up against the border
         backgroundColor: '#4B5940', // Set background color
-        width: 300, // Set width
+        width: 200, // Set width
         alignSelf: 'center',
         borderRadius: 100,
 
@@ -57,7 +49,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     linkText: {
-        fontSize: 20,
+        fontSize: 18,
         color: '#F2EFE9',
     },
     title: {

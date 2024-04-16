@@ -45,7 +45,7 @@ export default function LoginPage() {
 
     } else { return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 20}}>
+            <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.title}>Digital Cabinet</Text>
                     <View style={styles.logInCont}>
@@ -62,7 +62,7 @@ export default function LoginPage() {
                                    onChangeText={(value) => handleInputChange('password', value)}
                         />
                         <Pressable style={styles.link} onPress={handleSubmit}>
-                            <Text style={{color: 'white'}}>Log In</Text>
+                            <Text style={{color: 'white', fontSize: 16}}>Log In</Text>
                         </Pressable>
                     </View>
                     <p></p>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,
-
+        fontSize: 16,
     },
     input: {
         height: 40,
@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 20,
         width: 300,
-
         alignSelf: 'center',
     }
 });

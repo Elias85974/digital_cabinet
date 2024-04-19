@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {TextInput, View, Text, Button, Pressable, ScrollView, StyleSheet} from "react-native";
+import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
 import {loginUser} from "../Api";
 import {Link} from "expo-router";
 
@@ -45,30 +45,35 @@ export default function LoginPage() {
 
     } else { return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 20}}>
+            <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
                 <View>
-                    <Text style={styles.title}>Sign In</Text>
-                    <Text style={styles.info}>Welcome Back</Text>
-                    <TextInput style={styles.input}
-                               placeholder="Email"
-                               value={user.email}
-                               onChangeText={(value) => handleInputChange('email', value)}
-                    />
-                    <TextInput style={styles.input}
-                               secureTextEntry={true}
-                               placeholder="Password"
-                               value={user.password}
-                               onChangeText={(value) => handleInputChange('password', value)}
-                    />
+                    <Text style={styles.title}>Digital Cabinet</Text>
+                    <View style={styles.logInCont}>
+                        <Text style={styles.info}>Welcome Back</Text>
+                        <TextInput style={styles.input}
+                                   placeholder="Email"
+                                   value={user.email}
+                                   onChangeText={(value) => handleInputChange('email', value)}
+                        />
+                        <TextInput style={styles.input}
+                                   secureTextEntry={true}
+                                   placeholder="Password"
+                                   value={user.password}
+                                   onChangeText={(value) => handleInputChange('password', value)}
+                        />
+                        <Pressable style={styles.link} onPress={handleSubmit}>
+                            <Text style={{color: 'white', fontSize: 16}}>Log In</Text>
+                        </Pressable>
+                    </View>
                     <p></p>
-                    <Button title="Sign in" onPress={handleSubmit} />
-                    <p></p>
-                    <Pressable style={styles.link}>
-                        <Link href={"/RegisterPage"}>Sign up</Link>
-                    </Pressable>
-                    <Pressable style={styles.link}>
-                        <Link href={"/"}>Go back</Link>
-                    </Pressable>
+                    <View style={styles.linksContainer}>
+                        <Pressable>
+                            <Link href={"/RegisterPage"} style={styles.link}>Sign Up</Link>
+                        </Pressable>
+                        <Pressable>
+                            <Link href={"/"} style={styles.link}>Go back</Link>
+                        </Pressable>
+                    </View>
                 </View>
             </ScrollView>
         </View>
@@ -80,43 +85,66 @@ export default function LoginPage() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#BFAC9B',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
     },
     link: {
-        marginTop: 20,
+        marginTop: 15,
+        marginBottom: 10,
+        color: '#F2EFE9',
+        textDecorationLine: 'underline',
+        textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#2fb2e8',
+        borderWidth: 3, // Add border
+        borderColor: '#717336', // Set border color
+        padding: 10, // Add some padding so the text isn't right up against the border
+        backgroundColor: '#717336', // Set background color
+        width: 200, // Set width
+        alignSelf: 'center',
+        alignContent: 'center',
+        borderRadius: 100,
+        fontSize: 16,
     },
     input: {
         height: 40,
         margin: 12,
         borderWidth: 1,
         color: 'white',
-        backgroundColor: '#561dbd',
+        backgroundColor: '#4B5940',
         padding: 10,
         justifyContent: 'center',
         alignContent: 'center',
     },
     title: {
-        fontSize: 40,
+        fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 20,
-        marginBottom: 30,
-        color: '#333',
-        fontFamily: 'Georgia, serif',
-        lineHeight: 30,
+        marginTop: 30,
+        marginBottom: 50,
+        color: '#1B1A26',
+        fontFamily: 'lucida grande',
+        lineHeight: 80,
     },
     info: {
-        fontSize: 15,
+        fontSize: 25,
+        fontFamily: 'lucida grande',
         textAlign: 'center',
         marginTop: 20,
-        marginBottom: 30,
-        color: '#333',
+        marginBottom: 20,
+        color: '#F2EFE9',
         lineHeight: 30,
+    },
+    linksContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    logInCont: {
+        backgroundColor: '#4B5940',
+        padding: 20,
+        borderRadius: 20,
+        width: 300,
+        alignSelf: 'center',
     }
 });

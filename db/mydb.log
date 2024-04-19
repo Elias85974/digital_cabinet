@@ -1,12 +1,14 @@
-/*C6*/SET SCHEMA PUBLIC
-DISCONNECT
 /*C7*/SET SCHEMA PUBLIC
-drop table if exists User CASCADE 
-create table User (id bigint not null, EMAIL varchar(255) not null, FIRST_NAME varchar(255), LAST_NAME varchar(255), PASSWORD varchar(255), primary key (id))
-alter table User add constraint UK_gmrrm359qu7ogusdu9r2qr637 unique (EMAIL)
-INSERT INTO USER VALUES(1,'luke.skywalker@jedis.org','Luke','Skywalker',NULL)
-INSERT INTO USER VALUES(2,'leia.skywalker@jedis.org','Leia','Skywalker',NULL)
+INSERT INTO USER VALUES(4,'juli.23082708@gmail.com','Julieta','Iglesias','Hola Putoooos')
+COMMIT
+INSERT INTO USER VALUES(5,'ejemplo@gmail.com','Ejemplo','Nuevo','1234')
 COMMIT
 /*C8*/SET SCHEMA PUBLIC
+DELETE FROM USER WHERE ID=4
+COMMIT
+DELETE FROM USER WHERE ID=3
+COMMIT
+DELETE FROM USER WHERE ID=5
+INSERT INTO USER VALUES(3,'ejemplo@gmail.com','Ejemplo','Nuevo','1234')
+COMMIT
 DISCONNECT
-/*C7*/DISCONNECT

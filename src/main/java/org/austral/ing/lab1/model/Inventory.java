@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "INVENTARIO")
+@Table(name = "INVENTORY")
 public class Inventory {
     @Id
     @GeneratedValue(generator = "increment")
@@ -14,12 +14,12 @@ public class Inventory {
     private Long inventario_ID;
 
     @OneToOne
-    @JoinColumn(name = "CASA_ID")
+    @JoinColumn(name = "HOUSE_ID")
     private House casa;
 
     @ManyToMany
-    @JoinColumn(name = "inventario_id")
-    private Category categorias;
+    @JoinColumn(name = "STATE")
+    private Boolean estado;
 
     @OneToMany(targetEntity = Product.class)
     @JoinColumn(name = "inventario_id")

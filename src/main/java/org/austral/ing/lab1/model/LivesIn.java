@@ -5,7 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "VIVE_EN")
+@Table(name = "LIVES_IN")
 public class LivesIn {
 
     @Id
@@ -14,12 +14,15 @@ public class LivesIn {
     private Long vive_en_ID;
 
     @OneToOne
-    @JoinColumn(name = "USUARIO_ID")
+    @JoinColumn(name = "USER_ID")
     private User usuario;
 
     @OneToOne
-    @JoinColumn(name = "CASA_ID")
+    @JoinColumn(name = "HOUSE_ID")
     private House casa;
+
+    @JoinColumn(name = "ROL_TYPE")
+    private String rol;
 
     public LivesIn() { }
 

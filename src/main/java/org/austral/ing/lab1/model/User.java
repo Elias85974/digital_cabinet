@@ -8,7 +8,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "USER")
 public class User {
-
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -100,6 +99,8 @@ public class User {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
+
+
 
     public static class UserBuilder {
         private final String email;

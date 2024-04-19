@@ -1,3 +1,4 @@
+
 package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;

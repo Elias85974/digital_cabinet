@@ -17,13 +17,9 @@ public class Inventory {
     @JoinColumn(name = "HOUSE_ID")
     private House casa;
 
-    @ManyToMany
-    @JoinColumn(name = "STATE")
-    private Boolean estado;
-
-    @OneToMany(targetEntity = Product.class)
-    @JoinColumn(name = "inventario_id")
-    private List<Product> productos;
+    //@OneToMany(targetEntity = Product.class)
+    @JoinColumn(name = "PRODUCTS_ID")
+    private Integer productos;
 
     public Inventory() { }
 

@@ -56,6 +56,7 @@ export const deleteUser = async (userId) => {
     }
 };
 
+
 // Function to log in a User
 export const loginUser = async (credentials) => {
     try {
@@ -73,9 +74,13 @@ export const loginUser = async (credentials) => {
 
         //Generate JWT Token
         const id = result(0);
+        //WE NEED TO CHANGE SECRET FOR OUR ACTUAL PRIVATE KEY
         const token = jwt.sign({ id }, 'secret', { expiresIn: 300});
         localStorage.setItem('token', token);
-        return result;
+
+        // Send JSON response to the client
+        return {auth: true, token: token, result: result};
+
     } catch (error) {
         console.error("Failed to login user:", error);
         throw error;

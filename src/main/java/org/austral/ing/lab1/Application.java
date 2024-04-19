@@ -60,7 +60,45 @@ public class Application {
 
             return user.asJson();
         });
+        /*const verifyJWT = (req, resp, next) => {
+            const token = req.headers("x-access-token");
+            if (!token) {
+                res.send("No token provided");
+            } else{
+                jwt.veify(token, "secret", (err, decoded) => {
+                    if (err) {
+                        res.json(auth: false, message: "Failed to authenticate");
+                    } else {
+                        req.userId = decoded.id;
+                        next();
+                    }
+                });
+            }
+        }
+        app.get("/isUserAuthenticated", verifyJWT, (req, resp) -> {
+            resp.send("Authenticated");
+        });*/
+        Spark.before("/isUserAuthenticated", (req, resp) -> {
+            String token = req.headers("x-access-token");
+            if (token == null) {
+                halt(401, "No token provided");
+            } else {
+                try {
+                    Jwts.parserBuilder()
+                            .setSigningKey(Keys.hmacShaKeyFor("secret".getBytes()))
+                            .build()
+                            .parseClaimsJws(token);
+                } catch (Exception e) {
+                    halt(401, "Failed to authenticate");
+                }
+            }
+        });
 
+        Spark.get("/isUserAuthenticated", (req, resp) -> {
+            resp.status(200);
+            resp.body("Authenticated");
+            return null;
+        });
         // Requesting a login with a user
         Spark.post("/login", "application/json", (req, resp) -> {
             final User user = User.fromJson(req.body());

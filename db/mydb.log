@@ -1,14 +1,80 @@
-/*C7*/SET SCHEMA PUBLIC
-INSERT INTO USER VALUES(4,'juli.23082708@gmail.com','Julieta','Iglesias','Hola Putoooos')
-COMMIT
-INSERT INTO USER VALUES(5,'ejemplo@gmail.com','Ejemplo','Nuevo','1234')
-COMMIT
-/*C8*/SET SCHEMA PUBLIC
-DELETE FROM USER WHERE ID=4
-COMMIT
-DELETE FROM USER WHERE ID=3
-COMMIT
-DELETE FROM USER WHERE ID=5
-INSERT INTO USER VALUES(3,'ejemplo@gmail.com','Ejemplo','Nuevo','1234')
-COMMIT
+/*C21*/SET SCHEMA PUBLIC
+drop table if exists USER CASCADE 
+create table USER (Usuario_ID bigint not null, LAST_NAME varchar(255), EMAIL varchar(255) not null, FIRST_NAME varchar(255), PASSWORD varchar(255), TOKEN varchar(255), primary key (Usuario_ID))
+alter table USER add constraint UK_ejfk3g58oxsgbb4ju3u4fhivk unique (EMAIL)
+DISCONNECT
+/*C22*/SET SCHEMA PUBLIC
+drop table if exists HOUSE CASCADE 
+drop table if exists PRODUCT CASCADE 
+drop table if exists USER CASCADE 
+create table HOUSE (Casa_ID bigint not null, direccion varchar(255), nombre varchar(255), primary key (Casa_ID))
+create table PRODUCT (product_ID bigint not null, CATEGORY_ID bigint, BRAND varchar(255), NAME varchar(255), CUANTITY_TYPE varchar(255), primary key (product_ID))
+create table USER (Usuario_ID bigint not null, LAST_NAME varchar(255), EMAIL varchar(255) not null, FIRST_NAME varchar(255), PASSWORD varchar(255), TOKEN varchar(255), primary key (Usuario_ID))
+alter table USER add constraint UK_ejfk3g58oxsgbb4ju3u4fhivk unique (EMAIL)
+DISCONNECT
+/*C23*/SET SCHEMA PUBLIC
+drop table if exists Category CASCADE 
+drop table if exists HOUSE CASCADE 
+drop table if exists PRODUCT CASCADE 
+drop table if exists USER CASCADE 
+create table Category (ID_categoria bigint not null, QUANTITY_TOTAL integer, NAME varchar(255), primary key (ID_categoria))
+create table HOUSE (Casa_ID bigint not null, direccion varchar(255), nombre varchar(255), primary key (Casa_ID))
+create table PRODUCT (product_ID bigint not null, CATEGORY_ID bigint, BRAND varchar(255), NAME varchar(255), CUANTITY_TYPE varchar(255), primary key (product_ID))
+create table USER (Usuario_ID bigint not null, LAST_NAME varchar(255), EMAIL varchar(255) not null, FIRST_NAME varchar(255), PASSWORD varchar(255), TOKEN varchar(255), primary key (Usuario_ID))
+alter table USER add constraint UK_ejfk3g58oxsgbb4ju3u4fhivk unique (EMAIL)
+DISCONNECT
+/*C24*/SET SCHEMA PUBLIC
+drop table if exists Category CASCADE 
+drop table if exists HOUSE CASCADE 
+drop table if exists INVENTORY CASCADE 
+drop table if exists PRODUCT CASCADE 
+drop table if exists USER CASCADE 
+create table Category (ID_categoria bigint not null, QUANTITY_TOTAL integer, NAME varchar(255), primary key (ID_categoria))
+create table HOUSE (Casa_ID bigint not null, direccion varchar(255), nombre varchar(255), primary key (Casa_ID))
+create table INVENTORY (inventario_ID bigint not null, productos integer, HOUSE_ID bigint, primary key (inventario_ID))
+create table PRODUCT (product_ID bigint not null, CATEGORY_ID bigint, BRAND varchar(255), NAME varchar(255), CUANTITY_TYPE varchar(255), primary key (product_ID))
+create table USER (Usuario_ID bigint not null, LAST_NAME varchar(255), EMAIL varchar(255) not null, FIRST_NAME varchar(255), PASSWORD varchar(255), TOKEN varchar(255), primary key (Usuario_ID))
+alter table USER add constraint UK_ejfk3g58oxsgbb4ju3u4fhivk unique (EMAIL)
+alter table INVENTORY add constraint FKiit8a15yog8skf34iuvutn0q3 foreign key (HOUSE_ID) references HOUSE
+DISCONNECT
+/*C25*/SET SCHEMA PUBLIC
+drop table if exists Category CASCADE 
+drop table if exists HOUSE CASCADE 
+drop table if exists INVENTORY CASCADE 
+drop table if exists LIVES_IN CASCADE 
+drop table if exists PRODUCT CASCADE 
+drop table if exists USER CASCADE 
+create table Category (ID_categoria bigint not null, QUANTITY_TOTAL integer, NAME varchar(255), primary key (ID_categoria))
+create table HOUSE (Casa_ID bigint not null, direccion varchar(255), nombre varchar(255), primary key (Casa_ID))
+create table INVENTORY (inventario_ID bigint not null, productos integer, HOUSE_ID bigint, primary key (inventario_ID))
+create table LIVES_IN (vive_en_ID bigint not null, rol varchar(255), HOUSE_ID bigint, USER_ID bigint, primary key (vive_en_ID))
+create table PRODUCT (product_ID bigint not null, CATEGORY_ID bigint, BRAND varchar(255), NAME varchar(255), CUANTITY_TYPE varchar(255), primary key (product_ID))
+create table USER (Usuario_ID bigint not null, LAST_NAME varchar(255), EMAIL varchar(255) not null, FIRST_NAME varchar(255), PASSWORD varchar(255), TOKEN varchar(255), primary key (Usuario_ID))
+alter table USER add constraint UK_ejfk3g58oxsgbb4ju3u4fhivk unique (EMAIL)
+alter table INVENTORY add constraint FKiit8a15yog8skf34iuvutn0q3 foreign key (HOUSE_ID) references HOUSE
+alter table LIVES_IN add constraint FKbxucnju231k2u588nc4ns08d foreign key (HOUSE_ID) references HOUSE
+alter table LIVES_IN add constraint FKjm5n2d9q4ankg47d9fuwef4ve foreign key (USER_ID) references USER
+DISCONNECT
+/*C26*/SET SCHEMA PUBLIC
+drop table if exists Category CASCADE 
+drop table if exists HOUSE CASCADE 
+drop table if exists INVENTORY CASCADE 
+drop table if exists LIVES_IN CASCADE 
+drop table if exists PRODUCT CASCADE 
+drop table if exists STOCK CASCADE 
+drop table if exists USER CASCADE 
+create table Category (ID_categoria bigint not null, QUANTITY_TOTAL integer, NAME varchar(255), primary key (ID_categoria))
+create table HOUSE (Casa_ID bigint not null, direccion varchar(255), nombre varchar(255), primary key (Casa_ID))
+create table INVENTORY (inventario_ID bigint not null, productos integer, HOUSE_ID bigint, primary key (inventario_ID))
+create table LIVES_IN (vive_en_ID bigint not null, rol varchar(255), HOUSE_ID bigint, USER_ID bigint, primary key (vive_en_ID))
+create table PRODUCT (product_ID bigint not null, CATEGORY_ID bigint, BRAND varchar(255), NAME varchar(255), CUANTITY_TYPE varchar(255), primary key (product_ID))
+create table STOCK (ID_Stock bigint not null, inventory_ID bigint, product_ID bigint, CUANTITY_EXPIRATION_DATE integer, EXPIRATION_DATE timestamp, primary key (ID_Stock))
+create table USER (Usuario_ID bigint not null, LAST_NAME varchar(255), EMAIL varchar(255) not null, FIRST_NAME varchar(255), PASSWORD varchar(255), TOKEN varchar(255), primary key (Usuario_ID))
+alter table USER add constraint UK_ejfk3g58oxsgbb4ju3u4fhivk unique (EMAIL)
+alter table INVENTORY add constraint FKiit8a15yog8skf34iuvutn0q3 foreign key (HOUSE_ID) references HOUSE
+alter table LIVES_IN add constraint FKbxucnju231k2u588nc4ns08d foreign key (HOUSE_ID) references HOUSE
+alter table LIVES_IN add constraint FKjm5n2d9q4ankg47d9fuwef4ve foreign key (USER_ID) references USER
+/*C28*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C27*/SET SCHEMA PUBLIC
 DISCONNECT

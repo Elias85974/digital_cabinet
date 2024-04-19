@@ -4,8 +4,13 @@
              version="2.0">
     <persistence-unit name="lab1">
         <class>org.austral.ing.lab1.model.User</class>
-        <class>org.austral.ing.lab1.model.Casa</class>
-
+        <class>org.austral.ing.lab1.model.Product</class>
+        <class>org.austral.ing.lab1.model.House</class>
+        <class>org.austral.ing.lab1.model.Category</class>
+        <class>org.austral.ing.lab1.model.Inventory</class>
+        <class>org.austral.ing.lab1.model.LivesIn</class>
+        <class>org.austral.ing.lab1.model.Stock</class>
+        
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbc.JDBCDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:hsql://localhost/xdb;shutdown=true"/>
@@ -13,7 +18,7 @@
             <property name="javax.persistence.jdbc.password" value=""/>
 
             <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>
 
     </persistence-unit>

@@ -14,10 +14,6 @@ public class House {
     @GenericGenerator(name = "increment", strategy = "increment")
     private Long Casa_ID;
 
-    @OneToOne
-    @JoinColumn(name = "INVENTARIO_ID")
-    private Inventory inventario;
-
     @Column
     private String nombre;
 
@@ -27,7 +23,7 @@ public class House {
     public House() { }
 
     public static HouseBuilder create(Inventory inventario) {
-        return new HouseBuilder(inventario);
+        return new HouseBuilder();
     }
 
     public void setCasa_ID(Long id) {
@@ -38,9 +34,6 @@ public class House {
         return Casa_ID;
     }
 
-    public Long getInventario_ID() {
-        return inventario.getInventario_ID();
-    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -59,7 +52,6 @@ public class House {
     }
 
     private House(HouseBuilder builder) {
-        this.inventario = builder.inventario;
         this.nombre = builder.nombre;
         this.direccion = builder.direccion;
     }
@@ -73,13 +65,10 @@ public class House {
     }
 
     public static class HouseBuilder {
-        private final Inventory inventario;
         private String nombre;
         private String direccion;
 
-        public HouseBuilder(Inventory inventario) {
-            this.inventario = inventario;
-        }
+        public HouseBuilder() {}
 
         public HouseBuilder withNombre(String nombre) {
             this.nombre = nombre;

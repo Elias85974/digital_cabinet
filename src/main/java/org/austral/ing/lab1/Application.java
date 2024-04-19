@@ -22,7 +22,7 @@ public class Application {
         Spark.port(4321);
 
         // Commenting the line that saves Luke and Leia to the database
-        storedBasicUser(entityManagerFactory);
+        // storedBasicUser(entityManagerFactory);
 
         /* 5. Dynamic Content from Db */
         Spark.get("/persisted-users/:id",

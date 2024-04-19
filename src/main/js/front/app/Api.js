@@ -1,5 +1,5 @@
 const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
-
+const jwt = require('jsonwebtoken');
 // Function to create a user
 export const createUser = async (userData) => {
     try {
@@ -69,7 +69,13 @@ export const loginUser = async (credentials) => {
         if (!response.ok) {
             throw new Error('Login failed');
         }
-        return await response.json();
+        const result = await response.json();
+
+        //Generate JWT Token
+        const id = result(0);
+        const token = jwt.sign({ id }, 'secret', { expiresIn: 300});
+        localStorage.setItem('token', token);
+        return result;
     } catch (error) {
         console.error("Failed to login user:", error);
         throw error;

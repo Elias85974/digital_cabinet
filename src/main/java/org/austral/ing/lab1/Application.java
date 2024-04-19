@@ -24,7 +24,6 @@ public class Application {
         // Commenting the line that saves Luke and Leia to the database
         storedBasicUser(entityManagerFactory);
 
-
         /* 5. Dynamic Content from Db */
         Spark.get("/persisted-users/:id",
                 (req, resp) -> {

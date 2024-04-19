@@ -12,9 +12,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.Date;
 import java.util.Optional;
 
 import static spark.Spark.halt;
+
+import org.austral.ing.lab1.TokenResponse;
 
 public class Application {
 
@@ -102,6 +105,38 @@ public class Application {
             resp.status(200);
             resp.body("Authenticated");
             return null;
+        });
+        // Endpoint to refresh token
+        Spark.post("/refreshToken", "application/json", (req, resp) -> {
+            final String refreshToken = req.headers("x-refresh-token");
+
+            // Validate refresh token
+            try {
+                Jwts.parserBuilder()
+                        .setSigningKey(Keys.hmacShaKeyFor("refreshSecret".getBytes()))
+                        .build()
+                        .parseClaimsJws(refreshToken);
+            } catch (Exception e) {
+                halt(401, "Failed to authenticate refresh token");
+            }
+
+            // Generate new JWT and refresh token
+            String newToken = Jwts.builder()
+                    .setSubject("userId")
+                    .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) // 1 hour
+                    .signWith(Keys.hmacShaKeyFor("secret".getBytes()))
+                    .compact();
+
+            String newRefreshToken = Jwts.builder()
+                    .setSubject("userId")
+                    .setExpiration(new Date(System.currentTimeMillis() +  60 * 60 * 1000)) // 1 days
+                    .signWith(Keys.hmacShaKeyFor("refreshSecret".getBytes()))
+                    .compact();
+
+            // Send new tokens to client
+            resp.status(200);
+            resp.type("application/json");
+            return gson.toJson(new TokenResponse(newToken, newRefreshToken));
         });
         // Requesting a login with a user
         Spark.post("/login", "application/json", (req, resp) -> {
@@ -214,3 +249,4 @@ public class Application {
         return Strings.isNullOrEmpty(name) ? name : name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
 }
+

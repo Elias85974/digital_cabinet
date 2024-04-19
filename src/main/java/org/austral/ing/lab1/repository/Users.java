@@ -1,6 +1,5 @@
 package org.austral.ing.lab1.repository;
 
-
 import org.austral.ing.lab1.model.User;
 
 import javax.persistence.EntityManager;
@@ -35,4 +34,23 @@ public class Users {
         entityManager.persist(user);
         return user;
     }
+
+    // para cuando hagamos que pueda cambiar el mail o el nombre o lo q sea en ajustes
+    public User modify(Long id, User newUserData) {
+    Optional<User> userOptional = findById(id);
+
+    if (!userOptional.isPresent()) {
+        return null;
+    }
+
+    User user = userOptional.get();
+
+    // Here you can set the new values for the user fields
+    // For example, if User has a field called 'nombre', you can do:
+    // user.setNombre(newUserData.getNombre());
+
+    entityManager.merge(user);
+
+    return user;
+}
 }

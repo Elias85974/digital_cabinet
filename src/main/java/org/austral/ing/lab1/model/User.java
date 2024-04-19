@@ -100,8 +100,6 @@ public class User {
         return gson.toJson(this);
     }
 
-
-
     public static class UserBuilder {
         private final String email;
         private String firstName;

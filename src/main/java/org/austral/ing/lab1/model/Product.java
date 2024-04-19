@@ -67,10 +67,6 @@ public class Product {
         this.categoria_ID = categoria_ID;
     }
 
-    public void setProduct_ID(Long productId) {
-        this.product_ID = productId;
-    }
-
     public Long getProduct_ID() {
         return product_ID;
     }

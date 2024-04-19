@@ -29,7 +29,7 @@ public class Application {
         Spark.port(4321);
 
         // Commenting the line that saves Luke and Leia to the database
-        storedBasicUser(entityManagerFactory);
+        // storedBasicUser(entityManagerFactory);
 
         /* 5. Dynamic Content from Db */
         Spark.get("/persisted-users/:id",
@@ -129,7 +129,7 @@ public class Application {
 
             String newRefreshToken = Jwts.builder()
                     .setSubject("userId")
-                    .setExpiration(new Date(System.currentTimeMillis() +  60 * 60 * 1000)) // 1 days
+                    .setExpiration(new Date(System.currentTimeMillis() +  60 * 60 * 1000)) // 1 day
                     .signWith(Keys.hmacShaKeyFor("refreshSecret".getBytes()))
                     .compact();
 

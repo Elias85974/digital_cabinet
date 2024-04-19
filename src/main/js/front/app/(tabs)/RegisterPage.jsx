@@ -2,10 +2,10 @@ import React, {useState } from 'react';
 import {View, ScrollView, TextInput, Button, Pressable, StyleSheet, Text} from 'react-native';
 import {createUser} from '../Api';
 import {Link} from "expo-router";
+import 'jsonwebtoken';
 
 export default function RegisterPage() {
     let [newUser, setNewUser] = useState({email: '', firstName: '', lastName: '', password: ''});
-
     const isEmail = (email) =>
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
 
@@ -27,7 +27,7 @@ export default function RegisterPage() {
             }
             setNewUser({email: '', firstName: '', lastName: '', password: ''});
         } catch (error) {
-            console.log("Error creating user:", error);
+            console.log("Error creating usuario:", error);
         }
     };
 
@@ -36,7 +36,7 @@ export default function RegisterPage() {
             <ScrollView style={{marginTop: 20}}>
                 <View>
                     <Text style={styles.title}>Sign Up</Text>
-                    <Text style={styles.info}>Please fill in all fields to create your user</Text>
+                    <Text style={styles.info}>Please fill in all fields to create your usuario</Text>
                     <TextInput style={styles.input}
                         placeholder="Email"
                         value={newUser.email}

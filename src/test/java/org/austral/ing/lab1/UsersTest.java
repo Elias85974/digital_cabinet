@@ -47,13 +47,13 @@ public class UsersTest {
 
         final User luke =
                 User.create("luke.skywalker@jedis.org")
-                        .firstName("Luke")
-                        .lastName("Skywalker").
+                        .setFirstName("Luke")
+                        .setLastName("Skywalker").
                         build();
         final User leia =
                 User.create("leia.skywalker@jedis.org")
-                        .firstName("Leia")
-                        .lastName("Skywalker")
+                        .setFirstName("Leia")
+                        .setLastName("Skywalker")
                         .build();
 
         entityManager.persist(luke);
@@ -66,18 +66,18 @@ public class UsersTest {
         Assert.assertEquals(2 , allUsers.size());
 
         final List<User> users = entityManager
-                .createQuery("SELECT u FROM User u WHERE u.email LIKE :email", User.class)
+                .createQuery("SELECT u FROM User u WHERE u.mail LIKE :email", User.class)
                 .setParameter("email", "luke.skywalker@jedis.org").getResultList();
 
         Assert.assertEquals(1, users.size());
-        Assert.assertEquals(users.get(0).getLastName(), "Skywalker");
-        Assert.assertEquals(users.get(0).getFirstName(), "Luke");
+        Assert.assertEquals(users.get(0).getApellido(), "Skywalker");
+        Assert.assertEquals(users.get(0).getNombre(), "Luke");
 
 
-        final User anotherLuke = entityManager.find(User.class, luke.getId());
+        final User anotherLuke = entityManager.find(User.class, luke.getUsuario_ID());
 
-        Assert.assertEquals(anotherLuke.getLastName(), "Skywalker");
-        Assert.assertEquals(anotherLuke.getFirstName(), "Luke");
+        Assert.assertEquals(anotherLuke.getApellido(), "Skywalker");
+        Assert.assertEquals(anotherLuke.getNombre(), "Luke");
 
         entityManager.remove(leia);
 
@@ -87,13 +87,13 @@ public class UsersTest {
 
         Assert.assertEquals(1, allUsersAgain.size());
 
-        anotherLuke.setFirstName("LUKE");
+        anotherLuke.setNombre("LUKE");
 
         entityManager.persist(anotherLuke);
 
-        User upperCaseLuke = entityManager.find(User.class, anotherLuke.getId());
+        User upperCaseLuke = entityManager.find(User.class, anotherLuke.getUsuario_ID());
 
-        Assert.assertEquals("LUKE", upperCaseLuke.getFirstName());
+        Assert.assertEquals("LUKE", upperCaseLuke.getNombre());
 
         transaction.commit();
 

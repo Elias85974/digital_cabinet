@@ -22,7 +22,7 @@ public class Application {
         Spark.port(4321);
 
         // Commenting the line that saves Luke and Leia to the database
-        //storedBasicUser(entityManagerFactory);
+        storedBasicUser(entityManagerFactory);
 
 
         /* 5. Dynamic Content from Db */
@@ -71,7 +71,7 @@ public class Application {
             final Users users = new Users(entityManager);
             EntityTransaction tx = entityManager.getTransaction();
             tx.begin();
-            Optional<User> foundUserOptional = users.findByEmail(user.getEmail());
+            Optional<User> foundUserOptional = users.findByEmail(user.getMail());
             tx.commit();
             entityManager.close();
             /* End Business Logic */
@@ -89,6 +89,38 @@ public class Application {
             }
 
             return foundUser.asJson();
+        });
+
+        // Requesting a list of all users
+        Spark.get("/listUsers", (req, resp) -> {
+            /* Begin Business Logic */
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Users users = new Users(entityManager);
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            final String json = gson.toJson(users.listAll());
+            tx.commit();
+            entityManager.close();
+            /* End Business Logic */
+
+            resp.type("application/json");
+            return json;
+        });
+
+        // Requesting an inventory of a house
+        Spark.get("/house/:id/inventory", (req, resp) -> {
+            final String id = req.params("id");
+
+            /* Begin Business Logic */
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            User user = entityManager.find(User.class, Long.valueOf(id));
+            tx.commit();
+            entityManager.close();
+
+            resp.type("application/json");
+            return user.asJson();
         });
 
         Spark.options("/*", (req, res) -> {
@@ -121,13 +153,13 @@ public class Application {
         if (users.listAll().isEmpty()) {
             final User luke =
                     User.create("luke.skywalker@jedis.org")
-                            .firstName("Luke")
-                            .lastName("Skywalker").
+                            .setFirstName("Luke")
+                            .setLastName("Skywalker").
                             build();
             final User leia =
                     User.create("leia.skywalker@jedis.org")
-                            .firstName("Leia")
-                            .lastName("Skywalker")
+                            .setFirstName("Leia")
+                            .setLastName("Skywalker")
                             .build();
 
             users.persist(luke);

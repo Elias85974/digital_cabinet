@@ -2,6 +2,8 @@ package org.austral.ing.lab1;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.austral.ing.lab1.model.User;
 import org.austral.ing.lab1.repository.Users;
 import spark.Spark;
@@ -11,6 +13,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.Optional;
+
+import static spark.Spark.halt;
 
 public class Application {
 

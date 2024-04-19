@@ -22,11 +22,13 @@ export const createUser = async (userData) => {
 
 // Function to edit a user
 export const editUser = async (userId, userData) => {
+    const token = localStorage.getItem('token');
     try {
         const response = await fetch(`${API_URL}/users/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'x-access-token': token,
             },
             body: JSON.stringify(userData),
         });
@@ -75,7 +77,7 @@ export const loginUser = async (credentials) => {
         //Generate JWT Token
         const id = result(0);
         //WE NEED TO CHANGE SECRET FOR OUR ACTUAL PRIVATE KEY
-        const token = jwt.sign({ id }, 'secret', { expiresIn: 300});
+        const token = jwt.sign({ id }, 'secret', { expiresIn: '1h'});
         localStorage.setItem('token', token);
 
         // Send JSON response to the client

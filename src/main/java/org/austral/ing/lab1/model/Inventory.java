@@ -1,8 +1,10 @@
 package org.austral.ing.lab1.model;
 
+import com.google.gson.Gson;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +19,12 @@ public class Inventory {
     @JoinColumn(name = "CASA_ID", referencedColumnName = "CASA_ID")
     private House casa;
 
-    public Inventory() { }
+    @OneToMany(mappedBy = "inventario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Stock> stocks;
+
+    public Inventory() {
+        this.stocks = new ArrayList<>();
+    }
 
     public void setID(Long inventarioId) {
         this.inventario_ID = inventarioId;
@@ -39,5 +46,15 @@ public class Inventory {
         this.casa = casa;
     }
 
+    public String asJson() {
+        return new Gson().toJson(this);
+    }
 
+    public void addStock(Stock stock) {
+        stocks.add(stock);
+    }
+
+    public List<Stock> getStocks() {
+        return stocks;
+    }
 }

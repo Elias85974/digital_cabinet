@@ -11,7 +11,7 @@ public class House {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-    private Long Casa_ID;
+    private Long casa_ID;
 
     @OneToOne
     @JoinColumn(name = "INVENTARIO_ID", referencedColumnName = "INVENTARIO_ID")
@@ -30,15 +30,23 @@ public class House {
     }
 
     public void setCasa_ID(Long id) {
-        this.Casa_ID = id;
+        this.casa_ID = id;
     }
 
     public Long getCasa_ID() {
-        return Casa_ID;
+        return casa_ID;
     }
 
     public Long getInventario_ID() {
         return inventario.getInventario_ID();
+    }
+
+    public Inventory getInventario() {
+        return inventario;
+    }
+
+    public void setInventario(Inventory inventario) {
+        this.inventario = inventario;
     }
 
     public void setNombre(String nombre) {

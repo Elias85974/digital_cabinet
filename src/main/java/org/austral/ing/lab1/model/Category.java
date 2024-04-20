@@ -10,7 +10,7 @@ public class Category {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-    private Long ID_categoria;
+    private Long categoria_ID;
 
     @Column(name = "NAME")
     private String nombre;
@@ -25,8 +25,8 @@ public class Category {
         this.cantTotal = builder.cantTotal;
     }
 
-    public Long getID_categoria() {
-        return ID_categoria;
+    public Long getCategoria_ID() {
+        return categoria_ID;
     }
 
     public String getNombre() {

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "PRODUCT")
@@ -11,7 +12,7 @@ public class Product {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-    private Long product_ID;
+    private Long producto_ID;
 
     @Column(name = "NAME")
     private String nombre;
@@ -25,6 +26,8 @@ public class Product {
     @Column(name = "CATEGORY_ID")
     private Long categoria_ID;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Stock> stocks;
 
     public Product() { }
 
@@ -67,8 +70,8 @@ public class Product {
         this.categoria_ID = categoria_ID;
     }
 
-    public Long getProduct_ID() {
-        return product_ID;
+    public Long getProducto_ID() {
+        return producto_ID;
     }
 
     public static ProductBuilder create(String nombre) {

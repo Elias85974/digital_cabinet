@@ -113,42 +113,101 @@ public class Application {
             return json;
         });
 
-        // Requesting an inventory of a house
-        Spark.get("/house/:id/inventory", (req, resp) -> {
-            final String id = req.params("id");
+        // Route to create a House
+        Spark.post("/houses", "application/json", (req, resp) -> {
+            try {
+                final EntityManager entityManager = entityManagerFactory.createEntityManager();
+                Houses housesRepo = new Houses(entityManager);
+                Inventories inventoriesRepo = new Inventories(entityManager);
+                final House house = House.fromJson(req.body());
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                final Inventory inventory = new Inventory();
+                inventory.setCasa(house);
+                inventoriesRepo.persist(inventory);
+                house.setInventario(inventory);
+                housesRepo.persist(house);
+                resp.type("application/json");
+                resp.status(201);
+                tx.commit();
+                return house.asJson();
+            } catch (Exception e) {
+                resp.status(500);
+                return "An error occurred while creating the house, please try again";
+            }
+        });
+
+        // Route to change the House a user lives in
+        Spark.put("/houses/:houseId/users/:token", "application/json", (req, resp) -> {
+            final String houseId = req.params("houseId");
+            final String token = req.params("token");
 
             /* Begin Business Logic */
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final EntityTransaction tx = entityManager.getTransaction();
+            final Houses houses = new Houses(entityManager);
+            final Users users = new Users(entityManager);
+            EntityTransaction tx = entityManager.getTransaction();
             tx.begin();
-            User user = entityManager.find(User.class, Long.valueOf(id));
+            final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
+            final Optional<User> userOptional = users.findByToken(token);
             tx.commit();
             entityManager.close();
+            /* End Business Logic */
+
+            if (houseOptional.isEmpty()) {
+                resp.status(404);
+                return "House not found";
+            }
+
+            if (userOptional.isEmpty()) {
+                resp.status(404);
+                return "User not found";
+            }
+
+            final House house = houseOptional.get();
+            final User user = userOptional.get();
+
+            /* Begin Business Logic */
+            final EntityManager entityManager2 = entityManagerFactory.createEntityManager();
+            final LivesIns livesIns = new LivesIns(entityManager2);
+            EntityTransaction tx2 = entityManager2.getTransaction();
+            tx2.begin();
+            final LivesIn livesIn = LivesIn.create(user, house, true).build();
+            livesIns.persist(livesIn);
+            tx2.commit();
+            entityManager2.close();
+            /* End Business Logic */
+
+            return "User now lives in the house";
+        });
+
+
+
+        // Requesting an inventory of a house
+        Spark.get("/inventory/:houseId", (req, resp) -> {
+            final String houseId = req.params("houseId");
+
+            /* Begin Business Logic */
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Houses houses = new Houses(entityManager);
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
+            tx.commit();
+            entityManager.close();
+            /* End Business Logic */
+
+            if (houseOptional.isEmpty()) {
+                resp.status(404);
+                return "House not found";
+            }
+
+            final House house = houseOptional.get();
+            final Inventory inventory = house.getInventario();
 
             resp.type("application/json");
-            return user.asJson();
+            return inventory.asJson();
         });
-
-        Spark.options("/*", (req, res) -> {
-            String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
-            if (accessControlRequestHeaders != null) {
-                res.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
-            }
-
-            String accessControlRequestMethod = req.headers("Access-Control-Request-Method");
-            if (accessControlRequestMethod != null) {
-                res.header("Access-Control-Allow-Methods", accessControlRequestMethod);
-            }
-
-            return "OK";
-        });
-
-        Spark.before((req, res) -> {
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "*");
-            res.type("application/json");
-        });
-
 
         // Route to create a product
         Spark.post("/products", "application/json", (req, resp) -> {
@@ -311,6 +370,26 @@ public class Application {
             return "Category deleted";
         });
 
+        Spark.options("/*", (req, res) -> {
+            String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                res.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+            }
+
+            String accessControlRequestMethod = req.headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                res.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+            }
+
+            return "OK";
+        });
+
+        Spark.before((req, res) -> {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "*");
+            res.type("application/json");
+        });
+
     }
 
     private static void storedBasicUser(EntityManagerFactory entityManagerFactory) {
@@ -347,10 +426,10 @@ public class Application {
         EntityTransaction tx = entityManager.getTransaction();
         tx.begin();
         final User luke = User.create("lol").setFirstName("Luke").setLastName("SkyWalker").setPassword("123456").build();
-        final Inventory inventory = new Inventory(); // Create Inventory instance
+        final Inventory inventory = createInventoryWithStocks(entityManagerFactory); // Create Inventory instance
         final House house = House.create(inventory).withDireccion("Calle Falsa 123").withNombre("Casa de Luke").build();
         inventory.setCasa(house); // Set House instance
-        inventories.persist(inventory); // Save Inventory instance
+        inventories.persist(inventory); // Persist Inventory instance
         final LivesIn livesIn = LivesIn.create(luke, house, true).build();
         entityManager.persist(luke);
         entityManager.persist(house);
@@ -360,6 +439,49 @@ public class Application {
         entityManager.close();
         System.out.println(luke.getLivesIns().get(0).getCasa().getDireccion());
         System.out.println(luke.getLivesIns().get(0).getCasa().getInventario_ID());
+    }
+
+    // This method creates an inventory with some Stocks, this was made for testing purposes
+    private static Inventory createInventoryWithStocks(EntityManagerFactory entityManagerFactory) {
+        final EntityManager entityManager = entityManagerFactory.createEntityManager();
+        final Inventories inventories = new Inventories(entityManager);
+        final Stocks stocks = new Stocks(entityManager);
+        EntityTransaction tx = entityManager.getTransaction();
+        tx.begin();
+        final Inventory inventory = new Inventory();
+        final Stock stock1 = createStockWithProducts(entityManagerFactory, 10L, "Coca Cola");
+        final Stock stock2 = createStockWithProducts(entityManagerFactory, 20L, "Pepsi Cola");
+        inventory.addStock(stock1);
+        inventory.addStock(stock2);
+        // inventories.persist(inventory);
+        tx.commit();
+        entityManager.close();
+        return inventory;
+    }
+
+    private static Stock createStockWithProducts(EntityManagerFactory entityManagerFactory, Long cantidad, String productName) {
+        final EntityManager entityManager = entityManagerFactory.createEntityManager();
+        final Stocks stocks = new Stocks(entityManager);
+        EntityTransaction tx = entityManager.getTransaction();
+        tx.begin();
+        final Product product = createProduct(entityManagerFactory, productName);
+        final Stock stock = Stock.create(cantidad).setProduct(product).build();
+        tx.commit();
+        entityManager.close();
+        System.out.println(stock.getCantidadVencimiento());
+        return stock;
+    }
+
+    private static Product createProduct(EntityManagerFactory entityManagerFactory, String productName) {
+        final EntityManager entityManager = entityManagerFactory.createEntityManager();
+        final Products products = new Products(entityManager);
+        EntityTransaction tx = entityManager.getTransaction();
+        tx.begin();
+        final Product product = Product.create(productName).build();
+        // products.persist(product);
+        tx.commit();
+        entityManager.close();
+        return product;
     }
 
     private static String capitalized(String name) {

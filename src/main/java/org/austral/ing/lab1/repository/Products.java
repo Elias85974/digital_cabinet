@@ -45,7 +45,7 @@ public class Products {
 
     public List<Product> listByCategory(String categoryName, int pageNumber, int pageSize) {
         return entityManager
-            .createQuery("SELECT p FROM Product p JOIN Category c ON p.categoria_ID = c.ID_categoria WHERE c.nombre LIKE :categoryName", Product.class)
+            .createQuery("SELECT p FROM Product p JOIN Category c ON p.categoria_ID = c.categoria_ID WHERE c.nombre LIKE :categoryName", Product.class)
             .setParameter("categoryName", categoryName)
             .setFirstResult((pageNumber - 1) * pageSize)
             .setMaxResults(pageSize)

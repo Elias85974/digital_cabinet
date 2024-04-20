@@ -12,7 +12,7 @@ public class User {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-    private Long Usuario_ID;
+    private Long usuario_ID;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
     private List<LivesIn> livesIns;
@@ -69,11 +69,11 @@ public class User {
     }
 
     public Long getUsuario_ID() {
-        return Usuario_ID;
+        return usuario_ID;
     }
 
     public void setUsuario_ID(Long id) {
-        this.Usuario_ID = id;
+        this.usuario_ID = id;
     }
 
     public void setToken(String token) {

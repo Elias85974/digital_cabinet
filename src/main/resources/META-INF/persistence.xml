@@ -4,12 +4,12 @@
              version="2.0">
     <persistence-unit name="lab1">
         <class>org.austral.ing.lab1.model.User</class>
-        <class>org.austral.ing.lab1.model.Product</class>
         <class>org.austral.ing.lab1.model.House</class>
-        <class>org.austral.ing.lab1.model.Category</class>
-        <class>org.austral.ing.lab1.model.Inventory</class>
         <class>org.austral.ing.lab1.model.LivesIn</class>
+        <class>org.austral.ing.lab1.model.Inventory</class>
         <class>org.austral.ing.lab1.model.Stock</class>
+        <class>org.austral.ing.lab1.model.Product</class>
+        <class>org.austral.ing.lab1.model.Category</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbc.JDBCDriver"/>

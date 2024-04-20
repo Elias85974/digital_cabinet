@@ -1,4 +1,3 @@
-
 package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
@@ -14,6 +13,10 @@ public class House {
     @GenericGenerator(name = "increment", strategy = "increment")
     private Long Casa_ID;
 
+    @OneToOne
+    @JoinColumn(name = "INVENTARIO_ID", referencedColumnName = "INVENTARIO_ID")
+    private Inventory inventario;
+
     @Column
     private String nombre;
 
@@ -23,7 +26,7 @@ public class House {
     public House() { }
 
     public static HouseBuilder create(Inventory inventario) {
-        return new HouseBuilder();
+        return new HouseBuilder(inventario);
     }
 
     public void setCasa_ID(Long id) {
@@ -34,6 +37,9 @@ public class House {
         return Casa_ID;
     }
 
+    public Long getInventario_ID() {
+        return inventario.getInventario_ID();
+    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -52,6 +58,7 @@ public class House {
     }
 
     private House(HouseBuilder builder) {
+        this.inventario = builder.inventario;
         this.nombre = builder.nombre;
         this.direccion = builder.direccion;
     }
@@ -65,10 +72,13 @@ public class House {
     }
 
     public static class HouseBuilder {
+        private final Inventory inventario;
         private String nombre;
         private String direccion;
 
-        public HouseBuilder() {}
+        public HouseBuilder(Inventory inventario) {
+            this.inventario = inventario;
+        }
 
         public HouseBuilder withNombre(String nombre) {
             this.nombre = nombre;

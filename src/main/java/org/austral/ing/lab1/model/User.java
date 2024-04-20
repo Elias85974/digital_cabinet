@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "USER")
@@ -13,17 +14,26 @@ public class User {
     @GenericGenerator(name = "increment", strategy = "increment")
     private Long Usuario_ID;
 
-    @Column(name = "FIRST_NAME")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+    private List<LivesIn> livesIns;
+
+    @Column(name = "FIRST_NAME", nullable = false)
     private String nombre;
 
-    @Column(name = "LAST_NAME")
+    @Column(name = "LAST_NAME", nullable = false)
     private String apellido;
+
+    @Column(name = "AGE")
+    private int age;
 
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String mail;
 
-    @Column(name = "PASSWORD")
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
+
+    @Column(name = "PHONE")
+    private String phone;
 
     @Column(name = "TOKEN")
     private String token;
@@ -72,6 +82,10 @@ public class User {
 
     public String getToken() {
         return token;
+    }
+
+    public List<LivesIn> getLivesIns() {
+        return livesIns;
     }
 
 

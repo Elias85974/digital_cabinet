@@ -14,12 +14,8 @@ public class Inventory {
     private Long inventario_ID;
 
     @OneToOne
-    @JoinColumn(name = "HOUSE_ID")
+    @JoinColumn(name = "CASA_ID", referencedColumnName = "CASA_ID")
     private House casa;
-
-    //@OneToMany(targetEntity = Product.class)
-    @JoinColumn(name = "PRODUCTS_ID")
-    private Integer productos;
 
     public Inventory() { }
 
@@ -38,4 +34,10 @@ public class Inventory {
     public Inventory getInventory() {
         return this;
     }
+
+    public void setCasa(House casa) {
+        this.casa = casa;
+    }
+
+
 }

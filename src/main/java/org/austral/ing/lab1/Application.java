@@ -2,8 +2,8 @@ package org.austral.ing.lab1;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
-import org.austral.ing.lab1.model.User;
-import org.austral.ing.lab1.repository.Users;
+import org.austral.ing.lab1.model.*;
+import org.austral.ing.lab1.repository.*;
 import org.austral.ing.lab1.model.Product;
 import org.austral.ing.lab1.repository.Products;
 import org.austral.ing.lab1.model.Category;
@@ -27,8 +27,9 @@ public class Application {
 
         Spark.port(4321);
 
-        // Commenting the line that saves Luke and Leia to the database
+        // Commenting the lines of testing methods
         // storedBasicUser(entityManagerFactory);
+        makeAnUserLiveInAHouse(entityManagerFactory);
 
         /* 5. Dynamic Content from Db */
         Spark.get("/persisted-users/:id",
@@ -335,6 +336,30 @@ public class Application {
         }
         tx.commit();
         entityManager.close();
+    }
+
+    // This method creates a user, a house and a relationship between them, this was made for testing purposes
+    private static void makeAnUserLiveInAHouse(EntityManagerFactory entityManagerFactory) {
+        final EntityManager entityManager = entityManagerFactory.createEntityManager();
+        final Users users = new Users(entityManager);
+        final Inventories inventories = new Inventories(entityManager);
+
+        EntityTransaction tx = entityManager.getTransaction();
+        tx.begin();
+        final User luke = User.create("lol").setFirstName("Luke").setLastName("SkyWalker").setPassword("123456").build();
+        final Inventory inventory = new Inventory(); // Create Inventory instance
+        final House house = House.create(inventory).withDireccion("Calle Falsa 123").withNombre("Casa de Luke").build();
+        inventory.setCasa(house); // Set House instance
+        inventories.persist(inventory); // Save Inventory instance
+        final LivesIn livesIn = LivesIn.create(luke, house, true).build();
+        entityManager.persist(luke);
+        entityManager.persist(house);
+        entityManager.persist(livesIn);
+        tx.commit();
+        entityManager.refresh(luke); // Refresh the User entity
+        entityManager.close();
+        System.out.println(luke.getLivesIns().get(0).getCasa().getDireccion());
+        System.out.println(luke.getLivesIns().get(0).getCasa().getInventario_ID());
     }
 
     private static String capitalized(String name) {

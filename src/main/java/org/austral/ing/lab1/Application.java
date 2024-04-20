@@ -2,13 +2,8 @@ package org.austral.ing.lab1;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
-import org.austral.ing.lab1.model.*;
-import org.austral.ing.lab1.repository.*;
-import org.austral.ing.lab1.model.Product;
-import org.austral.ing.lab1.repository.Products;
-import org.austral.ing.lab1.model.Category;
-import org.austral.ing.lab1.repository.Categories;
-
+import org.austral.ing.lab1.model.User;
+import org.austral.ing.lab1.repository.Users;
 import spark.Spark;
 
 import javax.persistence.EntityManager;
@@ -20,16 +15,14 @@ import java.util.Optional;
 public class Application {
 
     private static final Gson gson = new Gson();
-
     public static void main(String[] args) {
 
         final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("lab1");
 
         Spark.port(4321);
 
-        // Commenting the lines of testing methods
-        // storedBasicUser(entityManagerFactory);
-        makeAnUserLiveInAHouse(entityManagerFactory);
+        // Commenting the line that saves Luke and Leia to the database
+        storedBasicUser(entityManagerFactory);
 
         /* 5. Dynamic Content from Db */
         Spark.get("/persisted-users/:id",
@@ -113,261 +106,20 @@ public class Application {
             return json;
         });
 
-        // Route to create a House
-        Spark.post("/houses", "application/json", (req, resp) -> {
-            try {
-                final EntityManager entityManager = entityManagerFactory.createEntityManager();
-                Houses housesRepo = new Houses(entityManager);
-                Inventories inventoriesRepo = new Inventories(entityManager);
-                final House house = House.fromJson(req.body());
-                EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
-                final Inventory inventory = new Inventory();
-                inventory.setCasa(house);
-                inventoriesRepo.persist(inventory);
-                house.setInventario(inventory);
-                housesRepo.persist(house);
-                resp.type("application/json");
-                resp.status(201);
-                tx.commit();
-                return house.asJson();
-            } catch (Exception e) {
-                resp.status(500);
-                return "An error occurred while creating the house, please try again";
-            }
-        });
-
-        // Route to change the House a user lives in
-        Spark.put("/houses/:houseId/users/:token", "application/json", (req, resp) -> {
-            final String houseId = req.params("houseId");
-            final String token = req.params("token");
-
-            /* Begin Business Logic */
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Houses houses = new Houses(entityManager);
-            final Users users = new Users(entityManager);
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
-            final Optional<User> userOptional = users.findByToken(token);
-            tx.commit();
-            entityManager.close();
-            /* End Business Logic */
-
-            if (houseOptional.isEmpty()) {
-                resp.status(404);
-                return "House not found";
-            }
-
-            if (userOptional.isEmpty()) {
-                resp.status(404);
-                return "User not found";
-            }
-
-            final House house = houseOptional.get();
-            final User user = userOptional.get();
-
-            /* Begin Business Logic */
-            final EntityManager entityManager2 = entityManagerFactory.createEntityManager();
-            final LivesIns livesIns = new LivesIns(entityManager2);
-            EntityTransaction tx2 = entityManager2.getTransaction();
-            tx2.begin();
-            final LivesIn livesIn = LivesIn.create(user, house, true).build();
-            livesIns.persist(livesIn);
-            tx2.commit();
-            entityManager2.close();
-            /* End Business Logic */
-
-            return "User now lives in the house";
-        });
-
-
-
         // Requesting an inventory of a house
-        Spark.get("/inventory/:houseId", (req, resp) -> {
-            final String houseId = req.params("houseId");
+        Spark.get("/house/:id/inventory", (req, resp) -> {
+            final String id = req.params("id");
 
             /* Begin Business Logic */
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Houses houses = new Houses(entityManager);
-            EntityTransaction tx = entityManager.getTransaction();
+            final EntityTransaction tx = entityManager.getTransaction();
             tx.begin();
-            final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
+            User user = entityManager.find(User.class, Long.valueOf(id));
             tx.commit();
             entityManager.close();
-            /* End Business Logic */
-
-            if (houseOptional.isEmpty()) {
-                resp.status(404);
-                return "House not found";
-            }
-
-            final House house = houseOptional.get();
-            final Inventory inventory = house.getInventario();
 
             resp.type("application/json");
-            return inventory.asJson();
-        });
-
-        // Route to create a product
-        Spark.post("/products", "application/json", (req, resp) -> {
-            try {
-                final EntityManager entityManager = entityManagerFactory.createEntityManager();
-                Products productsRepo = new Products(entityManager);
-                final Product product = Product.fromJson(req.body());
-
-                EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
-                productsRepo.persist(product);
-                resp.type("application/json");
-                resp.status(201);
-                tx.commit();
-
-                return product.asJson();
-            } catch (Exception e) {
-                resp.status(500);
-                return "An error occurred while creating the product, please try again";
-            }
-        });
-
-        // Route to get a product by name
-        Spark.get("/products/:name", (req, resp) -> {
-            final String name = req.params("name");
-
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Products productsRepo = new Products(entityManager);
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            Optional<Product> productOptional = productsRepo.findByName(name);
-            tx.commit();
-
-            if (productOptional.isPresent()) {
-                resp.type("application/json");
-                return productOptional.get().asJson();
-            } else {
-                resp.status(404);
-                return "Product not found";
-            }
-        });
-
-        // Route to update a product
-        Spark.put("/products/:name", "application/json", (req, resp) -> {
-            final String name = req.params("name");
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Products productsRepo = new Products(entityManager);
-            final Product newProductData = Product.fromJson(req.body());
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            Product updatedProduct = productsRepo.modify(name, newProductData);
-            tx.commit();
-
-            if (updatedProduct != null) {
-                resp.type("application/json");
-                return updatedProduct.asJson();
-            } else {
-                resp.status(404);
-                return "Product not found";
-            }
-        });
-
-        // Route to delete a product
-        Spark.delete("/products/:name", (req, resp) -> {
-            try {
-                final String name = req.params("name");
-                final EntityManager entityManager = entityManagerFactory.createEntityManager();
-                Products productsRepo = new Products(entityManager);
-
-                EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
-                productsRepo.delete(name);
-                tx.commit();
-
-                resp.status(204);
-                return "Product deleted";
-            } catch (Exception e) {
-                resp.status(500);
-                return "An error occurred while deleting the product, please try again";
-            }
-        });
-
-
-        // Route to create a category
-        Spark.post("/categories", "application/json", (req, resp) -> {
-            try {
-                final Category category = Category.fromJson(req.body());
-                final EntityManager entityManager = entityManagerFactory.createEntityManager();
-                Categories categoriesRepo = new Categories(entityManager);
-
-                EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
-                categoriesRepo.persist(category);
-                resp.type("application/json");
-                resp.status(201);
-                tx.commit();
-
-                return category.asJson();
-            } catch (Exception e) {
-                resp.status(500);
-                return "An error occurred while creating the category";
-            }
-        });
-
-        // Route to get a category by name
-        Spark.get("/categories/:name", (req, resp) -> {
-            final String name = req.params("name");
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Categories categoriesRepo = new Categories(entityManager);
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            Optional<Category> categoryOptional = categoriesRepo.findByName(name);
-            tx.commit();
-
-            if (categoryOptional.isPresent()) {
-                resp.type("application/json");
-                return categoryOptional.get().asJson();
-            } else {
-                resp.status(404);
-                return "Category not found";
-            }
-        });
-
-        // Route to update a category
-        Spark.put("/categories/:name", "application/json", (req, resp) -> {
-            final String name = req.params("name");
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Categories categoriesRepo = new Categories(entityManager);
-            final Category newCategoryData = Category.fromJson(req.body());
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            Category updatedCategory = categoriesRepo.modify(name, newCategoryData);
-            tx.commit();
-
-            if (updatedCategory != null) {
-                resp.type("application/json");
-                return updatedCategory.asJson();
-            } else {
-                resp.status(404);
-                return "Category not found";
-            }
-        });
-
-        // Route to delete a category
-        Spark.delete("/categories/:name", (req, resp) -> {
-            final String name = req.params("name");
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Categories categoriesRepo = new Categories(entityManager);
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            categoriesRepo.delete(name);
-            tx.commit();
-
-            resp.status(204);
-            return "Category deleted";
+            return user.asJson();
         });
 
         Spark.options("/*", (req, res) -> {
@@ -389,7 +141,6 @@ public class Application {
             res.header("Access-Control-Allow-Headers", "*");
             res.type("application/json");
         });
-
     }
 
     private static void storedBasicUser(EntityManagerFactory entityManagerFactory) {
@@ -417,77 +168,7 @@ public class Application {
         entityManager.close();
     }
 
-    // This method creates a user, a house and a relationship between them, this was made for testing purposes
-    private static void makeAnUserLiveInAHouse(EntityManagerFactory entityManagerFactory) {
-        final EntityManager entityManager = entityManagerFactory.createEntityManager();
-        final Users users = new Users(entityManager);
-        final Inventories inventories = new Inventories(entityManager);
-
-        EntityTransaction tx = entityManager.getTransaction();
-        tx.begin();
-        final User luke = User.create("lol").setFirstName("Luke").setLastName("SkyWalker").setPassword("123456").build();
-        final Inventory inventory = createInventoryWithStocks(entityManagerFactory); // Create Inventory instance
-        final House house = House.create(inventory).withDireccion("Calle Falsa 123").withNombre("Casa de Luke").build();
-        inventory.setCasa(house); // Set House instance
-        inventories.persist(inventory); // Persist Inventory instance
-        final LivesIn livesIn = LivesIn.create(luke, house, true).build();
-        entityManager.persist(luke);
-        entityManager.persist(house);
-        entityManager.persist(livesIn);
-        tx.commit();
-        entityManager.refresh(luke); // Refresh the User entity
-        entityManager.close();
-        System.out.println(luke.getLivesIns().get(0).getCasa().getDireccion());
-        System.out.println(luke.getLivesIns().get(0).getCasa().getInventario_ID());
-    }
-
-    // This method creates an inventory with some Stocks, this was made for testing purposes
-    private static Inventory createInventoryWithStocks(EntityManagerFactory entityManagerFactory) {
-        final EntityManager entityManager = entityManagerFactory.createEntityManager();
-        final Inventories inventories = new Inventories(entityManager);
-        final Stocks stocks = new Stocks(entityManager);
-        EntityTransaction tx = entityManager.getTransaction();
-        tx.begin();
-        final Inventory inventory = new Inventory();
-        final Stock stock1 = createStockWithProducts(entityManagerFactory, 10L, "Coca Cola");
-        final Stock stock2 = createStockWithProducts(entityManagerFactory, 20L, "Pepsi Cola");
-        inventory.addStock(stock1);
-        inventory.addStock(stock2);
-        // inventories.persist(inventory);
-        tx.commit();
-        entityManager.close();
-        return inventory;
-    }
-
-    private static Stock createStockWithProducts(EntityManagerFactory entityManagerFactory, Long cantidad, String productName) {
-        final EntityManager entityManager = entityManagerFactory.createEntityManager();
-        final Stocks stocks = new Stocks(entityManager);
-        EntityTransaction tx = entityManager.getTransaction();
-        tx.begin();
-        final Product product = createProduct(entityManagerFactory, productName);
-        final Stock stock = Stock.create(cantidad).setProduct(product).build();
-        tx.commit();
-        entityManager.close();
-        System.out.println(stock.getCantidadVencimiento());
-        return stock;
-    }
-
-    private static Product createProduct(EntityManagerFactory entityManagerFactory, String productName) {
-        final EntityManager entityManager = entityManagerFactory.createEntityManager();
-        final Products products = new Products(entityManager);
-        EntityTransaction tx = entityManager.getTransaction();
-        tx.begin();
-        final Product product = Product.create(productName).build();
-        // products.persist(product);
-        tx.commit();
-        entityManager.close();
-        return product;
-    }
-
     private static String capitalized(String name) {
         return Strings.isNullOrEmpty(name) ? name : name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
-
-
-
 }

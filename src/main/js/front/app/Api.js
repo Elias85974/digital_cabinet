@@ -22,11 +22,13 @@ export const createUser = async (userData) => {
 
 // Function to edit a user
 export const editUser = async (userId, userData) => {
+    const token = localStorage.getItem('token');
     try {
         const response = await fetch(`${API_URL}/users/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'x-access-token': token,
             },
             body: JSON.stringify(userData),
         });
@@ -56,6 +58,7 @@ export const deleteUser = async (userId) => {
     }
 };
 
+
 // Function to log in a User
 export const loginUser = async (credentials) => {
     try {
@@ -73,11 +76,44 @@ export const loginUser = async (credentials) => {
 
         //Generate JWT Token
         const id = result(0);
-        const token = jwt.sign({ id }, 'secret', { expiresIn: 300});
+
+        //WE NEED TO CHANGE SECRET FOR OUR ACTUAL PRIVATE KEY
+        const token = jwt.sign({ id }, 'secret', { expiresIn: '1h'});
+
+        // Generate Refresh Token
+        const refreshToken = jwt.sign({ id }, 'refreshSecret', { expiresIn: '1h'});
+
         localStorage.setItem('token', token);
-        return result;
+        localStorage.setItem('refreshToken', refreshToken);
+
+        // Send JSON response to the client
+        return {auth: true, token: token, refreshToken: refreshToken, result: result};
+
     } catch (error) {
         console.error("Failed to login user:", error);
+        throw error;
+    }
+};
+// Function to refresh token
+export const refreshToken = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    try {
+        const response = await fetch(`${API_URL}/refreshToken`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-refresh-token': refreshToken,
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Failed to refresh token');
+        }
+        const { token, refreshToken: newRefreshToken } = await response.json();
+        localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', newRefreshToken);
+        return { token, refreshToken: newRefreshToken };
+    } catch (error) {
+        console.error("Failed to refresh token:", error);
         throw error;
     }
 };

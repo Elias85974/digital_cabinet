@@ -5,7 +5,6 @@
     <persistence-unit name="lab1">
         <class>org.austral.ing.lab1.model.User</class>
 
-
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbc.JDBCDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:hsql://localhost/xdb;shutdown=true"/>

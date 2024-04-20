@@ -4,6 +4,11 @@ import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import org.austral.ing.lab1.model.User;
 import org.austral.ing.lab1.repository.Users;
+import org.austral.ing.lab1.model.Product;
+import org.austral.ing.lab1.repository.Products;
+import org.austral.ing.lab1.model.Category;
+import org.austral.ing.lab1.repository.Categories;
+
 import spark.Spark;
 
 import javax.persistence.EntityManager;
@@ -15,6 +20,7 @@ import java.util.Optional;
 public class Application {
 
     private static final Gson gson = new Gson();
+
     public static void main(String[] args) {
 
         final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("lab1");
@@ -141,6 +147,169 @@ public class Application {
             res.header("Access-Control-Allow-Headers", "*");
             res.type("application/json");
         });
+
+
+        // Route to create a product
+        Spark.post("/products", "application/json", (req, resp) -> {
+            try {
+                final EntityManager entityManager = entityManagerFactory.createEntityManager();
+                Products productsRepo = new Products(entityManager);
+                final Product product = Product.fromJson(req.body());
+
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                productsRepo.persist(product);
+                resp.type("application/json");
+                resp.status(201);
+                tx.commit();
+
+                return product.asJson();
+            } catch (Exception e) {
+                resp.status(500);
+                return "An error occurred while creating the product, please try again";
+            }
+        });
+
+        // Route to get a product by name
+        Spark.get("/products/:name", (req, resp) -> {
+            final String name = req.params("name");
+
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            Optional<Product> productOptional = productsRepo.findByName(name);
+            tx.commit();
+
+            if (productOptional.isPresent()) {
+                resp.type("application/json");
+                return productOptional.get().asJson();
+            } else {
+                resp.status(404);
+                return "Product not found";
+            }
+        });
+
+        // Route to update a product
+        Spark.put("/products/:name", "application/json", (req, resp) -> {
+            final String name = req.params("name");
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+            final Product newProductData = Product.fromJson(req.body());
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            Product updatedProduct = productsRepo.modify(name, newProductData);
+            tx.commit();
+
+            if (updatedProduct != null) {
+                resp.type("application/json");
+                return updatedProduct.asJson();
+            } else {
+                resp.status(404);
+                return "Product not found";
+            }
+        });
+
+        // Route to delete a product
+        Spark.delete("/products/:name", (req, resp) -> {
+            try {
+                final String name = req.params("name");
+                final EntityManager entityManager = entityManagerFactory.createEntityManager();
+                Products productsRepo = new Products(entityManager);
+
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                productsRepo.delete(name);
+                tx.commit();
+
+                resp.status(204);
+                return "Product deleted";
+            } catch (Exception e) {
+                resp.status(500);
+                return "An error occurred while deleting the product, please try again";
+            }
+        });
+
+
+        // Route to create a category
+        Spark.post("/categories", "application/json", (req, resp) -> {
+            try {
+                final Category category = Category.fromJson(req.body());
+                final EntityManager entityManager = entityManagerFactory.createEntityManager();
+                Categories categoriesRepo = new Categories(entityManager);
+
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                categoriesRepo.persist(category);
+                resp.type("application/json");
+                resp.status(201);
+                tx.commit();
+
+                return category.asJson();
+            } catch (Exception e) {
+                resp.status(500);
+                return "An error occurred while creating the category";
+            }
+        });
+
+        // Route to get a category by name
+        Spark.get("/categories/:name", (req, resp) -> {
+            final String name = req.params("name");
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Categories categoriesRepo = new Categories(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            Optional<Category> categoryOptional = categoriesRepo.findByName(name);
+            tx.commit();
+
+            if (categoryOptional.isPresent()) {
+                resp.type("application/json");
+                return categoryOptional.get().asJson();
+            } else {
+                resp.status(404);
+                return "Category not found";
+            }
+        });
+
+        // Route to update a category
+        Spark.put("/categories/:name", "application/json", (req, resp) -> {
+            final String name = req.params("name");
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Categories categoriesRepo = new Categories(entityManager);
+            final Category newCategoryData = Category.fromJson(req.body());
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            Category updatedCategory = categoriesRepo.modify(name, newCategoryData);
+            tx.commit();
+
+            if (updatedCategory != null) {
+                resp.type("application/json");
+                return updatedCategory.asJson();
+            } else {
+                resp.status(404);
+                return "Category not found";
+            }
+        });
+
+        // Route to delete a category
+        Spark.delete("/categories/:name", (req, resp) -> {
+            final String name = req.params("name");
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Categories categoriesRepo = new Categories(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            categoriesRepo.delete(name);
+            tx.commit();
+
+            resp.status(204);
+            return "Category deleted";
+        });
+
     }
 
     private static void storedBasicUser(EntityManagerFactory entityManagerFactory) {
@@ -171,4 +340,7 @@ public class Application {
     private static String capitalized(String name) {
         return Strings.isNullOrEmpty(name) ? name : name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
+
+
+
 }

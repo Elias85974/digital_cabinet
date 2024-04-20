@@ -22,13 +22,26 @@ public class Categories {
                 .findFirst();
     }
 
-    public List<Category> listAll() {
+    public void delete(String name) {
+        Optional<Category> categoryOptional = findByName(name);
+
+        if (categoryOptional.isPresent()) {
+            Category category = categoryOptional.get();
+            entityManager.remove(category);
+        }
+    }
+
+    public List<Category> listAll(int pageNumber, int pageSize, String sortField) {
         return entityManager.createQuery("SELECT c FROM Category c", Category.class).getResultList();
     }
 
     public Category persist(Category category) {
         entityManager.persist(category);
         return category;
+    }
+
+    public void addCategory(Category newCategory) {
+        entityManager.persist(newCategory);
     }
 
     public Category modify(String name, Category newCategoryData) {
@@ -47,6 +60,24 @@ public class Categories {
         entityManager.merge(category);
 
         return category;
+    }
+
+
+    public void updatePartialCategory(String name, Category newCategoryData) {
+        Optional<Category> categoryOptional = findByName(name);
+
+        if (categoryOptional.isPresent()) {
+            Category category = categoryOptional.get();
+
+            if (newCategoryData.getNombre() != null) {
+                category.setNombre(newCategoryData.getNombre());
+            }
+            if (newCategoryData.getCantTotal() != null) {
+                category.setCantTotal(newCategoryData.getCantTotal());
+            }
+
+            entityManager.merge(category);
+        }
     }
 
 }

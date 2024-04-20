@@ -22,15 +22,44 @@ public class Products {
                 .findFirst();
     }
 
-    public List<Product> listAll() {
+    public Optional<Product> findByBrand(String brand) {
+        return entityManager
+                .createQuery("SELECT p FROM Product p WHERE p.marca LIKE :brand", Product.class)
+                .setParameter("brand", brand).getResultList()
+                .stream()
+                .findFirst();
+    }
+
+    public void delete(String name) {
+        Optional<Product> productOptional = findByName(name);
+
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            entityManager.remove(product);
+        }
+    }
+
+    public List<Product> listAll(int pageNumber, int pageSize, String sortField) {
         return entityManager.createQuery("SELECT p FROM Product p", Product.class).getResultList();
     }
+
+    public List<Product> listByCategory(String categoryName, int pageNumber, int pageSize) {
+    return entityManager
+            .createQuery("SELECT p FROM Product p WHERE p.categoria.nombre LIKE :categoryName", Product.class)
+            .setParameter("categoryName", categoryName)
+            .setFirstResult((pageNumber - 1) * pageSize)
+            .setMaxResults(pageSize)
+            .getResultList();
+}
 
     public Product persist(Product product) {
         entityManager.persist(product);
         return product;
     }
 
+    public void addProduct(Product newProduct) {
+        entityManager.persist(newProduct);
+    }
 
     public Product modify(String name, Product newProductData) {
         Optional<Product> productOptional = findByName(name);
@@ -50,6 +79,29 @@ public class Products {
         entityManager.merge(product);
 
         return product;
+    }
+
+    public void updatePartialProduct(String name, Product newProductData) {
+        Optional<Product> productOptional = findByName(name);
+
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+
+            if (newProductData.getNombre() != null) {
+                product.setNombre(newProductData.getNombre());
+            }
+            if (newProductData.getMarca() != null) {
+                product.setMarca(newProductData.getMarca());
+            }
+            if (newProductData.getTipoDeCantidad() != null) {
+                product.setTipoDeCantidad(newProductData.getTipoDeCantidad());
+            }
+            if (newProductData.getCategoria_ID() != null) {
+                product.setCategoria_ID(newProductData.getCategoria_ID());
+            }
+
+            entityManager.merge(product);
+        }
     }
 
 }

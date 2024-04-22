@@ -4,7 +4,7 @@ import {loginUser} from "../Api";
 import {Link} from "expo-router";
 
 export default function LoginPage() {
-    const [user, setUser] = useState({email: '', password: ''});
+    const [user, setUser] = useState({mail: '', password: ''});
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleInputChange = (field, value) => {
@@ -13,7 +13,7 @@ export default function LoginPage() {
 
     const handleSubmit = async () => {
         try {
-            if (user.email && user.password) {
+            if (user.mail && user.password) {
                 const response = await loginUser(user); // Assume loginUser returns a promise
                 if (response) { // Boolean indicating success of login
                     setIsLoggedIn(true);
@@ -27,7 +27,7 @@ export default function LoginPage() {
             alert("Incorrect email or password. Please try again.")
         }
         finally {
-            setUser({email: '', password: ''}); // Reset user state
+            setUser({mail: '', password: ''}); // Reset user state
         }
     }
 
@@ -51,9 +51,9 @@ export default function LoginPage() {
                     <View style={styles.logInCont}>
                         <Text style={styles.info}>Welcome Back</Text>
                         <TextInput style={styles.input}
-                                   placeholder="Email"
-                                   value={user.email}
-                                   onChangeText={(value) => handleInputChange('email', value)}
+                                   placeholder="Mail"
+                                   value={user.mail}
+                                   onChangeText={(value) => handleInputChange('mail', value)}
                         />
                         <TextInput style={styles.input}
                                    secureTextEntry={true}

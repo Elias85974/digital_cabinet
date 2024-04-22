@@ -37,7 +37,7 @@ public class Application {
 
         // Commenting the lines of testing methods
         // storedBasicUser(entityManagerFactory);
-        makeAnUserLiveInAHouse(entityManagerFactory);
+        // NmakeAnUserLiveInAHouse(entityManagerFactory);
 
         /* 5. Dynamic Content from Db */
         Spark.get("/persisted-users/:id",
@@ -81,7 +81,7 @@ public class Application {
             final User user = User.fromJson(req.body());
             String body = req.body();
             Map<String, String> formData = gson.fromJson(body, new TypeToken<Map<String, String>>() {}.getType());
-            String email = formData.get("email");
+            String email = formData.get("mail");
             String password = formData.get("password");
             /* Begin Business Logic */
             final EntityManager entityManager = entityManagerFactory.createEntityManager();

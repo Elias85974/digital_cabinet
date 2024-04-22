@@ -4,7 +4,7 @@ import {createUser} from '../Api';
 import {Link} from "expo-router";
 
 export default function RegisterPage() {
-    let [newUser, setNewUser] = useState({email: '', firstName: '', lastName: '', password: ''});
+    let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: ''});
 
     const isEmail = (email) =>
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
@@ -15,8 +15,8 @@ export default function RegisterPage() {
 
     const handleCreateUser = async () => {
         try {
-            if (newUser.email && newUser.firstName && newUser.lastName && newUser.password) {
-                if (!isEmail(newUser.email)) {
+            if (newUser.mail && newUser.nombre && newUser.apellido && newUser.password) {
+                if (!isEmail(newUser.mail)) {
                     alert("Incorrect email format. Please try again.")
                 } else {
                     await createUser(newUser);
@@ -25,7 +25,7 @@ export default function RegisterPage() {
             else {
                 alert("Please fill in all fields.")
             }
-            setNewUser({email: '', firstName: '', lastName: '', password: ''});
+            setNewUser({mail: '', nombre: '', apellido: '', password: ''});
         } catch (error) {
             console.log("Error creating user:", error);
         }
@@ -39,19 +39,19 @@ export default function RegisterPage() {
                     <View style={styles.signInCont}>
                         <Text style={styles.info}>Please fill in all fields to create your user</Text>
                         <TextInput style={styles.input}
-                                   placeholder="Email"
-                                   value={newUser.email}
-                                   onChangeText={(value) => handleInputChange('email', value)}
+                                   placeholder="Mail"
+                                   value={newUser.mail}
+                                   onChangeText={(value) => handleInputChange('mail', value)}
                         />
                         <TextInput style={styles.input}
-                                   placeholder="FirstName"
-                                   value={newUser.firstName}
-                                   onChangeText={(value) => handleInputChange('firstName', value)}
+                                   placeholder="Nombre"
+                                   value={newUser.nombre}
+                                   onChangeText={(value) => handleInputChange('nombre', value)}
                         />
                         <TextInput style={styles.input}
-                                   placeholder="LastName"
-                                   value={newUser.lastName}
-                                   onChangeText={(value) => handleInputChange('lastName', value)}
+                                   placeholder="Apellido"
+                                   value={newUser.apellido}
+                                   onChangeText={(value) => handleInputChange('apellido', value)}
                         />
                         <TextInput style={styles.input}
                                    secureTextEntry={true}

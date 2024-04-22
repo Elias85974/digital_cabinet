@@ -1,4 +1,4 @@
-import {Pressable, View, Text, StyleSheet} from "react-native";
+import {Pressable, View, Text, StyleSheet, Image} from "react-native";
 import {Link} from 'expo-router';
 
 // Main Page for now
@@ -6,6 +6,11 @@ export default function index() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Digital Cabinet</Text>
+            <Image
+                style={styles.image}
+                source={require('../assets/favicon.png')}
+                resizeMode="contain"
+            />
             <View style={styles.linksContainer}>
                 <Pressable style={styles.link}>
                     <Link href={"/RegisterPage"}>
@@ -45,8 +50,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     linksContainer: {
-        marginBottom: 60,
-        marginTop: 20,
+        marginBottom: 40,
+        marginTop: 10,
     },
     linkText: {
         fontSize: 18,
@@ -57,9 +62,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginTop: 30,
-        marginBottom: 50,
+        marginBottom: 0,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,
+    },
+    image: {
+        width: 400, // Set the width of the image
+        height: 400, // Set the height of the image
     }
 });

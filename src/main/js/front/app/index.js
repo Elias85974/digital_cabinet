@@ -13,11 +13,6 @@ export default function index() {
             />
             <View style={styles.linksContainer}>
                 <Pressable style={styles.link}>
-                    <Link href={"/RegisterPage"}>
-                        <Text style={styles.linkText}>Sign Up</Text>
-                    </Link>
-                </Pressable>
-                <Pressable style={styles.link}>
                     <Link href={"/LoginPage"}>
                         <Text style={styles.linkText}>Log In</Text>
                     </Link>

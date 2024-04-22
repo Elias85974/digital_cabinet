@@ -1,10 +1,11 @@
 import React, {useState } from 'react';
 import {View, ScrollView, TextInput, Pressable, StyleSheet, Text} from 'react-native';
 import {createUser} from '../Api';
-import {Link} from "expo-router";
+import {Link, Redirect} from "expo-router";
 
 export default function RegisterPage() {
     let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: ''});
+    const [userCreated, setUserCreated] = useState(false);
 
     const isEmail = (email) =>
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
@@ -20,6 +21,7 @@ export default function RegisterPage() {
                     alert("Incorrect email format. Please try again.")
                 } else {
                     await createUser(newUser);
+                    setUserCreated(true); // Set userCreated to true after user is created
                 }
             }
             else {
@@ -30,6 +32,10 @@ export default function RegisterPage() {
             console.log("Error creating user:", error);
         }
     };
+
+    if (userCreated) {
+        return <Redirect href={"/LoginPage"} />; // Redirect to login page if user is created
+    }
 
     return (
         <View style={styles.container}>
@@ -60,16 +66,14 @@ export default function RegisterPage() {
                                    onChangeText={(value) => handleInputChange('password', value)}
                         />
                         <Pressable style={styles.link} onPress={handleCreateUser}>
-                            <Text style={{color: 'white', fontSize: 16}}>Create User</Text>
+                            <Text style={{color: 'white', fontSize: 16}} >Create User</Text>
                         </Pressable>
                     </View>
                     <p></p>
                     <View style={styles.linksContainer}>
+
                         <Pressable style={styles.link}>
                             <Link href={"/LoginPage"} style={{color: 'white'}}>Log In</Link>
-                        </Pressable>
-                        <Pressable style={styles.link}>
-                            <Link href={"/"} style={{color: 'white'}}>Go back</Link>
                         </Pressable>
                     </View>
                 </View>

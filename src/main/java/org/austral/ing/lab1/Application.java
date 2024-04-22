@@ -144,6 +144,28 @@ public class Application {
             return json;
         });
 
+        // Method to validate a token
+        Spark.post("/auth", "application/json", (req, resp) -> {
+            String token = req.headers("Token");
+            String mail = req.headers("Email");
+            if (token == null) {
+                halt(401, "No token provided");
+            } else {
+                try {
+                    boolean status = TokenResponse.isAuthorized(token, mail);
+                    if (!status) {
+                        resp.status(401);
+                    }
+                    else {
+                        resp.status(200);
+                    }
+                } catch (Exception e) {
+                    halt(401, "Failed to authenticate");
+                }
+            }
+            return resp;
+        });
+
         /*const verifyJWT = (req, resp, next) => {
             const token = req.headers("x-access-token");
             if (!token) {

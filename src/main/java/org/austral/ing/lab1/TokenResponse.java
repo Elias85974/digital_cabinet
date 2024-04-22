@@ -1,6 +1,8 @@
 package org.austral.ing.lab1;
 
 import java.util.Base64;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -17,7 +19,7 @@ public class TokenResponse {
     private static final Set<String> expiredTokens = new HashSet<>();
 
     public static String generateToken(String email) {
-        return Jwts.builder().setSubject(email).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+        return Jwts.builder().setSubject(email).claim("email", email).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60))
                 .signWith(JWT_KEY).compact();
     }
 
@@ -42,7 +44,7 @@ public class TokenResponse {
     public static boolean isAuthorized(String token, String requestedEmail) {
 
         // Verificar si el token es válido
-        if (isTokenValid(token)) {
+        if (!isTokenExpired(token)) {
 
             // Obtener el correo electrónico asociado al token
             String userEmail = getUserEmail(token);
@@ -55,5 +57,15 @@ public class TokenResponse {
             return userEmail.equals(requestedEmail);
         }
         return false;
+    }
+
+    public static boolean isTokenExpired(String token){
+        try {
+            Claims claims = Jwts.parserBuilder().setSigningKey(JWT_KEY).build().parseClaimsJws(token).getBody();
+            return claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            System.out.println("Error checking token expiration: " + e.getMessage());
+            return true; // Consider the token as expired if an error occurs
+        }
     }
 }

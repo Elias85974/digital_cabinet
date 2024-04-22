@@ -1,75 +1,59 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
 import {loginUser} from "../Api";
-import {Link, Redirect} from "expo-router";
+import {Link} from "expo-router";
+import {Picker} from "react-native-web";
 
-export default function LoginPage() {
-    const [user, setUser] = useState({mail: '', password: ''});
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+export default function Homes() {
+    const [homes, setHomes] = useState([]);
+    const [newHome, setNewHome] = useState([]);
 
-    const handleInputChange = (field, value) => {
-        setUser({...user, [field]: value});
+    useEffect(() => {
+        fetchHomes();
+    }, []);
+
+    const fetchHomes = async () => {
+        const response = await fetch('http://localhost:8080/homes'); //hay q cambiarla por la corresta
+        const data = await response.json();
+        setHomes(data);
     };
 
-    const handleSubmit = async () => {
-        try {
-            if (user.mail && user.password) {
-                const response = await loginUser(user); // Assume loginUser returns a promise
-                if (response) { // Boolean indicating success of login
-                    setIsLoggedIn(true);
-                }
-            }
-            else {
-                alert("Please fill in all fields.")
-            }
-        } catch (error) {
-            console.log("Error logging in user:", error);
-            alert("Incorrect email or password. Please try again.")
-        }
-        finally {
-            setUser({mail: '', password: ''}); // Reset user state
-        }
-    }
+    const createHome = async () => {
+        await fetch('http://localhost:8080/homes', {
+            method: 'POST',
+            body: JSON.stringify({name: newHome}),
+        });
+        setNewHome('');
+        fetchHomes();
+    };
 
-    // Use isLoggedIn state variable to conditionally render components or navigate to different routes
-    if (isLoggedIn) {
-        // Navigate to a different route or render a different component
-        return <Redirect href={"/Homes"} />;
-
-    } else { return (
+    return (
         <View style={styles.container}>
             <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.title}>Digital Cabinet</Text>
                     <View style={styles.logInCont}>
-                        <Text style={styles.info}>Welcome Back</Text>
-                        <TextInput style={styles.input}
-                                   placeholder="Mail"
-                                   value={user.mail}
-                                   onChangeText={(value) => handleInputChange('mail', value)}
-                        />
-                        <TextInput style={styles.input}
-                                   secureTextEntry={true}
-                                   placeholder="Password"
-                                   value={user.password}
-                                   onChangeText={(value) => handleInputChange('password', value)}
-                        />
-                        <Pressable style={styles.link} onPress={handleSubmit}>
-                            <Text style={{color: 'white', fontSize: 16}}>Log In</Text>
-                        </Pressable>
+                        <Text style={styles.info}>Select a home</Text>
+
+                        <Picker>
+                            <Text>Create a new home:</Text>
+                            <TextInput style={styles.input} value={newHome} onChangeText={setNewHome}/>
+                            <Pressable style={styles.link} onPress={createHome}>
+                                <Text style={{color: 'white', fontSize: 16}}>Create</Text>
+                            </Pressable>
+                        </Picker>
                     </View>
                     <p></p>
                     <View style={styles.linksContainer}>
                         <Pressable>
-                            <Link href={"/RegisterPage"} style={styles.link}>Sign Up</Link>
+                            <Link href={"/RegisterPage"} style={styles.link}>pronandooooo</Link>
                         </Pressable>
                     </View>
                 </View>
             </ScrollView>
         </View>
-    );}
-};
-
+    );
+}
 
 
 const styles = StyleSheet.create({

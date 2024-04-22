@@ -2,8 +2,6 @@ package org.austral.ing.lab1;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.austral.ing.lab1.model.*;
 import org.austral.ing.lab1.repository.*;
 import org.austral.ing.lab1.model.Product;
@@ -137,7 +135,7 @@ public class Application {
         }
         app.get("/isUserAuthenticated", verifyJWT, (req, resp) -> {
             resp.send("Authenticated");
-        });*/
+        });
         Spark.before("/isUserAuthenticated", (req, resp) -> {
             String token = req.headers("x-access-token");
             if (token == null) {
@@ -190,7 +188,7 @@ public class Application {
             resp.status(200);
             resp.type("application/json");
             return gson.toJson(new TokenResponse(newToken, newRefreshToken));
-        });
+        });*/
 
 
         // Route to create a House

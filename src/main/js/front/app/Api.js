@@ -1,5 +1,5 @@
 const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
-const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken');
 // Function to create a user
 export const createUser = async (userData) => {
     try {
@@ -13,7 +13,26 @@ export const createUser = async (userData) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        return await response.json();
+        const responseData = await response.json();
+
+        // Verifica si la respuesta incluye un token
+        if (responseData.token) {
+            // Guarda el token y otros datos en el almacenamiento local
+            saveData(JSON.stringify(responseData));
+
+            console.log("Token guardado:", responseData.token);
+
+            // Redirige a la página correspondiente
+            if (responseData.userType === 'participant') {
+                navigation.navigate('HomeUser'); // Redirige a la página de participante
+            } else if (responseData.userType === 'institution') {
+                navigation.navigate('HomeInstitution'); // Redirige a la página de institución
+            }
+        } else {
+            // Si la respuesta no incluye un token, lanza un error
+            throw new Error('Token not found in response');
+        }
+        return responseData; // Devuelve la respuesta completa, que puede contener otros datos además del token
     } catch (error) {
         console.error("Failed to create user:", error);
         throw error;
@@ -28,7 +47,7 @@ export const editUser = async (userId, userData) => {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'x-access-token': token,
+                //'x-access-token': token,
             },
             body: JSON.stringify(userData),
         });
@@ -74,20 +93,7 @@ export const loginUser = async (credentials) => {
         }
         const result = await response.json();
 
-        //Generate JWT Token
-        const id = result(0);
 
-        //WE NEED TO CHANGE SECRET FOR OUR ACTUAL PRIVATE KEY
-        const token = jwt.sign({ id }, 'secret', { expiresIn: '1h'});
-
-        // Generate Refresh Token
-        const refreshToken = jwt.sign({ id }, 'refreshSecret', { expiresIn: '1h'});
-
-        localStorage.setItem('token', token);
-        localStorage.setItem('refreshToken', refreshToken);
-
-        // Send JSON response to the client
-        return {auth: true, token: token, refreshToken: refreshToken, result: result};
 
     } catch (error) {
         console.error("Failed to login user:", error);
@@ -95,25 +101,4 @@ export const loginUser = async (credentials) => {
     }
 };
 // Function to refresh token
-export const refreshToken = async () => {
-    const refreshToken = localStorage.getItem('refreshToken');
-    try {
-        const response = await fetch(`${API_URL}/refreshToken`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-refresh-token': refreshToken,
-            },
-        });
-        if (!response.ok) {
-            throw new Error('Failed to refresh token');
-        }
-        const { token, refreshToken: newRefreshToken } = await response.json();
-        localStorage.setItem('token', token);
-        localStorage.setItem('refreshToken', newRefreshToken);
-        return { token, refreshToken: newRefreshToken };
-    } catch (error) {
-        console.error("Failed to refresh token:", error);
-        throw error;
-    }
-};
+

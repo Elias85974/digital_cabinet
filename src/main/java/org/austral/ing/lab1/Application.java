@@ -98,29 +98,27 @@ public class Application {
                 return "User not found";
             }
 
-            if (foundUserOptional.isPresent()) {
-                //User user = foundUserOptional.get();
-                if (user.getPassword().equals(password)) {
-                    String token = TokenResponse.generateToken(email);
+            User foundUser = foundUserOptional.get();
 
-                    // Crear un objeto JSON con el token, el tipo de usuario y el correo electrónico
-                    JsonObject jsonResponse = new JsonObject();
-                    jsonResponse.addProperty("token", token);
-                    jsonResponse.addProperty("email", email); // Correo electrónico del usuario
+            //User user = foundUserOptional.get();
+            if (foundUser.getPassword().equals(password)) {
+                String token = TokenResponse.generateToken(email);
 
-                    // Establecer el encabezado Content-Type
-                    resp.type("application/json");
+                // Crear un objeto JSON con el token, el tipo de usuario y el correo electrónico
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("token", token);
+                jsonResponse.addProperty("email", email); // Correo electrónico del usuario
 
-                    // Establecer el encabezado Authorization con el token en el formato Bearer
-                    resp.header("Authorization", "Bearer " + token);
+                // Establecer el encabezado Content-Type
+                resp.type("application/json");
 
-                    // Devolver el objeto JSON como cuerpo de la respuesta
-                    return jsonResponse.toString();
-                }
+                // Establecer el encabezado Authorization con el token en el formato Bearer
+                resp.header("Authorization", "Bearer " + token);
+
+                // Devolver el objeto JSON como cuerpo de la respuesta
+                return jsonResponse.toString();
             }
 
-
-            User foundUser = foundUserOptional.get();
 
             if (!foundUser.getPassword().equals(user.getPassword())) {
                 resp.status(401);

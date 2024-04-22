@@ -35,24 +35,25 @@ public class TokenResponse {
         expiredTokens.add(token);
     }
 
-    public static boolean isTokenInvalid(String token){
-        return expiredTokens.contains(token);
+    public static boolean isTokenValid(String token){
+        return !expiredTokens.contains(token);
     }
 
-    public static boolean isAuthorized(String token, String requestedEmail){
+    public static boolean isAuthorized(String token, String requestedEmail) {
 
         // Verificar si el token es válido
-        if (isTokenInvalid(token)) {
-            return false;
-        }
-        // Obtener el correo electrónico asociado al token
-        String userEmail = getUserEmail(token);
+        if (isTokenValid(token)) {
 
-        // Verificar si el correo electrónico obtenido está vacío o nulo
-        if (userEmail == null || userEmail.isEmpty()) {
-            return false;
+            // Obtener el correo electrónico asociado al token
+            String userEmail = getUserEmail(token);
+
+            // Verificar si el correo electrónico obtenido está vacío o nulo
+            if (userEmail == null || userEmail.isEmpty()) {
+                return false;
+            }
+            // Verificar si el correo electrónico del token coincide con el correo solicitado
+            return userEmail.equals(requestedEmail);
         }
-        // Verificar si el correo electrónico del token coincide con el correo solicitado
-        return userEmail.equals(requestedEmail);
+        return false;
     }
 }

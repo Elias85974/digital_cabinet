@@ -1,5 +1,5 @@
 const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
-//const jwt = require('jsonwebtoken');
+/*const jwt = require('jsonwebtoken');*/
 // Function to create a user
 export const createUser = async (userData) => {
     try {
@@ -13,26 +13,7 @@ export const createUser = async (userData) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        const responseData = await response.json();
-
-        // Verifica si la respuesta incluye un token
-        if (responseData.token) {
-            // Guarda el token y otros datos en el almacenamiento local
-            saveData(JSON.stringify(responseData));
-
-            console.log("Token guardado:", responseData.token);
-
-            // Redirige a la página correspondiente
-            if (responseData.userType === 'participant') {
-                navigation.navigate('HomeUser'); // Redirige a la página de participante
-            } else if (responseData.userType === 'institution') {
-                navigation.navigate('HomeInstitution'); // Redirige a la página de institución
-            }
-        } else {
-            // Si la respuesta no incluye un token, lanza un error
-            throw new Error('Token not found in response');
-        }
-        return responseData; // Devuelve la respuesta completa, que puede contener otros datos además del token
+        return await response.json();
     } catch (error) {
         console.error("Failed to create user:", error);
         throw error;
@@ -47,7 +28,7 @@ export const editUser = async (userId, userData) => {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                //'x-access-token': token,
+
             },
             body: JSON.stringify(userData),
         });
@@ -91,14 +72,27 @@ export const loginUser = async (credentials) => {
         if (!response.ok) {
             throw new Error('Login failed');
         }
-        const result = await response.json();
+        const responseData = await response.json();
 
+        // Verifica si la respuesta incluye un token
+        if (responseData.token) {
+            const saveData = (data) => {
+                localStorage.setItem('myDataKey', data);
+            };
+            // Guarda el token y otros datos en el almacenamiento local
+            saveData(JSON.stringify(responseData));
 
+            console.log("Token guardado:", responseData.token);
+
+        } else {
+            // Si la respuesta no incluye un token, lanza un error
+            throw new Error('Token not found in response');
+        }
+        return responseData; // Devuelve la respuesta completa, que puede contener otros datos además del token
 
     } catch (error) {
         console.error("Failed to login user:", error);
         throw error;
     }
 };
-// Function to refresh token
 

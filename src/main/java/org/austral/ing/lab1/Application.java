@@ -2,6 +2,8 @@ package org.austral.ing.lab1;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import org.austral.ing.lab1.model.*;
 import org.austral.ing.lab1.repository.*;
 import org.austral.ing.lab1.model.Product;
@@ -16,6 +18,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 import static spark.Spark.halt;
@@ -76,7 +79,10 @@ public class Application {
         // Requesting a login with a user
         Spark.post("/login", "application/json", (req, resp) -> {
             final User user = User.fromJson(req.body());
-
+            String body = req.body();
+            Map<String, String> formData = gson.fromJson(body, new TypeToken<Map<String, String>>() {}.getType());
+            String email = formData.get("email");
+            String password = formData.get("password");
             /* Begin Business Logic */
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
             final Users users = new Users(entityManager);
@@ -91,6 +97,28 @@ public class Application {
                 resp.status(404);
                 return "User not found";
             }
+
+            if (foundUserOptional.isPresent()) {
+                //User user = foundUserOptional.get();
+                if (user.getPassword().equals(password)) {
+                    String token = TokenResponse.generateToken(email);
+
+                    // Crear un objeto JSON con el token, el tipo de usuario y el correo electrónico
+                    JsonObject jsonResponse = new JsonObject();
+                    jsonResponse.addProperty("token", token);
+                    jsonResponse.addProperty("email", email); // Correo electrónico del usuario
+
+                    // Establecer el encabezado Content-Type
+                    resp.type("application/json");
+
+                    // Establecer el encabezado Authorization con el token en el formato Bearer
+                    resp.header("Authorization", "Bearer " + token);
+
+                    // Devolver el objeto JSON como cuerpo de la respuesta
+                    return jsonResponse.toString();
+                }
+            }
+
 
             User foundUser = foundUserOptional.get();
 

@@ -73,8 +73,8 @@ export default function RegisterHome() {
                     </View>
                     <p></p>
                     <View style={styles.linksContainer}>
-                        <Pressable style={styles.link}>
-                            <Link href={"/Homes"} style={{color: 'white'}}>Select a house</Link>
+                        <Pressable onPress={() => movePage("/Homes")} style={styles.link}>
+                            <Text style={{color: 'white', fontSize: 16}}>Select a house</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -143,11 +143,4 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginTop: 20,
     },
-    logInCont: {
-        backgroundColor: '#4B5940',
-        padding: 20,
-        borderRadius: 20,
-        width: 300,
-        alignSelf: 'center',
-    }
 });

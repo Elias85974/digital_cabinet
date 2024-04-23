@@ -272,13 +272,13 @@ export const getAllProducts = async () => {
 
 export const updateHouseInventory = async (houseId, productId, quantity) => {
     try {
-        const response = await fetch(`${API_URL}/houses/${houseId}/inventory/${productId}`, {
+        const response = await fetch(`${API_URL}/houses/${houseId}/inventory/${productId}/${quantity}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ quantity }),
         });
+        console.log(response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }

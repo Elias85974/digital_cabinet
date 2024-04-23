@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
 import Picker from 'react-native-picker-select';
-import {Link, Redirect, router} from "expo-router";
+import {router} from "expo-router";
+import RNPickerSelect from 'react-native-picker-select';
+
 import {authentication, createProduct, getCategories, createCategory} from "../Api";
 
 export default function RegisterProduct() {
@@ -52,30 +54,28 @@ export default function RegisterProduct() {
         setShowNewCategoryInput(false);
     };
 
-    const handleCreateProduct = () => {
+    const handleCreateProduct = async() => {
         try {
             if (newProduct.nombre && newProduct.marca && newProduct.tipoDeCantidad && newProduct.categoryId) {
-                createProduct(newProduct).then(r => alert("Product created successfully!"));
+                if (await authentication() === true) {
+                    createProduct(newProduct).then(r => alert("Product created successfully!"));
+                }
+                else {
+                    alert("You must be logged in to access this page. Going back to LoginPage");
+                    router.replace("LoginPage");
+                }
             } else {
                 alert("Please fill in all fields.")
             }
         } catch (error) {
             console.log("Error creating product:", error);
-        } finally {
-            if (authentication() === true) {
-                router.replace("RegisterProduct")
-            }
-            else {
-                alert("Session expired. Going back to LoginPage");
-                router.replace("LoginPage");
-            }
         }
-    };
+    }
 
-    const movePage = async () => {
+    const movePage = async (url) => {
         try {
             if (await authentication() === true) {
-                router.replace("Homes");
+                router.replace(url);
             }
             else {
                 alert("Session expired. Going back to LoginPage");
@@ -89,63 +89,76 @@ export default function RegisterProduct() {
 
     return (
         <View style={styles.container}>
-            <TextInput
-                placeholder="Nombre"
-                value={newProduct.nombre}
-                onChangeText={(value) => handleInputChange('nombre', value)}
-            />
-            <TextInput
-                placeholder="Marca"
-                value={newProduct.marca}
-                onChangeText={(value) => handleInputChange('marca', value)}
-            />
-            <View style={{width: '12%', alignSelf: 'center'}}>
-                <Picker
-                    onValueChange={(value) => handleInputChange('tipoDeCantidad', value)}
-                    items={[
-                        ...quantityTypes.map((type) => ({
-                            label: type,
-                            value: type,
-                        })),
-                    ]}
-                    placeholder={{ label: "Select a quantity type", value: null }}
-                />
-            </View>
-
-            {showNewCategoryInput ? (
+            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
                 <View>
-                    <TextInput
-                        placeholder="New Category"
-                        value={newCategory}
-                        onChangeText={handleNewCategoryChange}
-                    />
-                    <Pressable onPress={handleCreateCategory}>
-                        <Text>Create Category</Text>
-                    </Pressable>
-                </View>
-            ) : (
-                <View style={{width: '12%', alignSelf: 'center'}}>
-                    <Picker
-                        onValueChange={(value) => {
-                            handleCategoryChange(value);
-                        }}
-                        items={[
-                            ...categories.map((category) => ({
-                                label: category.nombre,
-                                value: category.categoria_ID,
-                            })),
-                            { label: "Add new category", value: "addNew" },
-                        ]}
-                        placeholder={{ label: "Select a category", value: null }}
-                    />
-                </View>
-            )}
-            <Pressable onPress={handleCreateProduct}>
-                <Text>Create Product</Text>
-            </Pressable>
-            <Pressable onPress={movePage}>
-                <Text>Go Back</Text>
-            </Pressable>
+                    <Text style={styles.title}>Products</Text>
+                    <View style={styles.createprod}>
+                        <Text style={styles.info}>Please fill in all fields to create your product</Text>
+                        <TextInput style={styles.input}
+                            placeholder="Nombre"
+                            value={newProduct.nombre}
+                            onChangeText={(value) => handleInputChange('nombre', value)}
+                        />
+                        <TextInput style={styles.input}
+                            placeholder="Marca"
+                            value={newProduct.marca}
+                            onChangeText={(value) => handleInputChange('marca', value)}
+                        />
+                        <View style={ styles.picker}>
+                            <Picker
+                                onValueChange={(value) => handleInputChange('tipoDeCantidad', value)}
+                                items={[
+                                    ...quantityTypes.map((type) => ({
+                                        label: type,
+                                        value: type,
+                                    })),
+                                ]}
+                                placeholder={{label: "Select a quantity type", value: null}}
+                            />
+                        </View>
+
+                        {showNewCategoryInput ? (
+                            <View>
+                                <TextInput style={styles.input}
+                                    placeholder="New Category"
+                                    value={newCategory}
+                                    onChangeText={handleNewCategoryChange}
+                                />
+                                <View style={styles.linksContainer}>
+                                    <Pressable style={styles.link} onPress={handleCreateCategory}>
+                                        <Text style={{color: 'white', fontSize: 16}}>Create Category</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        ) : (
+                            <View style={ styles.picker}>
+                                <Picker
+                                    onValueChange={(value) => {
+                                        handleCategoryChange(value);
+                                    }}
+                                    items={[
+                                        ...categories.map((category) => ({
+                                            label: category.nombre,
+                                            value: category.categoria_ID,
+                                        })),
+                                        {label: "Add new category", value: "addNew"},
+                                    ]}
+                                    placeholder={{label: "Select a category", value: null}}
+                                />
+                            </View>
+                        )}
+                        <Pressable style={styles.link} onPress={handleCreateProduct}>
+                            <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>
+                        </Pressable>
+                    </View>
+                    <p></p>
+                    <View style={styles.linksContainer}>
+                        <Pressable onPress={() => movePage("Homes")} style={styles.link}>
+                            <Text style={{color: 'white', fontSize: 16}}>Go Back</Text>
+                        </Pressable>
+                    </View>
+            </View>
+            </ScrollView>
         </View>
     );
 }
@@ -208,4 +221,26 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginTop: 20,
     },
+    logInCont: {
+        backgroundColor: '#4B5940',
+        padding: 20,
+        borderRadius: 20,
+        width: 300,
+        alignSelf: 'center',
+    },
+    createprod: {
+        backgroundColor: '#4B5940',
+        padding: 20,
+        borderRadius: 20,
+        width: 400,
+        alignSelf: 'center',
+    },
+    picker:{
+        width: '20%',
+        alignSelf: 'center',
+        height: 20,
+        backgroundColor: '#717336',
+        borderColor: '#5d5e24',
+        borderWidth: 2,
+    }
 });

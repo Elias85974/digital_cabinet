@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Pressable, StyleSheet} from "react-native";
+import {View, Text, Pressable, StyleSheet, ScrollView} from "react-native";
 import {Link, router} from "expo-router";
 import {authentication, getUserHouses, getUserIdByEmail} from "../Api";
 import LogoutButton from "./LogoutButton";
@@ -38,13 +38,14 @@ export default function Homes() {
 
     return (
         <View style={styles.container}>
+            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
             <Text style={styles.title}>Digital Cabinet</Text>
             <View style={styles.logInCont}>
                 <Text style={styles.info}>Select a home</Text>
                 <View style={styles.container2}>
                     {houses.map((house, index) => (
                         <View key={index} style={styles.circle}>
-                            <Pressable onPress={() => movePage(`../House/${house.houseId}`)}>
+                            <Pressable onPress={() => movePage(`/House/${house.houseId}`)}>
                                 <Text style={styles.circleText}>{house.name}</Text>
                             </Pressable>
                         </View>
@@ -58,6 +59,7 @@ export default function Homes() {
                 </Pressable>
                 <LogoutButton /> {/* Add the LogoutButton component */}
             </View>
+            </ScrollView>
         </View>
     );
 }

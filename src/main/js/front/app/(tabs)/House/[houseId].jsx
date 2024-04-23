@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {Link, useLocalSearchParams} from 'expo-router';
+import {Link, router, usePathname} from 'expo-router';
 import {Pressable, Text, View} from 'react-native';
-import {getHouseInventory} from "../../Api";
+import {authentication, getHouseInventory} from "../../Api";
 
 export default function House() {
-    const { id } = useLocalSearchParams();
+    const pathname = usePathname();
+    const id = pathname.split('/')[2]; // Assuming your URL is in the format of '/house/:id'
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
 
@@ -25,6 +26,21 @@ export default function House() {
         }
     }
 
+    const movePage = async (url) => {
+        try {
+            if (await authentication() === true) {
+                router.replace(url);
+            }
+            else {
+                alert("You must be logged in to access this page (Session Expired). Going back to LoginPage");
+                router.replace("LoginPage");
+            }
+        }
+        catch (error) {
+            console.log("Error moving to login page:", error);
+        }
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Welcome Home!</Text>
@@ -40,8 +56,8 @@ export default function House() {
             </View>
             <p></p>
             <View style={styles.linksContainer}>
-                <Pressable>
-                    <Link href={`../AddProduct/${id}`} style={styles.link}>Add a Product</Link>
+                <Pressable onPress={() => movePage(`../AddProduct/${id}`)}>
+                    <Text style={styles.link}>Add a Product</Text>
                 </Pressable>
                 <Pressable>
                     <Link href={"../RegisterProduct"} style={styles.link}>Create a Product</Link>

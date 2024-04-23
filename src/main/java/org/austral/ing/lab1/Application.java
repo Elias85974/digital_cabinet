@@ -342,10 +342,10 @@ public class Application {
         });
 
         // Route to update the inventory of a given house
-        Spark.put("/houses/:houseId/inventory/:productId", "application/json", (req, resp) -> {
+        Spark.put("/houses/:houseId/inventory/:productId/:quantity", "application/json", (req, resp) -> {
             final String houseId = req.params("houseId");
             final String productId = req.params("productId");
-            final long cantidad = Long.parseLong(req.queryParams("quantity"));
+            final long cantidad = Long.parseLong(req.params("quantity"));
 
             /* Begin Business Logic */
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -381,15 +381,11 @@ public class Application {
             EntityTransaction tx2 = entityManager2.getTransaction();
             tx2.begin();
             inventory.addStock(stock);
-            entityManager2.refresh(inventory);
-            entityManager2.refresh(stock);
-            entityManager2.refresh(product);
-            entityManager2.refresh(house);
             tx2.commit();
             entityManager2.close();
             /* End Business Logic */
-
-            return "Product added to inventory";
+            resp.status(200);
+            return inventory.asJson();
         });
 
         // Route to get all the products of the database
@@ -424,8 +420,8 @@ public class Application {
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
-
-                return product.asJson();
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                return gson.toJson(product);
             } catch (Exception e) {
                 resp.status(500);
                 return "An error occurred while creating the product, please try again";

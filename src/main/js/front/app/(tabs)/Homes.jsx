@@ -1,30 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
+import {View, Text, Pressable, StyleSheet} from "react-native";
 import {Link, router} from "expo-router";
-import {Picker} from "react-native-web";
 import {authentication, getUserHouses, getUserIdByEmail} from "../Api";
 
 export default function Homes() {
-    const [house, setHouse] = useState({nombre: '', direccion: ''});
-    //const [role, setRole] = useState(false);
     const [houses, setHouses] = useState([]);
 
     useEffect(() => {
-    const fetchHouses = async () => {
-        const houses = await getAllHouses();
-        setHouses(houses);
-    };
-    fetchHouses()
-        .catch(error => {
-            console.error("Failed to fetch houses:", error);
-        });
-}, []);
+        getHouses();
+    }, []);
 
-    const renderHouse = ({ item }) => (
-        <View style={styles.circle}>
-            <Text style={styles.circleText}>{item.nombre}</Text>
-        </View>
-    );
+    const getHouses = async () => {
+        try {
+            const userId = await getUserIdByEmail();
+            const userHouses = await getUserHouses(userId);
+            setHouses(userHouses);
+        } catch (error) {
+            console.log("Error getting houses:", error);
+        }
+    }
 
     const movePage = async (url) => {
         try {
@@ -40,32 +34,33 @@ export default function Homes() {
             console.log("Error moving to login page:", error);
         }
     }
+
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
-                <View>
-                    <Text style={styles.title}>Digital Cabinet</Text>
-                    <View style={styles.logInCont}>
-                        <Text style={styles.info}>Select a home</Text>
-                        <View style={styles.container2}>
-                            <FlatList
-                                data={houses}
-                                renderItem={renderHouse}
-                                keyExtractor={item => item.casa_ID}
-                            />
+            <Text style={styles.title}>Digital Cabinet</Text>
+            <View style={styles.logInCont}>
+                <Text style={styles.info}>Select a home</Text>
+                <View style={styles.container2}>
+                    {houses.map((house, index) => (
+                        <View key={index} style={styles.circle}>
+                            <Link href={`/House/${house.houseId}`}>
+                                <Text style={styles.circleText}>{house.name}</Text>
+                            </Link>
                         </View>
-                    </View>
-                    <p></p>
-                    <View style={styles.linksContainer}>
-                        <Pressable>
-                            <Link href={"/RegisterHome"} style={styles.link}>Create a home</Link>
-                        </Pressable>
-                    </View>
+                    ))}
                 </View>
-            </ScrollView>
+            </View>
+            <p></p>
+            <View style={styles.linksContainer}>
+                <Pressable>
+                    <Link href={"/RegisterHome"} style={styles.link}>Create a home</Link>
+                </Pressable>
+            </View>
         </View>
     );
 }
+
+// Your styles here
 
 
 
@@ -87,7 +82,7 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
         borderRadius: 35,
-        backgroundColor: '#4B5940',
+        backgroundColor: '#ff0000',
         justifyContent: 'center',
         alignItems: 'center',
         margin: 10,

@@ -117,14 +117,14 @@ export const authentication = async() => {
 }
 
 
-export const createHouse = async (houseData, role, userId) => {
+export const createHouse = async (houseData, userId) => {
     try {
-        const response = await fetch(`${API_URL}/houses`, {
+        const response = await fetch(`${API_URL}/houses/${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ ...houseData, role, userId }),
+            body: JSON.stringify(houseData)
         });
         if (!response.ok) {
             throw new Error('Network response was not okeyyyyyy girl');
@@ -161,8 +161,11 @@ export const getUserHouses = async (userId) => {
     }
 }
 
-export const getUserIdByEmail = async (email) => {
+export const getUserIdByEmail = async () => {
     try {
+        const data = localStorage.getItem('myDataKey');
+        let parsedData = JSON.parse(data);
+        const email = parsedData.email;
         const response = await fetch(`${API_URL}/user/email/${email}`, {
             method: 'GET',
             headers: {

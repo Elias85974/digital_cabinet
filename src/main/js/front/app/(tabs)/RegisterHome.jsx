@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
 import {Link, Redirect, router} from "expo-router";
-import {authentication, createHouse} from "../Api";
+import {authentication, createHouse, getUserIdByEmail} from "../Api";
 
 export default function Homes() {
     let [newHouse, setNewHouse] = useState({nombre: '', direccion: ''});
@@ -21,14 +21,14 @@ export default function Homes() {
                 if (!isDirection(newHouse.direccion)) {
                     alert("Incorrect house format. Please try again.")
                 } else {
-                    await createHouse(newHouse);
-                    //router.replace("Homes");  //probar despues con esto aca
+                    const userId = await getUserIdByEmail();
+                    await createHouse(newHouse, userId);
+                    alert("House created successfully!");
                 }
             }
             else {
                 alert("Please fill in all fields.")
             }
-            //setNewHouse({nombre: '', direccion: ''}); no se xq ponerlo aca no funciona pero si lo pongo en el finally si
         } catch (error) {
             console.log("Error creating house:", error);
         } finally {

@@ -18,6 +18,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ public class Application {
 
         // Commenting the lines of testing methods
         // storedBasicUser(entityManagerFactory);
-        // NmakeAnUserLiveInAHouse(entityManagerFactory);
+        // makeAnUserLiveInAHouse(entityManagerFactory);
 
         /* 5. Dynamic Content from Db */
         Spark.get("/persisted-users/:id",
@@ -240,19 +241,25 @@ public class Application {
 
 
         // Route to create a House
-        Spark.post("/houses", "application/json", (req, resp) -> {
+        Spark.post("/houses/:userID", "application/json", (req, resp) -> {
             try {
+                final Long userId = Long.valueOf(req.params("userID"));
                 final EntityManager entityManager = entityManagerFactory.createEntityManager();
                 Houses housesRepo = new Houses(entityManager);
                 Inventories inventoriesRepo = new Inventories(entityManager);
+                Users usersRepo = new Users(entityManager);
                 final House house = House.fromJson(req.body());
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
+                User user = usersRepo.findById(userId).get(); // Acá estamos seguros de que el usuario existe porque el token fue validado
                 final Inventory inventory = new Inventory();
                 inventory.setCasa(house);
                 inventoriesRepo.persist(inventory);
                 house.setInventario(inventory);
                 housesRepo.persist(house);
+                final LivesIn livesIn = LivesIn.create(user, house, true).build();
+                entityManager.persist(livesIn);
+                entityManager.refresh(user);
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
@@ -518,7 +525,7 @@ public class Application {
 
 
         // Route to get all the houses of a user
-        Spark.get("/caca", (req, resp) -> {
+        Spark.get("/user/:userId/houses", (req, resp) -> {
             final String userId = req.params("userId");
 
             /* Begin Business Logic */
@@ -531,9 +538,10 @@ public class Application {
             entityManager.close();
 
             resp.type("application/json");
-            return user.getHousesAsJson(); // Asume que tienes un método getHousesAsJson() en tu clase User que devuelve todas las casas a las que el usuario tiene acceso
+            return user.getHousesAsJson();
         });
 
+        // Route to get the ID of a user by email
         Spark.get("/user/email/:email", (req, resp) -> {
             final String email = req.params("email");
 

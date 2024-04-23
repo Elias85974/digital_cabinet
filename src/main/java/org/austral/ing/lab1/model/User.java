@@ -5,6 +5,7 @@ import org.austral.ing.lab1.TokenResponse;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,12 +118,31 @@ public class User {
     }
 
 
-    // Asume que tienes un método getHouses() en tu clase User que devuelve todas las casas a las que el usuario tiene acceso
     public String getHousesAsJson() {
-        List<House> houses = livesIns.stream()
-                .map(LivesIn::getCasa)
-                .collect(Collectors.toList());
-        return new Gson().toJson(houses);
+        List<House> houses = getHouses();
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < houses.size(); i++) {
+            House house = houses.get(i);
+            sb.append("{");
+            sb.append("\"houseId\": ").append(house.getCasa_ID()).append(",");
+            sb.append("\"name\": \"").append(house.getNombre()).append("\",");
+            sb.append("\"address\": \"").append(house.getDireccion()).append("\"");
+            sb.append("}");
+            if (i < houses.size() - 1) {
+                sb.append(",");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    public List<House> getHouses() {
+        List<House> houses = new ArrayList<>();
+        for (LivesIn livesIn : livesIns) {
+            houses.add(livesIn.getCasa());
+        }
+        return houses;
     }
 
     public static class UserBuilder {

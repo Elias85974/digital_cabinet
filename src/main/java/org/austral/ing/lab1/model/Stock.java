@@ -47,6 +47,15 @@ public class Stock {
         this.inventario = inventario;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public String asJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
     public static class StockBuilder {
         private final long cantidad;
         private Inventory inventario;

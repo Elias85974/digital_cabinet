@@ -3,13 +3,12 @@ import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-na
 import {Link, Redirect, router} from "expo-router";
 import {authentication, createHouse, getUserIdByEmail} from "../Api";
 
-export default function Homes() {
+export default function RegisterHome() {
     let [newHouse, setNewHouse] = useState({nombre: '', direccion: ''});
     // no quiere funcionar con redirect ni router --> const [houseCreated, setHouseCreated] = useState(false);
-    const [role, setRole] = useState(false);
 
     const isDirection = (direccion) =>
-        /^[A-Z0-9.]+\s+[0-9]+$/i.test(direccion);
+        /^[A-Z0-9.]+\s+[A-Z0-9.]+\s+[0-9]+$/i.test(direccion); //!! chequear mas de 1 palabra como se hace!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
 
     const handleInputChange = (field, value) => {
         setNewHouse({...newHouse, [field]: value});

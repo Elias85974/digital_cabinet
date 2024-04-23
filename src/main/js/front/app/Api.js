@@ -116,51 +116,6 @@ export const authentication = async() => {
     }
 }
 
-
-export const createHouse = async (houseData, userId) => {
-    try {
-        const response = await fetch(`${API_URL}/houses/${userId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(houseData)
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not okeyyyyyy girl');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to create house:", error);
-        throw error;
-    }
-};
-
-export const getAllHouses = async () => {
-    const response = await fetch('URL_DE_TU_API'); // Reemplaza 'URL_DE_TU_API' con la URL de tu API
-    const data = await response.json();
-    return data;
-}
-
-
-export const getUserHouses = async (userId) => {
-    try {
-        const response = await fetch(`${API_URL}/user/${userId}/houses`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not oooooooook');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to get user houses:", error);
-        throw error;
-    }
-}
-
 export const getUserIdByEmail = async () => {
     try {
         const data = localStorage.getItem('myDataKey');

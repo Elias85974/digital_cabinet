@@ -374,18 +374,19 @@ public class Application {
             final House house = houseOptional.get();
             final Product product = productOptional.get();
             final Inventory inventory = house.getInventario();
-            final Stock stock = Stock.create(cantidad).setProduct(product).build();
+            final Stock stock = Stock.create(cantidad).setProduct(product).setInventario(inventory).build();
 
             /* Begin Business Logic */
             final EntityManager entityManager2 = entityManagerFactory.createEntityManager();
             EntityTransaction tx2 = entityManager2.getTransaction();
             tx2.begin();
             inventory.addStock(stock);
+            String inventoryJson = inventory.asJson();
             tx2.commit();
             entityManager2.close();
             /* End Business Logic */
             resp.status(200);
-            return inventory.asJson();
+            return inventoryJson;
         });
 
         // Route to get all the products of the database

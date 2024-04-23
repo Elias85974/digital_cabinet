@@ -33,6 +33,7 @@ public class Stock {
     private Stock(StockBuilder stockBuilder) {
         this.inventario = stockBuilder.inventario;
         this.cantidadVencimiento = stockBuilder.cantidad;
+        this.product = stockBuilder.product;
     }
 
     public static StockBuilder create(long cantidad) {

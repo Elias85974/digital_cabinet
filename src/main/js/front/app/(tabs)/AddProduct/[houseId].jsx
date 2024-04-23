@@ -25,7 +25,6 @@ export default function AddProduct() {
         }
     }
 
-
     const handleChanges = (value, type) => {
         if (type === 'product') {
             setSelectedProduct(value);

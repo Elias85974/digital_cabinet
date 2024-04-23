@@ -22,6 +22,10 @@ public class Products {
                 .findFirst();
     }
 
+    public Optional<Product> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(Product.class, id));
+    }
+
     public Optional<Product> findByBrand(String brand) {
         return entityManager
                 .createQuery("SELECT p FROM Product p WHERE p.marca LIKE :brand", Product.class)
@@ -39,13 +43,13 @@ public class Products {
         }
     }
 
-    public List<Product> listAll(int pageNumber, int pageSize, String sortField) {
+    public List<Product> listAll() {
         return entityManager.createQuery("SELECT p FROM Product p", Product.class).getResultList();
     }
 
     public List<Product> listByCategory(String categoryName, int pageNumber, int pageSize) {
         return entityManager
-            .createQuery("SELECT p FROM Product p JOIN Category c ON p.categoria_ID = c.categoria_ID WHERE c.nombre LIKE :categoryName", Product.class)
+            .createQuery("SELECT p FROM Product p JOIN Category c ON p.category.categoria_ID = c.categoria_ID WHERE c.nombre LIKE :categoryName", Product.class)
             .setParameter("categoryName", categoryName)
             .setFirstResult((pageNumber - 1) * pageSize)
             .setMaxResults(pageSize)
@@ -74,7 +78,7 @@ public class Products {
         product.setNombre(newProductData.getNombre());
         product.setMarca(newProductData.getMarca());
         product.setTipoDeCantidad(newProductData.getTipoDeCantidad());
-        product.setCategoria_ID(newProductData.getCategoria_ID()); //deberia ser el nombre de la categoria no el ID
+        // product.setCategoria_ID(newProductData.getCategoria_ID()); //deberia ser el nombre de la categoria no el ID
 
         entityManager.merge(product);
 
@@ -97,11 +101,10 @@ public class Products {
                 product.setTipoDeCantidad(newProductData.getTipoDeCantidad());
             }
             if (newProductData.getCategoria_ID() != null) {
-                product.setCategoria_ID(newProductData.getCategoria_ID());
+                // product.setCategoria_ID(newProductData.getCategoria_ID());
             }
 
             entityManager.merge(product);
         }
     }
-
 }

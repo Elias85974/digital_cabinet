@@ -1,28 +1,32 @@
 package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Category {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
+    @Expose
     private Long categoria_ID;
 
     @Column(name = "NAME")
+    @Expose
     private String nombre;
 
-    @Column(name = "QUANTITY_TOTAL")
-    private Integer cantTotal;
+    // Not exposed, so it won't be included in the JSON output
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 
     public Category() { }
 
     public Category(CategoryBuilder builder) {
         this.nombre = builder.nombre;
-        this.cantTotal = builder.cantTotal;
     }
 
     public Long getCategoria_ID() {
@@ -37,29 +41,15 @@ public class Category {
         this.nombre = nombre;
     }
 
-    public Integer getCantTotal() {
-        return cantTotal;
-    }
-
-    public void setCantTotal(Integer cantTotal) {
-        this.cantTotal = cantTotal;
-    }
-
     public static CategoryBuilder create(String nombre){
         return new CategoryBuilder(nombre);
     }
 
     public static class CategoryBuilder{
         private final String nombre;
-        private Integer cantTotal;
 
         public CategoryBuilder(String nombre) {
             this.nombre = nombre;
-        }
-
-        public CategoryBuilder withCantTotal(Integer cantTotal) {
-            this.cantTotal = cantTotal;
-            return this;
         }
 
         public Category build(){

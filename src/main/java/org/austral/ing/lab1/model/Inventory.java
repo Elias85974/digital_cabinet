@@ -5,7 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "INVENTORY")
@@ -46,15 +48,28 @@ public class Inventory {
         this.casa = casa;
     }
 
-    public String asJson() {
-        return new Gson().toJson(this);
-    }
-
     public void addStock(Stock stock) {
         stocks.add(stock);
     }
 
     public List<Stock> getStocks() {
         return stocks;
+    }
+
+    public String asJson() {
+        Map<String, List<Product>> productsByCategory = new HashMap<>();
+
+        for (Stock stock : stocks) {
+            Product product = stock.getProduct();
+            String category = product.getCategory().getNombre();
+
+            if (!productsByCategory.containsKey(category)) {
+                productsByCategory.put(category, new ArrayList<>());
+            }
+
+            productsByCategory.get(category).add(product);
+        }
+
+        return new Gson().toJson(productsByCategory);
     }
 }

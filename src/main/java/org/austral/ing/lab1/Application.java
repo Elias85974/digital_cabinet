@@ -2,6 +2,7 @@ package org.austral.ing.lab1;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.austral.ing.lab1.model.*;
@@ -240,7 +241,7 @@ public class Application {
         });*/
 
 
-        // Route to create a House
+        // Route to create a Id
         Spark.post("/houses/:userID", "application/json", (req, resp) -> {
             try {
                 final Long userId = Long.valueOf(req.params("userID"));
@@ -270,7 +271,7 @@ public class Application {
             }
         });
 
-        // Route to change the House a user lives in
+        // Route to change the id a user lives in
         Spark.put("/houses/:houseId/users/:token", "application/json", (req, resp) -> {
             final String houseId = req.params("houseId");
             final String token = req.params("token");
@@ -289,7 +290,7 @@ public class Application {
 
             if (houseOptional.isEmpty()) {
                 resp.status(404);
-                return "House not found";
+                return "Id not found";
             }
 
             if (userOptional.isEmpty()) {
@@ -314,10 +315,8 @@ public class Application {
             return "User now lives in the house";
         });
 
-
-
         // Requesting an inventory of a house
-        Spark.get("/inventory/:houseId", (req, resp) -> {
+        Spark.get("/houses/:houseId/inventory", (req, resp) -> {
             final String houseId = req.params("houseId");
 
             /* Begin Business Logic */
@@ -332,7 +331,7 @@ public class Application {
 
             if (houseOptional.isEmpty()) {
                 resp.status(404);
-                return "House not found";
+                return "House not exists";
             }
 
             final House house = houseOptional.get();
@@ -342,15 +341,85 @@ public class Application {
             return inventory.asJson();
         });
 
+        // Route to update the inventory of a given house
+        Spark.put("/houses/:houseId/inventory/:productId", "application/json", (req, resp) -> {
+            final String houseId = req.params("houseId");
+            final String productId = req.params("productId");
+            final long cantidad = Long.parseLong(req.queryParams("quantity"));
+
+            /* Begin Business Logic */
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Houses houses = new Houses(entityManager);
+            final Inventories inventories = new Inventories(entityManager);
+            final Stocks stocks = new Stocks(entityManager);
+            final Products products = new Products(entityManager);
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
+            final Optional<Product> productOptional = products.findById(Long.valueOf(productId));
+            tx.commit();
+            entityManager.close();
+            /* End Business Logic */
+
+            if (houseOptional.isEmpty()) {
+                resp.status(404);
+                return "House not found";
+            }
+
+            if (productOptional.isEmpty()) {
+                resp.status(404);
+                return "Product not found";
+            }
+
+            final House house = houseOptional.get();
+            final Product product = productOptional.get();
+            final Inventory inventory = house.getInventario();
+            final Stock stock = Stock.create(cantidad).setProduct(product).build();
+
+            /* Begin Business Logic */
+            final EntityManager entityManager2 = entityManagerFactory.createEntityManager();
+            EntityTransaction tx2 = entityManager2.getTransaction();
+            tx2.begin();
+            inventory.addStock(stock);
+            entityManager2.refresh(inventory);
+            entityManager2.refresh(stock);
+            entityManager2.refresh(product);
+            entityManager2.refresh(house);
+            tx2.commit();
+            entityManager2.close();
+            /* End Business Logic */
+
+            return "Product added to inventory";
+        });
+
+        // Route to get all the products of the database
+        Spark.get("/products", (req, resp) -> {
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            String productsJson = gson.toJson(productsRepo.listAll());
+            tx.commit();
+            entityManager.close();
+
+            resp.type("application/json");
+            return productsJson;
+        });
+
         // Route to create a product
-        Spark.post("/products", "application/json", (req, resp) -> {
+        Spark.post("/products/:categoryId", "application/json", (req, resp) -> {
             try {
+                final Long categoryId = Long.valueOf(req.params("categoryId"));
                 final EntityManager entityManager = entityManagerFactory.createEntityManager();
                 Products productsRepo = new Products(entityManager);
+                Categories categoriesRepo = new Categories(entityManager);
                 final Product product = Product.fromJson(req.body());
-
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
+                Optional<Category> categoryOptional = categoriesRepo.findById(categoryId);
+                product.setCategory(categoryOptional.get());
                 productsRepo.persist(product);
                 resp.type("application/json");
                 resp.status(201);
@@ -425,6 +494,21 @@ public class Application {
             }
         });
 
+        // Route to get the existing categories
+        Spark.get("/categories", (req, resp) -> {
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Categories categoriesRepo = new Categories(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            String categoriesJson = gson.toJson(categoriesRepo.listAll());
+            tx.commit();
+            entityManager.close();
+
+            resp.type("application/json");
+            return categoriesJson;
+        });
 
         // Route to create a category
         Spark.post("/categories", "application/json", (req, resp) -> {
@@ -447,7 +531,7 @@ public class Application {
             }
         });
 
-        // Route to get a category by name
+        /* Route to get a category by name
         Spark.get("/categories/:name", (req, resp) -> {
             final String name = req.params("name");
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -466,6 +550,8 @@ public class Application {
                 return "Category not found";
             }
         });
+
+         */
 
         // Route to update a category
         Spark.put("/categories/:name", "application/json", (req, resp) -> {
@@ -605,7 +691,7 @@ public class Application {
         final User luke = User.create("lol").setFirstName("Luke").setLastName("SkyWalker").setPassword("123456").build();
         final Inventory inventory = createInventoryWithStocks(entityManagerFactory); // Create Inventory instance
         final House house = House.create(inventory).withDireccion("Calle Falsa 123").withNombre("Casa de Luke").build();
-        inventory.setCasa(house); // Set House instance
+        inventory.setCasa(house); // Set Id instance
         inventories.persist(inventory); // Persist Inventory instance
         final LivesIn livesIn = LivesIn.create(luke, house, true).build();
         entityManager.persist(luke);

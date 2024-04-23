@@ -1,6 +1,7 @@
 package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,25 +10,32 @@ import java.util.List;
 @Entity
 @Table(name = "PRODUCT")
 public class Product {
+    // Expose annotations are made to include the field in the JSON output and reject the ones that are not exposed
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
+    @Expose
     private Long producto_ID;
 
     @Column(name = "NAME")
+    @Expose
     private String nombre;
 
     @Column(name = "BRAND")
+    @Expose
     private String marca;
 
-    @Column(name = "CUANTITY_TYPE")
+    @Column(name = "QUANTITY_TYPE")
+    @Expose
     private String tipoDeCantidad;
-
-    @Column(name = "CATEGORY_ID")
-    private Long categoria_ID;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Stock> stocks;
+
+    @ManyToOne
+    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORIA_ID")
+    @Expose
+    private Category category;
 
     public Product() { }
 
@@ -35,7 +43,6 @@ public class Product {
         this.nombre = nombre;
         this.marca = marca;
         this.tipoDeCantidad = tipoDeCantidad;
-        this.categoria_ID = categoria_ID;
     }
 
     public String getNombre() {
@@ -62,12 +69,16 @@ public class Product {
         this.tipoDeCantidad = tipoDeCantidad;
     }
 
-    public Long getCategoria_ID() {
-        return categoria_ID;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public void setCategoria_ID(Long categoria_ID) {
-        this.categoria_ID = categoria_ID;
+    public Category getCategory() {
+        return category;
+    }
+
+    public Long getCategoria_ID() {
+        return category != null ? category.getCategoria_ID() : null;
     }
 
     public Long getProducto_ID() {
@@ -82,8 +93,6 @@ public class Product {
         private final String nombre;
         private String marca;
         private String tipoDeCantidad;
-        private Long categoria_ID;
-
 
         public ProductBuilder(String nombre) {
             this.nombre = nombre;
@@ -96,11 +105,6 @@ public class Product {
 
         public ProductBuilder withTipoDeCantidad(String tipoDeCantidad) {
             this.tipoDeCantidad = tipoDeCantidad;
-            return this;
-        }
-
-        public ProductBuilder withCategoria_ID(Long categoria_ID) {
-            this.categoria_ID = categoria_ID;
             return this;
         }
 
@@ -124,6 +128,5 @@ public class Product {
         this.nombre = builder.nombre;
         this.marca = builder.marca;
         this.tipoDeCantidad = builder.tipoDeCantidad;
-        this.categoria_ID = builder.categoria_ID;
     }
 }

@@ -14,20 +14,25 @@ public class Categories {
         this.entityManager = entityManager;
     }
 
-    public Optional<Category> findByName(String name) {
+    public List<Category> findByName(String name) {
         return entityManager
                 .createQuery("SELECT c FROM Category c WHERE c.nombre LIKE :name", Category.class)
-                .setParameter("name", name).getResultList()
-                .stream()
-                .findFirst();
+                .setParameter("name", name).getResultList();
+    }
+
+    public Optional<Category> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(Category.class, id));
+    }
+
+    public List<Category> listAll() {
+        return entityManager.createQuery("SELECT c FROM Category c", Category.class).getResultList();
     }
 
     public void delete(String name) {
-        Optional<Category> categoryOptional = findByName(name);
+        Category categoryOptional = findByName(name).get(0);
 
-        if (categoryOptional.isPresent()) {
-            Category category = categoryOptional.get();
-            entityManager.remove(category);
+        if (categoryOptional != null) {
+            entityManager.remove(categoryOptional);
         }
     }
 
@@ -45,38 +50,34 @@ public class Categories {
     }
 
     public Category modify(String name, Category newCategoryData) {
-        Optional<Category> categoryOptional = findByName(name);
+        Category categoryOptional = findByName(name).get(0);
 
-        if (categoryOptional.isEmpty()) {
+        if (categoryOptional == null) {
             return null;
         }
 
-        Category category = categoryOptional.get();
+
 
         // Here you can set the new values for the category fields
-        category.setNombre(newCategoryData.getNombre());
-        category.setCantTotal(newCategoryData.getCantTotal());
+        categoryOptional.setNombre(newCategoryData.getNombre());
 
-        entityManager.merge(category);
+        entityManager.merge(categoryOptional);
 
-        return category;
+        return categoryOptional;
     }
 
 
     public void updatePartialCategory(String name, Category newCategoryData) {
-        Optional<Category> categoryOptional = findByName(name);
+        Category categoryOptional = findByName(name).get(0);
 
-        if (categoryOptional.isPresent()) {
-            Category category = categoryOptional.get();
+        if (categoryOptional != null) {
+
 
             if (newCategoryData.getNombre() != null) {
-                category.setNombre(newCategoryData.getNombre());
-            }
-            if (newCategoryData.getCantTotal() != null) {
-                category.setCantTotal(newCategoryData.getCantTotal());
+                categoryOptional.setNombre(newCategoryData.getNombre());
             }
 
-            entityManager.merge(category);
+            entityManager.merge(categoryOptional);
         }
     }
 

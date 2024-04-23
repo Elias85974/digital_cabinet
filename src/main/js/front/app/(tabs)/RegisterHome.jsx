@@ -23,7 +23,7 @@ export default function Homes() {
                 } else {
                     const userId = await getUserIdByEmail();
                     await createHouse(newHouse, userId);
-                    alert("House created successfully!");
+                    alert("Id created successfully!");
                 }
             }
             else {

@@ -1,5 +1,6 @@
 package org.austral.ing.lab1.model;
 
+import com.google.gson.Gson;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

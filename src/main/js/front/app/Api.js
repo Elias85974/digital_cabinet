@@ -181,3 +181,155 @@ export const getUserIdByEmail = async () => {
         throw error;
     }
 }
+
+// function to create a house
+export const createHouse = async (houseData, userId) => {
+    try {
+        const response = await fetch(`${API_URL}/houses/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(houseData)
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not okeyyyyyy girl');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to create house:", error);
+        throw error;
+    }
+};
+
+
+export const getUserHouses = async (userId) => {
+    try {
+        const response = await fetch(`${API_URL}/user/${userId}/houses`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not oooooooook');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to get user houses:", error);
+        throw error;
+    }
+}
+
+// function that get the list of stocks of a house
+export const getHouseInventory = async (houseId) => {
+    try {
+        const response = await fetch(`${API_URL}/houses/${houseId}/inventory`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to get house inventory:", error);
+        throw error;
+    }
+}
+
+// function to create a product
+export const createProduct = async (productData) => {
+    try {
+        const response = await fetch(`${API_URL}/products/${productData.categoryId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(productData)
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not okeydoki');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to create product:", error);
+        throw error;
+    }
+}
+
+export const getCategories = async () => {
+    try {
+        const response = await fetch(`${API_URL}/categories`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not lol');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to get categories:", error);
+        throw error;
+    }
+}
+
+export const createCategory = async (categoryData) => {
+    try {
+        const response = await fetch(`${API_URL}/categories`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(categoryData)
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to create category:", error);
+        throw error;
+    }
+}
+
+export const getAllProducts = async () => {
+    try {
+        const response = await fetch(`${API_URL}/products`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to get products:", error);
+        throw error;
+    }
+}
+
+export const updateHouseInventory = async (houseId, productId, quantity) => {
+    try {
+        const response = await fetch(`${API_URL}/houses/${houseId}/inventory/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ quantity }),
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to update house inventory:", error);
+        throw error;
+    }
+}

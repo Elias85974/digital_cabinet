@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, Pressable, StyleSheet} from "react-native";
 import {Link, router} from "expo-router";
 import {authentication, getUserHouses, getUserIdByEmail} from "../Api";
+import LogoutButton from "./LogoutButton";
 
 export default function Homes() {
     const [houses, setHouses] = useState([]);
@@ -26,7 +27,7 @@ export default function Homes() {
                 router.replace(url);
             }
             else {
-                alert("You must be logged in to access this page. Going back to LoginPage");
+                alert("You must be logged in to access this page (Session Expired). Going back to LoginPage");
                 router.replace("LoginPage");
             }
         }
@@ -43,53 +44,50 @@ export default function Homes() {
                 <View style={styles.container2}>
                     {houses.map((house, index) => (
                         <View key={index} style={styles.circle}>
-                            <Link href={`/House/${house.houseId}`}>
+                            <Pressable onPress={() => movePage(`../House/${house.houseId}`)}>
                                 <Text style={styles.circleText}>{house.name}</Text>
-                            </Link>
+                            </Pressable>
                         </View>
                     ))}
                 </View>
             </View>
             <p></p>
             <View style={styles.linksContainer}>
-                <Pressable>
-                    <Link href={"/RegisterHome"} style={styles.link}>Create a home</Link>
+                <Pressable onPress={() => movePage(`/RegisterHome`)}>
+                    <Text style={styles.link}>Create a Home</Text>
                 </Pressable>
+                <LogoutButton /> {/* Add the LogoutButton component */}
             </View>
         </View>
     );
 }
 
-// Your styles here
-
-
-
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 2,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
 
     container2: {
-        flex: 1,
+        flex: 2,
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
     },
     circle: {
-        width: 70,
-        height: 70,
+        width: 100,
+        height: 100,
         borderRadius: 35,
-        backgroundColor: '#ff0000',
+        backgroundColor: '#BFAC9B',
         justifyContent: 'center',
         alignItems: 'center',
         margin: 10,
     },
     circleText: {
         color: 'white',
-        fontSize: 16,
+        fontSize: 25,
     },
 
     link: {

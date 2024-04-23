@@ -1,31 +1,30 @@
 import React, {useEffect, useState} from 'react';
-import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
+import {FlatList, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
 import {Link, router} from "expo-router";
 import {Picker} from "react-native-web";
 import {authentication, getUserHouses, getUserIdByEmail} from "../Api";
 
 export default function Homes() {
     const [house, setHouse] = useState({nombre: '', direccion: ''});
-
+    //const [role, setRole] = useState(false);
     const [houses, setHouses] = useState([]);
 
     useEffect(() => {
-        const fetchHouses = async () => {
-            const data = localStorage.getItem('myDataKey');
-            let parsedData = JSON.parse(data);
-            const userId = await getUserIdByEmail(parsedData.email);
-            const houses = await getUserHouses(userId);
-            setHouses(houses); // Actualiza el estado de houses aquí
-        };
-        fetchHouses()
-            .then(houses => {
-                setHouses(houses);
-            })
-            .catch(error => {
-                console.error("Failed to fetch houses:", error);
-            });
-    }, []);
+    const fetchHouses = async () => {
+        const houses = await getAllHouses();
+        setHouses(houses);
+    };
+    fetchHouses()
+        .catch(error => {
+            console.error("Failed to fetch houses:", error);
+        });
+}, []);
 
+    const renderHouse = ({ item }) => (
+        <View style={styles.circle}>
+            <Text style={styles.circleText}>{item.nombre}</Text>
+        </View>
+    );
 
     const movePage = async (url) => {
         try {
@@ -42,27 +41,29 @@ export default function Homes() {
         }
     }
     return (
-            <View style={styles.container}>
-                <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
-                    <View>
-                        <Text style={styles.title}>Digital Cabinet</Text>
-                        <View style={styles.logInCont}>
-                            <Text style={styles.info}>Select a home</Text>
-                            <Picker>
-                                {houses.map((house, index) => (
-                                    <Picker.Item key={index} label={house.nombre} value={house.casa_ID} />
-                                ))}
-                            </Picker>
-                        </View>
-                        <p></p>
-                        <View style={styles.linksContainer}>
-                            <Pressable>
-                                <Link href={"/RegisterHome"} style={styles.link}>Create a home</Link>
-                            </Pressable>
+        <View style={styles.container}>
+            <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
+                <View>
+                    <Text style={styles.title}>Digital Cabinet</Text>
+                    <View style={styles.logInCont}>
+                        <Text style={styles.info}>Select a home</Text>
+                        <View style={styles.container2}>
+                            <FlatList
+                                data={houses}
+                                renderItem={renderHouse}
+                                keyExtractor={item => item.casa_ID}
+                            />
                         </View>
                     </View>
-                </ScrollView>
-            </View>
+                    <p></p>
+                    <View style={styles.linksContainer}>
+                        <Pressable>
+                            <Link href={"/RegisterHome"} style={styles.link}>Create a home</Link>
+                        </Pressable>
+                    </View>
+                </View>
+            </ScrollView>
+        </View>
     );
 }
 
@@ -75,6 +76,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
     },
+
+    container2: {
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+    },
+    circle: {
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        backgroundColor: '#4B5940',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+    },
+    circleText: {
+        color: 'white',
+        fontSize: 16,
+    },
+
     link: {
         marginTop: 15,
         marginBottom: 10,

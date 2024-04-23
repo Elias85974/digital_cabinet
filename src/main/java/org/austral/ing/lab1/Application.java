@@ -518,7 +518,7 @@ public class Application {
 
 
         // Route to get all the houses of a user
-        Spark.get("/user/:userId/houses", (req, resp) -> {
+        Spark.get("/caca", (req, resp) -> {
             final String userId = req.params("userId");
 
             /* Begin Business Logic */

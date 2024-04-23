@@ -117,17 +117,17 @@ export const authentication = async() => {
 }
 
 
-export const createHouse = async (houseData) => {
+export const createHouse = async (houseData, role, userId) => {
     try {
         const response = await fetch(`${API_URL}/houses`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(houseData),
+            body: JSON.stringify({ ...houseData, role, userId }),
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Network response was not okeyyyyyy girl');
         }
         return await response.json();
     } catch (error) {
@@ -136,16 +136,23 @@ export const createHouse = async (houseData) => {
     }
 };
 
+export const getAllHouses = async () => {
+    const response = await fetch('URL_DE_TU_API'); // Reemplaza 'URL_DE_TU_API' con la URL de tu API
+    const data = await response.json();
+    return data;
+}
+
+
 export const getUserHouses = async (userId) => {
     try {
-        const response = await fetch(`${API_URL}/houses/${userId}`, {
+        const response = await fetch(`${API_URL}/user/${userId}/houses`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Network response was not oooooooook');
         }
         return await response.json();
     } catch (error) {
@@ -163,7 +170,7 @@ export const getUserIdByEmail = async (email) => {
             },
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Network response was not nais');
         }
         return await response.text(); // Devuelve el ID del usuario como una cadena
     } catch (error) {

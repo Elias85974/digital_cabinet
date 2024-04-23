@@ -6,6 +6,7 @@ import {authentication, createHouse} from "../Api";
 export default function Homes() {
     let [newHouse, setNewHouse] = useState({nombre: '', direccion: ''});
     // no quiere funcionar con redirect ni router --> const [houseCreated, setHouseCreated] = useState(false);
+    const [role, setRole] = useState(false);
 
     const isDirection = (direccion) =>
         /^[A-Z0-9.]+\s+[0-9]+$/i.test(direccion);
@@ -21,6 +22,7 @@ export default function Homes() {
                     alert("Incorrect house format. Please try again.")
                 } else {
                     await createHouse(newHouse);
+                    //router.replace("Homes");  //probar despues con esto aca
                 }
             }
             else {

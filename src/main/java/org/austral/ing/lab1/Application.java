@@ -515,6 +515,50 @@ public class Application {
             res.header("Access-Control-Allow-Headers", "*");
             res.type("application/json");
         });
+
+
+        // Route to get all the houses of a user
+        Spark.get("/user/:userId/houses", (req, resp) -> {
+            final String userId = req.params("userId");
+
+            /* Begin Business Logic */
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Users users = new Users(entityManager);
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            User user = entityManager.find(User.class, Long.valueOf(userId));
+            tx.commit();
+            entityManager.close();
+
+            resp.type("application/json");
+            return user.getHousesAsJson(); // Asume que tienes un método getHousesAsJson() en tu clase User que devuelve todas las casas a las que el usuario tiene acceso
+        });
+
+        Spark.get("/user/email/:email", (req, resp) -> {
+            final String email = req.params("email");
+
+            /* Business Logic */
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Users users = new Users(entityManager);
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            Optional<User> userOptional = users.findByEmail(email);
+            tx.commit();
+            entityManager.close();
+
+            if (userOptional.isEmpty()) {
+                resp.status(404);
+                return "User not found";
+            }
+
+            User user = userOptional.get();
+
+            resp.type("application/json");
+            return user.getUsuario_ID().toString(); // Devuelve el ID del usuario como una cadena
+        });
+
+
+
     }
 
     private static void storedBasicUser(EntityManagerFactory entityManagerFactory) {
@@ -612,4 +656,8 @@ public class Application {
     private static String capitalized(String name) {
         return Strings.isNullOrEmpty(name) ? name : name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
+
+
+
+
 }

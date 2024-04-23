@@ -1,59 +1,71 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
-import {loginUser} from "../Api";
-import {Link} from "expo-router";
+import {Link, router} from "expo-router";
 import {Picker} from "react-native-web";
+import {authentication, getUserHouses, getUserIdByEmail} from "../Api";
 
 export default function Homes() {
-    const [homes, setHomes] = useState([]);
-    const [newHome, setNewHome] = useState([]);
+    const [house, setHouse] = useState({nombre: '', direccion: ''});
+
+    const [houses, setHouses] = useState([]);
 
     useEffect(() => {
-        fetchHomes();
+        const fetchHouses = async () => {
+            const data = localStorage.getItem('myDataKey');
+            let parsedData = JSON.parse(data);
+            const userId = await getUserIdByEmail(parsedData.email);
+            const houses = await getUserHouses(userId);
+            setHouses(houses); // Actualiza el estado de houses aquí
+        };
+        fetchHouses()
+            .then(houses => {
+                setHouses(houses);
+            })
+            .catch(error => {
+                console.error("Failed to fetch houses:", error);
+            });
     }, []);
 
-    const fetchHomes = async () => {
-        const response = await fetch('http://localhost:8080/homes'); //hay q cambiarla por la corresta
-        const data = await response.json();
-        setHomes(data);
-    };
 
-    const createHome = async () => {
-        await fetch('http://localhost:8080/homes', {
-            method: 'POST',
-            body: JSON.stringify({name: newHome}),
-        });
-        setNewHome('');
-        fetchHomes();
-    };
-
+    const movePage = async (url) => {
+        try {
+            if (await authentication() === true) {
+                router.replace(url);
+            }
+            else {
+                alert("You must be logged in to access this page. Going back to LoginPage");
+                router.replace("LoginPage");
+            }
+        }
+        catch (error) {
+            console.log("Error moving to login page:", error);
+        }
+    }
     return (
-        <View style={styles.container}>
-            <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
-                <View>
-                    <Text style={styles.title}>Digital Cabinet</Text>
-                    <View style={styles.logInCont}>
-                        <Text style={styles.info}>Select a home</Text>
-
-                        <Picker>
-                            <Text>Create a new home:</Text>
-                            <TextInput style={styles.input} value={newHome} onChangeText={setNewHome}/>
-                            <Pressable style={styles.link} onPress={createHome}>
-                                <Text style={{color: 'white', fontSize: 16}}>Create</Text>
+            <View style={styles.container}>
+                <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
+                    <View>
+                        <Text style={styles.title}>Digital Cabinet</Text>
+                        <View style={styles.logInCont}>
+                            <Text style={styles.info}>Select a home</Text>
+                            <Picker>
+                                {houses.map((house, index) => (
+                                    <Picker.Item key={index} label={house.nombre} value={house.casa_ID} />
+                                ))}
+                            </Picker>
+                        </View>
+                        <p></p>
+                        <View style={styles.linksContainer}>
+                            <Pressable>
+                                <Link href={"/RegisterHome"} style={styles.link}>Create a home</Link>
                             </Pressable>
-                        </Picker>
+                        </View>
                     </View>
-                    <p></p>
-                    <View style={styles.linksContainer}>
-                        <Pressable>
-                            <Link href={"/RegisterPage"} style={styles.link}>pronandooooo</Link>
-                        </Pressable>
-                    </View>
-                </View>
-            </ScrollView>
-        </View>
+                </ScrollView>
+            </View>
     );
 }
+
 
 
 const styles = StyleSheet.create({

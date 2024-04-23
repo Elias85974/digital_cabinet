@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "USER")
@@ -113,6 +114,15 @@ public class User {
     public String asJson() {
         Gson gson = new Gson();
         return gson.toJson(this);
+    }
+
+
+    // Asume que tienes un método getHouses() en tu clase User que devuelve todas las casas a las que el usuario tiene acceso
+    public String getHousesAsJson() {
+        List<House> houses = livesIns.stream()
+                .map(LivesIn::getCasa)
+                .collect(Collectors.toList());
+        return new Gson().toJson(houses);
     }
 
     public static class UserBuilder {

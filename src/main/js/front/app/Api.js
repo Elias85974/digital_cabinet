@@ -115,3 +115,59 @@ export const authentication = async() => {
         throw error;
     }
 }
+
+
+export const createHouse = async (houseData) => {
+    try {
+        const response = await fetch(`${API_URL}/houses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(houseData),
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to create house:", error);
+        throw error;
+    }
+};
+
+export const getUserHouses = async (userId) => {
+    try {
+        const response = await fetch(`${API_URL}/houses/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to get user houses:", error);
+        throw error;
+    }
+}
+
+export const getUserIdByEmail = async (email) => {
+    try {
+        const response = await fetch(`${API_URL}/user/email/${email}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.text(); // Devuelve el ID del usuario como una cadena
+    } catch (error) {
+        console.error("Failed to get user ID:", error);
+        throw error;
+    }
+}

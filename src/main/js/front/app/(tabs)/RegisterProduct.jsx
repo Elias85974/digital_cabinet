@@ -1,23 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
-import Picker from 'react-native-picker-select';
-import {router} from "expo-router";
+import { Image } from 'react-native';
+import {router, useLocalSearchParams} from "expo-router";
 import RNPickerSelect from 'react-native-picker-select';
 
 import {authentication, createProduct, getCategories, createCategory} from "../Api";
+import BackButton from "./BackButton";
 
 export default function RegisterProduct() {
-    let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
-    // no quiere funcionar con redirect ni router --> const [houseCreated, setHouseCreated] = useState(false);
+    const { houseId } = useLocalSearchParams();
+
+    const initialProductState = {nombre: '', marca: '', tipoDeCantidad: ''};
+    let [newProduct, setNewProduct] = useState(initialProductState);
+
     let [categories, setCategories] = useState([]);
     let [newCategory, setNewCategory] = useState('');
     let [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
-    const quantityTypes = ['Gramos', 'Litros', 'Unidades', 'Kilogramos'];
 
-    /*
-    const isTipoDeCant = (tipoDeCantidad) =>
-        /^[A-Z0-9.]+\s+[0-9]+$/i.test(tipoDeCantidad);
-     */
+    const quantityTypes = ['Gramos', 'Litros', 'Unidades', 'Kilogramos'];
 
     useEffect(() => {
         fetchCategories();
@@ -58,7 +58,10 @@ export default function RegisterProduct() {
         try {
             if (newProduct.nombre && newProduct.marca && newProduct.tipoDeCantidad && newProduct.categoryId) {
                 if (await authentication() === true) {
-                    createProduct(newProduct).then(r => alert("Product created successfully!"));
+                    createProduct(newProduct).then(r => {
+                        alert("Product created successfully!");
+                        setNewProduct(initialProductState);
+                    });
                 }
                 else {
                     alert("You must be logged in to access this page. Going back to LoginPage");
@@ -90,74 +93,82 @@ export default function RegisterProduct() {
     return (
         <View style={styles.container}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
-                <View>
-                    <Text style={styles.title}>Products</Text>
-                    <View style={styles.createprod}>
-                        <Text style={styles.info}>Please fill in all fields to create your product</Text>
-                        <TextInput style={styles.input}
-                            placeholder="Nombre"
-                            value={newProduct.nombre}
-                            onChangeText={(value) => handleInputChange('nombre', value)}
-                        />
-                        <TextInput style={styles.input}
-                            placeholder="Marca"
-                            value={newProduct.marca}
-                            onChangeText={(value) => handleInputChange('marca', value)}
-                        />
-                        <View style={ styles.picker}>
-                            <Picker
-                                onValueChange={(value) => handleInputChange('tipoDeCantidad', value)}
-                                items={[
-                                    ...quantityTypes.map((type) => ({
-                                        label: type,
-                                        value: type,
-                                    })),
-                                ]}
-                                placeholder={{label: "Select a quantity type", value: null}}
-                            />
-                        </View>
+                <View style={{flexDirection: 'row', alignItems: 'flex-start' }}>
 
-                        {showNewCategoryInput ? (
-                            <View>
-                                <TextInput style={styles.input}
-                                    placeholder="New Category"
-                                    value={newCategory}
-                                    onChangeText={handleNewCategoryChange}
-                                />
-                                <View style={styles.linksContainer}>
-                                    <Pressable style={styles.link} onPress={handleCreateCategory}>
-                                        <Text style={{color: 'white', fontSize: 16}}>Create Category</Text>
-                                    </Pressable>
-                                </View>
-                            </View>
-                        ) : (
-                            <View style={ styles.picker}>
-                                <Picker
-                                    onValueChange={(value) => {
-                                        handleCategoryChange(value);
-                                    }}
+                    <View>
+                        <Text style={styles.title}>Products</Text>
+                        <View style={styles.createProd}>
+                            <Text style={styles.info}>Please fill in all fields to create your product</Text>
+                            <TextInput style={styles.input}
+                                       placeholder="Nombre"
+                                       value={newProduct.nombre}
+                                       onChangeText={(value) => handleInputChange('nombre', value)}
+                            />
+                            <TextInput style={styles.input}
+                                       placeholder="Marca"
+                                       value={newProduct.marca}
+                                       onChangeText={(value) => handleInputChange('marca', value)}
+                            />
+                            <p></p>
+                            <View style={styles.picker}>
+                                <RNPickerSelect
+                                    onValueChange={(value) => handleInputChange('tipoDeCantidad', value)}
                                     items={[
-                                        ...categories.map((category) => ({
-                                            label: category.nombre,
-                                            value: category.categoria_ID,
+                                        ...quantityTypes.map((type) => ({
+                                            label: type,
+                                            value: type,
                                         })),
-                                        {label: "Add new category", value: "addNew"},
                                     ]}
-                                    placeholder={{label: "Select a category", value: null}}
+                                    placeholder={{label: "Select a quantity type", value: null}}
+                                    style={styles.pickerSelectStyles}
                                 />
                             </View>
-                        )}
-                        <Pressable style={styles.link} onPress={handleCreateProduct}>
-                            <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>
+
+                            {showNewCategoryInput ? (
+                                <View>
+                                    <TextInput style={styles.input}
+                                               placeholder="New Category"
+                                               value={newCategory}
+                                               onChangeText={handleNewCategoryChange}
+                                    />
+                                    <View style={styles.linksContainer}>
+                                        <Pressable style={styles.link} onPress={handleCreateCategory}>
+                                            <Text style={{color: 'white', fontSize: 16}}>Create Category</Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
+                            ) : (
+                                <View style={styles.picker}>
+                                    <RNPickerSelect
+                                        onValueChange={(value) => {
+                                            handleCategoryChange(value);
+                                        }}
+                                        items={[
+                                            ...categories.map((category) => ({
+                                                label: category.nombre,
+                                                value: category.categoria_ID,
+                                            })),
+                                            {label: "Add new category", value: "addNew"},
+                                        ]}
+                                        placeholder={{label: "Select a category", value: null}}
+                                        style={styles.pickerSelectStyles}
+                                    />
+                                </View>
+                            )}
+                            <p></p>
+                            <Pressable style={styles.link} onPress={handleCreateProduct}>
+                                <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+
+                    <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center',marginTop: 170}}>
+                        <Pressable style={styles.button} >
+                            <BackButton />
                         </Pressable>
                     </View>
-                    <p></p>
-                    <View style={styles.linksContainer}>
-                        <Pressable onPress={() => movePage("Homes")} style={styles.link}>
-                            <Text style={{color: 'white', fontSize: 16}}>Go Back</Text>
-                        </Pressable>
-                    </View>
-            </View>
+
+                </View>
             </ScrollView>
         </View>
     );
@@ -203,7 +214,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginTop: 30,
-        marginBottom: 50,
+        marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,
@@ -228,7 +239,7 @@ const styles = StyleSheet.create({
         width: 300,
         alignSelf: 'center',
     },
-    createprod: {
+    createProd: {
         backgroundColor: '#4B5940',
         padding: 20,
         borderRadius: 20,
@@ -236,11 +247,54 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     picker:{
-        width: '20%',
-        alignSelf: 'center',
-        height: 20,
-        backgroundColor: '#717336',
-        borderColor: '#5d5e24',
-        borderWidth: 2,
+        padding: 10,
+    },
+    pickerSelectStyles: {
+        inputIOS: {
+            color: 'white',
+            backgroundColor: '#4B5940',
+            padding: 10,
+            justifyContent: 'center',
+            alignContent: 'center',
+            height: 50,
+            width: 200,
+            textAlign: 'center',
+            borderWidth: 2,
+            borderColor: '#717336',
+        },
+        inputWeb: {color: 'white',
+            backgroundColor: '#4B5940',
+            padding: 10,
+            justifyContent: 'center',
+            alignContent: 'center',
+            height: 50,
+            width: 200,
+            textAlign: 'center',
+            borderWidth: 2,
+            borderColor: '#717336',
+        },
+        inputAndroid: {color: 'white',
+            backgroundColor: '#4B5940',
+            padding: 10,
+            justifyContent: 'center',
+            alignContent: 'center',
+            height: 50,
+            width: 200,
+            textAlign: 'center',
+            borderWidth: 2,
+            borderColor: '#717336',
+        }
+    },
+
+    button:{
+        backgroundColor: 'white',
+        borderTopRightRadius: 100,
+        borderBottomRightRadius: 100,
+        overflow: 'hidden',
+        alignSelf: 'flex-end',
+        width: 55,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 });

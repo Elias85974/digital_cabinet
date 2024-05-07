@@ -1,0 +1,7 @@
+.button {
+    transition: transform 0.2s; /* Animation to smooth the transformation */
+}
+
+.button:hover {
+    transform: scale(1.25); /* Enlarge the button when hovering */
+}

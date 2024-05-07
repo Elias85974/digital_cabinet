@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link, useLocalSearchParams} from 'expo-router';
-import {Pressable, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 
 export default function Product() {
     const { category, filteredProducts } = useLocalSearchParams();

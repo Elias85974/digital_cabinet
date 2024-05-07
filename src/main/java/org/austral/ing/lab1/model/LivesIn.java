@@ -13,11 +13,11 @@ public class LivesIn {
     private Long vive_en_ID;
 
     @ManyToOne
-    @JoinColumn(name = "USUARIO_ID")
+    @JoinColumn(name = "USUARIO_ID", referencedColumnName = "USUARIO_ID")
     private User usuario;
 
     @OneToOne
-    @JoinColumn(name = "CASA_ID")
+    @JoinColumn(name = "CASA_ID", referencedColumnName = "CASA_ID")
     private House casa;
 
     @Column(name = "Role")

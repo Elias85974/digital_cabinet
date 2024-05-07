@@ -56,12 +56,14 @@ export default function House() {
             </View>
             <p></p>
             <View style={styles.linksContainer}>
-                <Pressable onPress={() => movePage(`../AddProduct/${id}`)}>
-                    <Text style={styles.link}>Add a Product</Text>
-                </Pressable>
-                <Pressable>
-                    <Link href={"../RegisterProduct"} style={styles.link}>Create a Product</Link>
-                </Pressable>
+                <View style={styles.product}>
+                    <Pressable style={styles.pressable}>
+                        <Link href={"../RegisterProduct"} style={styles.link}>Add a new Product</Link>
+                    </Pressable>
+                    <Pressable style={styles.pressable} onPress={() => movePage(`../AddProduct/${id}`)}>
+                        <Text style={styles.link}>Add Stock</Text>
+                    </Pressable>
+                </View>
                 <Pressable>
                     <Link href={"../Homes"} style={styles.link}>Select another home</Link>
                 </Pressable>
@@ -110,7 +112,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     link: {
-        marginTop: 15,
+        marginTop: 10,
         marginBottom: 10,
         color: '#F2EFE9',
         textDecorationLine: 'underline',
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
         borderColor: '#717336', // Set border color
         padding: 10, // Add some padding so the text isn't right up against the border
         backgroundColor: '#717336', // Set background color
-        width: 200, // Set width
+        width: 250, // Set width
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,
@@ -145,5 +147,13 @@ const styles = StyleSheet.create({
     circleText: {
         color: 'white',
         fontSize: 25,
+    },
+    product: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    pressable: {
+        padding: 10,
+        margin: 10,
     },
 });

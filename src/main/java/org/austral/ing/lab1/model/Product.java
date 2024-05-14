@@ -1,10 +1,12 @@
 package org.austral.ing.lab1.model;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Entity
@@ -70,7 +72,10 @@ public class Product {
     }
 
     public void setCategory(Category category) {
-        this.category = category;
+        if (this.category != category) {
+            this.category = category;
+            category.addProduct(this);
+        }
     }
 
     public Category getCategory() {
@@ -120,13 +125,28 @@ public class Product {
     }
 
     public String asJson() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    return gson.toJson(this);
     }
 
     private Product(ProductBuilder builder) {
         this.nombre = builder.nombre;
         this.marca = builder.marca;
         this.tipoDeCantidad = builder.tipoDeCantidad;
+    }
+
+    public static class ProductSerializer implements JsonSerializer<Product> {
+
+        @Override
+        public JsonElement serialize(Product product, Type type, JsonSerializationContext jsonSerializationContext) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("producto_ID", product.getProducto_ID());
+            jsonObject.addProperty("nombre", product.getNombre());
+            jsonObject.addProperty("marca", product.getMarca());
+            jsonObject.addProperty("tipoDeCantidad", product.getTipoDeCantidad());
+            jsonObject.addProperty("categoria_ID", product.getCategoria_ID());
+            jsonObject.addProperty("categoria", product.getCategory().getNombre());
+            return jsonObject;
+        }
     }
 }

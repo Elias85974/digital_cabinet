@@ -8,6 +8,8 @@ export default function House() {
     const id = pathname.split('/')[2]; // Assuming your URL is in the format of '/house/:id'
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [isDataFetched, setIsDataFetched] = useState(false);
+    const [categoryIds, setCategoryIds] = useState({});
 
     useEffect(() => {
         getProducts();
@@ -16,11 +18,26 @@ export default function House() {
     const getProducts = async () => {
         try {
             console.log('id is', id);
-            const products = await getHouseInventory(id);
-            console.log('getHouseInventory response:', products);
-            setProducts(products);
-            // Get unique categories from products
-            setCategories([...new Set(products.map(product => product.category))]);
+            const listOfProducts = await getHouseInventory(id);
+            console.log('getHouseInventory response:', listOfProducts);
+
+            setProducts(listOfProducts);
+
+            const listByCategories = Object.keys(listOfProducts);
+            setCategories(listByCategories);
+
+            // Create an object where each key is a category name and the value is the corresponding category ID
+            const categoryIds = {};
+            for (const category of listByCategories) {
+                const categoryId = listOfProducts[category][0].categoria_ID;
+                categoryIds[category] = categoryId;
+            }
+            setCategoryIds(categoryIds);
+
+            console.log('Categories:', listByCategories);
+
+            setIsDataFetched(true);
+
         } catch (error) {
             console.log("Error getting products:", error);
         }
@@ -41,33 +58,43 @@ export default function House() {
         }
     }
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Welcome Home!</Text>
-            <View style={styles.logInCont}>
-                <Text style={styles.info}>Select a Category</Text>
-                <View style={styles.container2}>
-                    {categories.map((category, index) => (
-                        <View key={index}>
-                            <Link href={`/Product/${category.categoryId}`} state={{ filteredProducts: products.filter(product => product.category === category) }}>{category.nombre}</Link>
-                        </View>
-                    ))}
+    if (!isDataFetched) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Loading...</Text>
+            </View>
+        );
+    }
+    else {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Welcome Home!</Text>
+                <View style={styles.logInCont}>
+                    <Text style={styles.info}>Select a Category</Text>
+                    <View style={styles.container2}>
+                        {categories.map((category, index) => (
+                            <View key={index}>
+                                <Link href={`/Product/${categoryIds[category]}`}
+                                      state={{filteredProducts: Object.values(products).flat().filter(product => product.categoria === category)}}>{category}</Link>
+                            </View>
+                        ))}
+                    </View>
+                </View>
+                <p></p>
+                <View style={styles.linksContainer}>
+                    <Pressable onPress={() => movePage(`../AddProduct/${id}`)}>
+                        <Text style={styles.link}>Add a Product</Text>
+                    </Pressable>
+                    <Pressable>
+                        <Link href={"../RegisterProduct"} style={styles.link}>Create a Product</Link>
+                    </Pressable>
+                    <Pressable>
+                        <Link href={"../Homes"} style={styles.link}>Select another home</Link>
+                    </Pressable>
                 </View>
             </View>
-            <p></p>
-            <View style={styles.linksContainer}>
-                <Pressable onPress={() => movePage(`../AddProduct/${id}`)}>
-                    <Text style={styles.link}>Add a Product</Text>
-                </Pressable>
-                <Pressable>
-                    <Link href={"../RegisterProduct"} style={styles.link}>Create a Product</Link>
-                </Pressable>
-                <Pressable>
-                    <Link href={"../Homes"} style={styles.link}>Select another home</Link>
-                </Pressable>
-            </View>
-        </View>
-    );
+        );
+    }
 }
 
 import { StyleSheet } from 'react-native';

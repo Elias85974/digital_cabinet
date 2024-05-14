@@ -1,6 +1,8 @@
 package org.austral.ing.lab1.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,7 +22,7 @@ public class Category {
     private String nombre;
 
     // Not exposed, so it won't be included in the JSON output
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private List<Product> products;
 
     public Category() { }
@@ -41,8 +43,22 @@ public class Category {
         this.nombre = nombre;
     }
 
+    public void addProduct(Product product) {
+        if (product.getCategory() != this) {
+            product.setCategory(this);
+        }
+    }
+
+    public boolean containsProduct(Product product) {
+        return products.contains(product);
+    }
+
     public static CategoryBuilder create(String nombre){
         return new CategoryBuilder(nombre);
+    }
+
+    public List<Product> getProducts() {
+        return products;
     }
 
     public static class CategoryBuilder{
@@ -63,7 +79,9 @@ public class Category {
     }
 
     public String asJson() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
         return gson.toJson(this);
     }
 

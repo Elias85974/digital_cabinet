@@ -17,10 +17,10 @@ public class House {
     @JoinColumn(name = "INVENTARIO_ID", referencedColumnName = "INVENTARIO_ID")
     private Inventory inventario;
 
-    @Column
+    @Column(name = "NOMBRE", nullable = false)
     private String nombre;
 
-    @Column
+    @Column(name = "DIRECCION", nullable = false, unique = true)
     private String direccion;
 
     public House() { }
@@ -76,7 +76,7 @@ public class House {
     }
 
     public String asJson() {
-        return new Gson().toJson(this);
+        return inventario.asJson();
     }
 
     public static class HouseBuilder {

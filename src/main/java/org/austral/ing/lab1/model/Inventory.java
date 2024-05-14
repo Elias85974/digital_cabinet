@@ -1,6 +1,8 @@
 package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -49,7 +51,12 @@ public class Inventory {
     }
 
     public void addStock(Stock stock) {
-        stocks.add(stock);
+        if (stock.getInventario() != this) {
+            stock.setInventario(this);
+        }
+        if (!stocks.contains(stock)) {
+            stocks.add(stock);
+        }
     }
 
     public List<Stock> getStocks() {
@@ -67,9 +74,15 @@ public class Inventory {
                 productsByCategory.put(category, new ArrayList<>());
             }
 
+            // Access the products collection while the session is still open
+            Hibernate.initialize(product.getCategory().getProducts());
+
             productsByCategory.get(category).add(product);
         }
 
-        return new Gson().toJson(productsByCategory);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Product.class, new Product.ProductSerializer())
+                .create();
+        return gson.toJson(productsByCategory);
     }
 }

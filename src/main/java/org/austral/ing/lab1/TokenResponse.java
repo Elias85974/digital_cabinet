@@ -19,7 +19,7 @@ public class TokenResponse {
     private static final Set<String> expiredTokens = new HashSet<>();
 
     public static String generateToken(String email) {
-        return Jwts.builder().setSubject(email).claim("email", email).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+        return Jwts.builder().setSubject(email).claim("email", email).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(JWT_KEY).compact();
     }
 

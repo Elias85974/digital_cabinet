@@ -57,6 +57,10 @@ public class LivesIn {
 
     public boolean isAdmin() {return role;}
 
+    public void setCasa(House house) {
+        this.casa = house;
+    }
+
     public static class LivesInBuilder {
         private final User usuario;
         private final House casa;

@@ -45,16 +45,30 @@ public class Stock {
     }
 
     public void setInventario(Inventory inventario) {
-        this.inventario = inventario;
+        if (this.inventario != inventario) {
+            this.inventario = inventario;
+            inventario.addStock(this);
+        }
     }
 
     public Product getProduct() {
         return product;
     }
 
+    public void setProduct(Product product) {
+        if (this.product != product) {
+            this.product = product;
+        }
+    }
+
+    // Not being used for now
     public String asJson() {
         Gson gson = new Gson();
         return gson.toJson(this);
+    }
+
+    public Inventory getInventario() {
+        return inventario;
     }
 
     public static class StockBuilder {

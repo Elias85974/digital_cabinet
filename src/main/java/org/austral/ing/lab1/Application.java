@@ -350,8 +350,6 @@ public class Application {
             /* Begin Business Logic */
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
             final Houses houses = new Houses(entityManager);
-            final Inventories inventories = new Inventories(entityManager);
-            final Stocks stocks = new Stocks(entityManager);
             final Products products = new Products(entityManager);
             EntityTransaction tx = entityManager.getTransaction();
             tx.begin();
@@ -373,16 +371,13 @@ public class Application {
 
             final House house = houseOptional.get();
             final Product product = productOptional.get();
-            final Inventory inventory = house.getInventario();
-            final Stock stock = Stock.create(cantidad).setProduct(product).setInventario(inventory).build();
+            final Stock stock = Stock.create(cantidad).setProduct(product).build();
 
             /* Begin Business Logic */
             final EntityManager entityManager2 = entityManagerFactory.createEntityManager();
-            EntityTransaction tx2 = entityManager2.getTransaction();
-            tx2.begin();
-            inventory.addStock(stock);
-            String inventoryJson = inventory.asJson();
-            tx2.commit();
+            final Inventories inventories = new Inventories(entityManager2);
+            inventories.addStockToHouse(house, stock);
+            String inventoryJson = house.getInventario().asJson();
             entityManager2.close();
             /* End Business Logic */
             resp.status(200);

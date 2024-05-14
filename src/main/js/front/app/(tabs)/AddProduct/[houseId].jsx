@@ -83,12 +83,10 @@ export default function AddProduct() {
                             </View>
                         </View>
                     </View>
-                    <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center',marginTop: 60}}>
-                        <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center',marginTop: 170}}>
-                            <Pressable style={styles.button} >
-                                <BackButton />
-                            </Pressable>
-                        </View>
+                    <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center',marginTop: 170}}>
+                        <Pressable style={styles.button} >
+                            <BackButton path={ `../House/${houseId}` }/>
+                        </Pressable>
                     </View>
                 </View>
             </ScrollView>

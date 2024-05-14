@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {Link, router, usePathname} from 'expo-router';
-import {Pressable, Text, View} from 'react-native';
+import {Pressable, Text, View, StyleSheet, Animated} from 'react-native';
 import {authentication, getHouseInventory} from "../../Api";
+
 
 export default function House() {
     const pathname = usePathname();
@@ -41,6 +42,8 @@ export default function House() {
         }
     }
 
+
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Welcome Home!</Text>
@@ -58,11 +61,12 @@ export default function House() {
             <View style={styles.linksContainer}>
                 <View style={styles.product}>
                     <Pressable style={styles.pressable}>
-                        <Link href={"../RegisterProduct"} style={styles.link}>Add a new Product</Link>
+                        <Link href={'../RegisterProduct'} style={styles.link}>Add a new Product</Link>
                     </Pressable>
                     <Pressable style={styles.pressable} onPress={() => movePage(`../AddProduct/${id}`)}>
                         <Text style={styles.link}>Add Stock</Text>
                     </Pressable>
+
                 </View>
                 <Pressable>
                     <Link href={"../Homes"} style={styles.link}>Select another home</Link>
@@ -71,8 +75,6 @@ export default function House() {
         </View>
     );
 }
-
-import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {

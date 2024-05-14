@@ -1,14 +1,13 @@
 import React from 'react';
 import '../css/backButton.css';
-import {router} from "expo-router";
 
-function BackButton(path) {
+function BackButton({ onPress}) {
     return (
         <button
             className="button cursor-pointer active:scale-100"
             title="Go Back"
             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: 'none' }}
-            onClick={() => router.replace(path)}
+            onClick={onPress}
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"

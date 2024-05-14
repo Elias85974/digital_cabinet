@@ -3,6 +3,8 @@ import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-na
 import {loginUser} from "../Api";
 import {Link, Redirect} from "expo-router";
 
+import FlashMessage from "react-native-flash-message";
+
 export default function LoginPage() {
     const [user, setUser] = useState({mail: '', password: ''});
     const [isLoggedIn, setIsLoggedIn] = useState(false);

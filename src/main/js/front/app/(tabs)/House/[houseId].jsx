@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {Link, router, usePathname} from 'expo-router';
-import {Pressable, Text, View, StyleSheet, Animated} from 'react-native';
+import {Pressable, Text, View, StyleSheet, Animated, Modal, Alert} from 'react-native';
 import {authentication, getHouseInventory} from "../../Api";
+
+import RegisterProduct from '../RegisterProduct';
+import BackButton from '../BackButton.jsx';
+import AddProduct from '../AddStock/[houseId]';
+
 
 
 export default function House() {
@@ -42,11 +47,15 @@ export default function House() {
         }
     }
 
+    const [modalVisible_RegProd, setModalVisible_RegProd] = useState(false);
+    const [modalVisible_AddStock, setModalVisible_AddStock] = useState(false);
 
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Welcome Home!</Text>
+
+            {/* muestra los productos creados --> agregar buscador por categoria */}
             <View style={styles.logInCont}>
                 <Text style={styles.info}>Select a Category</Text>
                 <View style={styles.container2}>
@@ -57,27 +66,77 @@ export default function House() {
                     ))}
                 </View>
             </View>
-            <p></p>
-            <View style={styles.linksContainer}>
-                <View style={styles.product}>
-                    <Pressable style={styles.pressable}>
-                        <Link href={'../RegisterProduct'} style={styles.link}>Add a new Product</Link>
-                    </Pressable>
-                    <Pressable style={styles.pressable} onPress={() => movePage(`../AddProduct/${id}`)}>
-                        <Text style={styles.link}>Add Stock</Text>
-                    </Pressable>
+
+
+            <View style={{padding: 150}}>
+                <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
+
+                    {/* empieza el modal de crear productos nuevos*/}
+                    <View style={styles.centeredView}>
+                        <Modal
+                            animationType={"fade"}
+                            transparent={true}
+                            visible={modalVisible_RegProd}
+                            onRequestClose={() => {
+                                Alert.alert('Modal has been closed.');
+                                setModalVisible_RegProd(!modalVisible_RegProd);
+                            }}>
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalViewP}>
+                                    <RegisterProduct/>
+                                    <View style={styles.buttonP}>
+                                        <BackButton
+                                            onPress={() => setModalVisible_RegProd(false)}/>
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
+                        <Pressable
+                            onPress={() => setModalVisible_RegProd(true)}>
+                            <Text style={styles.link}>Add Product</Text>
+                        </Pressable>
+                    </View>
+
+                    {/* empieza el modal de añadir stock*/}
+                    <View style={styles.centeredView}>
+                        <Modal
+                            animationType={"fade"}
+                            transparent={true}
+                            visible={modalVisible_AddStock}
+                            onRequestClose={() => {
+                                Alert.alert('Modal has been closed.');
+                                setModalVisible_AddStock(!modalVisible_AddStock);
+                            }}>
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalViewS}>
+                                    <AddProduct/>
+                                    <View style={styles.buttonS}>
+                                        <BackButton
+                                            onPress={() => setModalVisible_AddStock(false)}/>
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
+                        <Pressable
+                            onPress={() => setModalVisible_AddStock(true)}>
+                            <Text style={styles.link}>Add Stock</Text>
+                        </Pressable>
+                    </View>
 
                 </View>
+
                 <Pressable>
-                    <Link href={"../Homes"} style={styles.link}>Select another home</Link>
+                        <Link href={"../Homes"} style={styles.link}>Select another home</Link>
                 </Pressable>
             </View>
+
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        padding: 20,
         flex: 1,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
@@ -111,11 +170,11 @@ const styles = StyleSheet.create({
     },
     linksContainer: {
         marginBottom: 20,
-        marginTop: 20,
+        marginTop: 200,
     },
     link: {
         marginTop: 10,
-        marginBottom: 10,
+        marginBottom: 50,
         color: '#F2EFE9',
         textDecorationLine: 'underline',
         textAlign: 'center',
@@ -158,4 +217,86 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 10,
     },
+
+
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 20,
+    },
+    modalViewP: {
+        backgroundColor: '#BFAC9B',
+        borderRadius: 20,
+        borderColor: '#a08c78',
+        borderWidth: 5,
+        paddingRight: 45,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 20,
+            height: 20,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        width: 520,
+
+        margin: 20,
+    },
+
+    modalViewS: {
+        backgroundColor: '#BFAC9B',
+        borderRadius: 20,
+        borderColor: '#a08c78',
+        borderWidth: 5,
+        paddingRight: 45,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 20,
+            height: 20,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        width: 470,
+    },
+
+    buttonP:{
+        backgroundColor: 'white',
+        borderTopRightRadius: 100,
+        borderBottomRightRadius: 100,
+        overflow: 'hidden',
+        alignSelf: 'flex-end',
+        width: 55,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        top: 180,
+        right: 6,
+    },
+    buttonS:{
+        backgroundColor: 'white',
+        borderTopRightRadius: 100,
+        borderBottomRightRadius: 100,
+        overflow: 'hidden',
+        alignSelf: 'flex-end',
+        width: 55,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        top: 255,
+        right: 6,
+    },
+
+    absolute: {
+    position: "absolute",
+    top: 0, left: 0, bottom: 0, right: 0,
+    },
+
 });

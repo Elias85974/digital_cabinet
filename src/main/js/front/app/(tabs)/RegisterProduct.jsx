@@ -95,7 +95,7 @@ export default function RegisterProduct() {
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
                 <View style={{flexDirection: 'row', alignItems: 'flex-start' }}>
 
-                    <View>
+                    <View style={{marginTop: -50}}>
                         <Text style={styles.title}>Products</Text>
                         <View style={styles.createProd}>
                             <Text style={styles.info}>Please fill in all fields to create your product</Text>
@@ -161,13 +161,6 @@ export default function RegisterProduct() {
                             </Pressable>
                         </View>
                     </View>
-
-                    <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center',marginTop: 170}}>
-                        <Pressable style={styles.button} >
-                            <BackButton path={ `../House/${houseId}` }/>
-                        </Pressable>
-                    </View>
-
                 </View>
             </ScrollView>
         </View>
@@ -286,15 +279,5 @@ const styles = StyleSheet.create({
         }
     },
 
-    button:{
-        backgroundColor: 'white',
-        borderTopRightRadius: 100,
-        borderBottomRightRadius: 100,
-        overflow: 'hidden',
-        alignSelf: 'flex-end',
-        width: 55,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
+
 });

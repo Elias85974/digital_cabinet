@@ -55,8 +55,9 @@ export default function AddProduct() {
         <View style={styles.container}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
                 <View style={{flexDirection: 'row', alignItems: 'flex-start' }}>
+
                     <View>
-                        <View style={{marginTop: 30, marginBottom: 50,}}>
+                        <View style={{marginTop: 0, marginBottom: 50,}}>
                             <Text style={styles.title}>Add some</Text>
                             <Text style={styles.title}>products!</Text>
                         </View>
@@ -82,11 +83,6 @@ export default function AddProduct() {
                                 </Pressable>
                             </View>
                         </View>
-                    </View>
-                    <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center',marginTop: 170}}>
-                        <Pressable style={styles.button} >
-                            <BackButton path={ `../House/${houseId}` }/>
-                        </Pressable>
                     </View>
                 </View>
             </ScrollView>

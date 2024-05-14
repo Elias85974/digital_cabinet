@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@react-native-community/blur": "^4.4.0",
+    "react-native-flash-message": "^0.4.2",
+    "react-native-modal": "^13.0.1",
+    "react-native-picker-select": "^9.1.3",
+    "react-native-toast-message": "^2.2.0",
+    "react-router-dom": "^6.22.3",
+    "react-select": "^5.8.0",
+    "react-toastify": "^10.0.5"
+  }
+}

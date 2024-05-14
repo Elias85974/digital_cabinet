@@ -3,9 +3,9 @@ import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-na
 import {loginUser} from "../Api";
 import {Link, Redirect} from "expo-router";
 
-import FlashMessage from "react-native-flash-message";
+import withToast from "../../hoc/withToast";
 
-export default function LoginPage() {
+function LoginPage({ showToast }) {
     const [user, setUser] = useState({mail: '', password: ''});
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -18,15 +18,15 @@ export default function LoginPage() {
             if (user.mail && user.password) {
                 const response = await loginUser(user); // Assume loginUser returns a promise
                 if (response) { // Boolean indicating success of login
+                    showToast('Logged in successfully', 'success');
                     setIsLoggedIn(true);
                 }
             }
             else {
-                alert("Please fill in all fields.")
+                showToast("Please fill in all fields.", 'error');
             }
         } catch (error) {
-            console.log("Error logging in user:", error);
-            alert("Incorrect email or password. Please try again.")
+            showToast("Incorrect email or password. Please try again.", 'danger');
         }
         finally {
             setUser({mail: '', password: ''}); // Reset user state
@@ -69,10 +69,12 @@ export default function LoginPage() {
                 </View>
             </ScrollView>
         </View>
+
+
     );}
-};
+}
 
-
+export default withToast(LoginPage);
 
 const styles = StyleSheet.create({
     container: {

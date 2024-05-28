@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
 import {loginUser} from "../Api";
-import {Link, Redirect} from "expo-router";
+import {Link, Redirect} from "expo-router-react";
 
 export default function LoginPage() {
     const [user, setUser] = useState({mail: '', password: ''});

@@ -1,6 +1,5 @@
 {
   "expo": {
-    "entryPoint": "./App.js",
     "name": "front",
     "slug": "front",
     "scheme": "digital_cabinet",

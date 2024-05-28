@@ -23,6 +23,7 @@ export default function App() {
                 <Route path="/RegisterHome" element={<RegisterHome/>} />
                 <Route path="/RegisterPage" element={<RegisterPage/>} />
                 <Route path="/RegisterProduct" element={<RegisterProduct/>} />
+
             </Routes>
         </NativeRouter>
     );

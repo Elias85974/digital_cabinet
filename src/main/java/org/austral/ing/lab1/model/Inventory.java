@@ -2,7 +2,6 @@ package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,11 +18,7 @@ public class Inventory {
     @GenericGenerator(name = "increment", strategy = "increment")
     private Long inventario_ID;
 
-    @OneToOne
-    @JoinColumn(name = "CASA_ID", referencedColumnName = "CASA_ID")
-    private House casa;
-
-    @OneToMany(mappedBy = "inventario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Stock> stocks;
 
     public Inventory() {
@@ -38,27 +33,15 @@ public class Inventory {
         return inventario_ID;
     }
 
-    public Long getCasaID() {
-        return casa.getCasa_ID();
-    }
-
     public Inventory getInventory() {
         return this;
     }
 
-    public void setCasa(House casa) {
-        this.casa = casa;
-    }
-
     public void addStock(Stock stock) {
-        if (stock.getInventario() != this) {
-            stock.setInventario(this);
-        }
         if (!stocks.contains(stock)) {
             stocks.add(stock);
         }
     }
-
     public List<Stock> getStocks() {
         return stocks;
     }
@@ -75,7 +58,7 @@ public class Inventory {
             }
 
             // Access the products collection while the session is still open
-            Hibernate.initialize(product.getCategory().getProducts());
+            // Hibernate.initialize(product.getCategory().getProducts());
 
             productsByCategory.get(category).add(product);
         }

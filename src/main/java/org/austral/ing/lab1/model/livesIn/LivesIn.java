@@ -1,22 +1,23 @@
-package org.austral.ing.lab1.model;
+package org.austral.ing.lab1.model.livesIn;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.austral.ing.lab1.model.House;
+import org.austral.ing.lab1.model.User;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "LIVES_IN")
 public class LivesIn {
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    private Long vive_en_ID;
+    @EmbeddedId
+    private LivesInId vive_en_ID;
 
+    @MapsId("usuarioId")
     @ManyToOne
     @JoinColumn(name = "USUARIO_ID")
     private User usuario;
 
-    @OneToOne
+    @MapsId("casaId")
+    @ManyToOne
     @JoinColumn(name = "CASA_ID")
     private House casa;
 
@@ -29,17 +30,18 @@ public class LivesIn {
         this.usuario = builder.usuario;
         this.casa = builder.casa;
         this.role = builder.role;
+        this.vive_en_ID = builder.vive_en_ID;
     }
 
     public static LivesInBuilder create(User usuario, House casa, boolean role) {
         return new LivesInBuilder(usuario, casa, role);
     }
 
-    public void setID(Long id) {
+    public void setID(LivesInId id) {
         this.vive_en_ID = id;
     }
 
-    public Long getID() {
+    public LivesInId getID() {
         return vive_en_ID;
     }
 
@@ -65,11 +67,13 @@ public class LivesIn {
         private final User usuario;
         private final House casa;
         private final boolean role;
+        private final LivesInId vive_en_ID;
 
         public LivesInBuilder(User usuario, House casa, boolean role) {
             this.role = role;
             this.usuario = usuario;
             this.casa = casa;
+            this.vive_en_ID = new LivesInId(usuario.getUsuario_ID(), casa.getCasa_ID());
         }
 
         public LivesIn build() {

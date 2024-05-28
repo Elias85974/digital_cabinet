@@ -20,10 +20,6 @@ public class Stock {
     @Column(name = "QUANTITY_EXPIRATION_DATE")
     private Long cantidadVencimiento;
 
-    @ManyToOne
-    @JoinColumn(name = "INVENTORY_ID", referencedColumnName = "INVENTARIO_ID")
-    private Inventory inventario;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "PRODUCTO_ID")
     private Product product;
@@ -31,7 +27,6 @@ public class Stock {
     public Stock() {}
 
     private Stock(StockBuilder stockBuilder) {
-        this.inventario = stockBuilder.inventario;
         this.cantidadVencimiento = stockBuilder.cantidad;
         this.product = stockBuilder.product;
     }
@@ -42,13 +37,6 @@ public class Stock {
 
     public Long getCantidadVencimiento() {
         return cantidadVencimiento;
-    }
-
-    public void setInventario(Inventory inventario) {
-        if (this.inventario != inventario) {
-            this.inventario = inventario;
-            inventario.addStock(this);
-        }
     }
 
     public Product getProduct() {
@@ -67,21 +55,11 @@ public class Stock {
         return gson.toJson(this);
     }
 
-    public Inventory getInventario() {
-        return inventario;
-    }
-
     public static class StockBuilder {
         private final long cantidad;
-        private Inventory inventario;
         private Product product;
         public StockBuilder(long cantidad) {
             this.cantidad = cantidad;
-        }
-
-        public StockBuilder setInventario(Inventory inventario) {
-            this.inventario = inventario;
-            return this;
         }
 
         public StockBuilder setProduct(Product product) {

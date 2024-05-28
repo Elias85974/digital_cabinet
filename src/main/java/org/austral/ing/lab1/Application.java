@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.austral.ing.lab1.model.*;
+import org.austral.ing.lab1.model.livesIn.LivesIn;
 import org.austral.ing.lab1.repository.*;
 import org.austral.ing.lab1.model.Product;
 import org.austral.ing.lab1.repository.Products;
@@ -18,14 +19,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static spark.Spark.halt;
-
-import org.austral.ing.lab1.TokenResponse;
 
 public class Application {
 
@@ -241,7 +238,7 @@ public class Application {
         });*/
 
 
-        // Route to create a Id
+        // Route to create a house of a given user
         Spark.post("/houses/:userID", "application/json", (req, resp) -> {
             try {
                 final Long userId = Long.valueOf(req.params("userID"));
@@ -254,7 +251,6 @@ public class Application {
                 tx.begin();
                 User user = usersRepo.findById(userId).get(); // Acá estamos seguros de que el usuario existe porque el token fue validado
                 final Inventory inventory = new Inventory();
-                inventory.setCasa(house);
                 inventoriesRepo.persist(inventory);
                 house.setInventario(inventory);
                 housesRepo.persist(house);
@@ -355,8 +351,7 @@ public class Application {
             tx.begin();
             final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
             final Optional<Product> productOptional = products.findById(Long.valueOf(productId));
-            tx.commit();
-            entityManager.close();
+
             /* End Business Logic */
 
             if (houseOptional.isEmpty()) {
@@ -370,15 +365,16 @@ public class Application {
             }
 
             final House house = houseOptional.get();
-            final Product product = productOptional.get();
+            Product product = productOptional.get();
             final Stock stock = Stock.create(cantidad).setProduct(product).build();
 
             /* Begin Business Logic */
-            final EntityManager entityManager2 = entityManagerFactory.createEntityManager();
-            final Inventories inventories = new Inventories(entityManager2);
+            final Inventories inventories = new Inventories(entityManager);
+            entityManager.persist(stock);
             inventories.addStockToHouse(house, stock);
             String inventoryJson = house.getInventario().asJson();
-            entityManager2.close();
+            tx.commit();
+            entityManager.close();
             /* End Business Logic */
             resp.status(200);
             return inventoryJson;
@@ -683,7 +679,7 @@ public class Application {
         final User luke = User.create("lol").setFirstName("Luke").setLastName("SkyWalker").setPassword("123456").build();
         final Inventory inventory = createInventoryWithStocks(entityManagerFactory); // Create Inventory instance
         final House house = House.create(inventory).withDireccion("Calle Falsa 123").withNombre("Casa de Luke").build();
-        inventory.setCasa(house); // Set Id instance
+        // inventory.setHouse(house); // Set Id instance
         inventories.persist(inventory); // Persist Inventory instance
         final LivesIn livesIn = LivesIn.create(luke, house, true).build();
         entityManager.persist(luke);

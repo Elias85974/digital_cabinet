@@ -1,13 +1,11 @@
 package org.austral.ing.lab1.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class Category {
@@ -20,10 +18,6 @@ public class Category {
     @Column(name = "NAME")
     @Expose
     private String nombre;
-
-    // Not exposed, so it won't be included in the JSON output
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
-    private List<Product> products;
 
     public Category() { }
 
@@ -49,16 +43,8 @@ public class Category {
         }
     }
 
-    public boolean containsProduct(Product product) {
-        return products.contains(product);
-    }
-
     public static CategoryBuilder create(String nombre){
         return new CategoryBuilder(nombre);
-    }
-
-    public List<Product> getProducts() {
-        return products;
     }
 
     public static class CategoryBuilder{

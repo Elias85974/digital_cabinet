@@ -31,9 +31,6 @@ public class Product {
     @Expose
     private String tipoDeCantidad;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Stock> stocks;
-
     @ManyToOne
     @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORIA_ID")
     @Expose

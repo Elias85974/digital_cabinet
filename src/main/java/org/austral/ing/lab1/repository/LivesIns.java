@@ -1,6 +1,6 @@
 package org.austral.ing.lab1.repository;
 
-import org.austral.ing.lab1.model.LivesIn;
+import org.austral.ing.lab1.model.livesIn.LivesIn;
 
 import javax.persistence.EntityManager;
 import java.util.List;

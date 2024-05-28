@@ -1,12 +1,10 @@
 package org.austral.ing.lab1.repository;
 
 import org.austral.ing.lab1.model.*;
+import org.austral.ing.lab1.model.livesIn.LivesIn;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class Inventories {
     private final EntityManager entityManager;
@@ -29,10 +27,12 @@ public class Inventories {
 
         // Add the new stock to the house's inventory
         house.getInventario().addStock(stock);
-
+        // Reattach the house entity to the persistence context
+        house = entityManager.merge(house);
         // Update all LivesIn relationships linked to the house
         for (LivesIn livesIn : livesIns.getFromHouseId(house.getCasa_ID())) {
             livesIn.setCasa(house);
+            // Now you can persist the LivesIn entity
             entityManager.persist(livesIn);
         }
 

@@ -1,5 +1,5 @@
 import {Pressable, View, Text, StyleSheet, Image} from "react-native";
-import {Link} from 'expo-router';
+import {Link} from 'react-router-native'
 
 // Main Page for now
 export default function index() {

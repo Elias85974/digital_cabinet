@@ -1,7 +1,7 @@
 package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
-import org.austral.ing.lab1.TokenResponse;
+//import org.austral.ing.lab1.TokenResponse;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -150,14 +150,14 @@ public class User {
         private String firstName;
         private String lastName;
         private String password;
-        @Transient // This annotation is used because TokenResponse is not a basic type or an Entity
-        private TokenResponse tokenResponse;
-        public TokenResponse getTokenResponse() {
-            return tokenResponse;
-        }
-        public void setTokenResponse(TokenResponse tokenResponse) {
-            this.tokenResponse = tokenResponse;
-        }
+        //@Transient // This annotation is used because TokenResponse is not a basic type or an Entity
+//        private TokenResponse tokenResponse;
+//        public TokenResponse getTokenResponse() {
+//            return tokenResponse;
+//        }
+//        public void setTokenResponse(TokenResponse tokenResponse) {
+//            this.tokenResponse = tokenResponse;
+//        }
         public UserBuilder(String email) {
             this.email = email;
         }

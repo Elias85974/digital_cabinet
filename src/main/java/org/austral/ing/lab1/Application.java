@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import static spark.Spark.halt;
 
-import org.austral.ing.lab1.TokenResponse;
+//import org.austral.ing.lab1.TokenResponse;
 
 public class Application {
 
@@ -104,18 +104,18 @@ public class Application {
 
             //User user = foundUserOptional.get();
             if (foundUser.getPassword().equals(password)) {
-                String token = TokenResponse.generateToken(email);
+                //String token = TokenResponse.generateToken(email);
 
                 // Crear un objeto JSON con el token, el tipo de usuario y el correo electrónico
                 JsonObject jsonResponse = new JsonObject();
-                jsonResponse.addProperty("token", token);
+                //jsonResponse.addProperty("token", token);
                 jsonResponse.addProperty("email", email); // Correo electrónico del usuario
 
                 // Establecer el encabezado Content-Type
                 resp.type("application/json");
 
                 // Establecer el encabezado Authorization con el token en el formato Bearer
-                resp.header("Authorization", "Bearer " + token);
+                //resp.header("Authorization", "Bearer " + token);
 
                 // Devolver el objeto JSON como cuerpo de la respuesta
                 return jsonResponse.toString();
@@ -147,26 +147,26 @@ public class Application {
         });
 
         // Method to validate a token
-        Spark.post("/auth", "application/json", (req, resp) -> {
-            String token = req.headers("Token");
-            String mail = req.headers("Email");
-            if (token == null) {
-                halt(401, "No token provided");
-            } else {
-                try {
-                    boolean status = TokenResponse.isAuthorized(token, mail);
-                    if (!status) {
-                        resp.status(401);
-                    }
-                    else {
-                        resp.status(200);
-                    }
-                } catch (Exception e) {
-                    halt(401, "Failed to authenticate");
-                }
-            }
-            return resp;
-        });
+//        Spark.post("/auth", "application/json", (req, resp) -> {
+//            String token = req.headers("Token");
+//            String mail = req.headers("Email");
+//            if (token == null) {
+//                halt(401, "No token provided");
+//            } else {
+//                try {
+//                    //boolean status = TokenResponse.isAuthorized(token, mail);
+//                    if (!status) {
+//                        resp.status(401);
+//                    }
+//                    else {
+//                        resp.status(200);
+//                    }
+//                } catch (Exception e) {
+//                    halt(401, "Failed to authenticate");
+//                }
+//            }
+//            return resp;
+//        });
 
         /*const verifyJWT = (req, resp, next) => {
             const token = req.headers("x-access-token");

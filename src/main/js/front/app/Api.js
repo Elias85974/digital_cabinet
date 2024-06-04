@@ -75,7 +75,7 @@ export const loginUser = async (credentials) => {
         const responseData = await response.json();
 
         // Verifica si la respuesta incluye un token
-        if (responseData.token) {
+        /*if (responseData.token) {
             const saveData = (data) => {
                 localStorage.setItem('myDataKey', data);
             };
@@ -87,7 +87,7 @@ export const loginUser = async (credentials) => {
         } else {
             // Si la respuesta no incluye un token, lanza un error
             throw new Error('Token not found in response');
-        }
+        }*/
         return responseData; // Devuelve la respuesta completa, que puede contener otros datos además del token
 
     } catch (error) {
@@ -96,7 +96,7 @@ export const loginUser = async (credentials) => {
     }
 };
 
-export const authentication = async() => {
+/*export const authentication = async() => {
     try {
         const data = localStorage.getItem('myDataKey');
         let parsedData = JSON.parse(data);
@@ -114,7 +114,7 @@ export const authentication = async() => {
         console.error("Failed to authenticate user:", error);
         throw error;
     }
-}
+}*/
 
 export const getUserIdByEmail = async () => {
     try {

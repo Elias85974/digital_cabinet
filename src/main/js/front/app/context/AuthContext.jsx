@@ -3,12 +3,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AuthContext = createContext({
     userToken: null,
+    email: null,
     signIn: () => {},
     signOut: () => {},
 });
 
 export function AuthProvider({ children }) {
     const [userToken, setUserToken] = useState(null);
+    const [email, setEmail] = useState(null);
 
     useEffect(() => {
         const loadToken = async () => {
@@ -25,11 +27,12 @@ export function AuthProvider({ children }) {
         loadToken();
     }, []);
 
-    const signIn = async () => {
-        const token = 'dummy-auth-token'; // Replace with your actual sign-in logic
+    const signIn = async (token, email) => {
         try {
             await AsyncStorage.setItem('userToken', token);
+            await AsyncStorage.setItem('email', email);
             setUserToken(token);
+            setEmail(email);
         } catch (e) {
             console.error('Failed to save token', e);
         }
@@ -45,7 +48,7 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ userToken, signIn, signOut }}>
+        <AuthContext.Provider value={{ userToken, email, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
     );

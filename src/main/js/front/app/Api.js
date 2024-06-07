@@ -116,11 +116,8 @@ export const loginUser = async (credentials) => {
     }
 }*/
 
-export const getUserIdByEmail = async () => {
+export const getUserIdByEmail = async (token, email) => {
     try {
-        const data = localStorage.getItem('myDataKey');
-        let parsedData = JSON.parse(data);
-        const email = parsedData.email;
         const response = await fetch(`${API_URL}/user/email/${email}`, {
             method: 'GET',
             headers: {

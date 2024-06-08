@@ -57,6 +57,9 @@ export default function House({navigation}) {
                 <Pressable onPress={()=> navigation.navigate("Homes")}>
                     <Text style={styles.link}>Select another home</Text>
                 </Pressable>
+                <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
+                    <Text style={styles.link}>Manage users</Text>
+                </Pressable>
             </View>
         </View>
     );

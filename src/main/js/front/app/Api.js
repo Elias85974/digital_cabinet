@@ -75,7 +75,7 @@ export const loginUser = async (credentials) => {
         const responseData = await response.json();
 
         // Verifica si la respuesta incluye un token
-        if (responseData.token) {
+        /*if (responseData.token) {
             const saveData = (data) => {
                 localStorage.setItem('myDataKey', data);
             };
@@ -87,7 +87,7 @@ export const loginUser = async (credentials) => {
         } else {
             // Si la respuesta no incluye un token, lanza un error
             throw new Error('Token not found in response');
-        }
+        }*/
         return responseData; // Devuelve la respuesta completa, que puede contener otros datos además del token
 
     } catch (error) {
@@ -96,7 +96,7 @@ export const loginUser = async (credentials) => {
     }
 };
 
-export const authentication = async() => {
+/*export const authentication = async() => {
     try {
         const data = localStorage.getItem('myDataKey');
         let parsedData = JSON.parse(data);
@@ -114,13 +114,10 @@ export const authentication = async() => {
         console.error("Failed to authenticate user:", error);
         throw error;
     }
-}
+}*/
 
-export const getUserIdByEmail = async () => {
+export const getUserIdByEmail = async (token, email) => {
     try {
-        const data = localStorage.getItem('myDataKey');
-        let parsedData = JSON.parse(data);
-        const email = parsedData.email;
         const response = await fetch(`${API_URL}/user/email/${email}`, {
             method: 'GET',
             headers: {
@@ -147,10 +144,16 @@ export const createHouse = async (houseData, userId) => {
             },
             body: JSON.stringify(houseData)
         });
+
+        // Add a delay here
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        console.log(response);
         if (!response.ok) {
             throw new Error('Network response was not okeyyyyyy girl');
         }
-        return await response.json();
+
+        return null; //await response.json();
     } catch (error) {
         console.error("Failed to create house:", error);
         throw error;

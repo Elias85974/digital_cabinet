@@ -14,6 +14,10 @@ public class Stock {
     @GenericGenerator(name = "increment", strategy = "increment")
     private Long stock_ID;
 
+    @OneToOne
+    @JoinColumn(name = "INVENTARIO_ID", referencedColumnName = "INVENTARIO_ID")
+    private Inventory inventario;
+
     @Column(name = "EXPIRATION_DATE")
     private Date vencimiento;
 
@@ -41,6 +45,12 @@ public class Stock {
 
     public Product getProduct() {
         return product;
+    }
+
+    public void setInventario(Inventory inventario) {
+        if (this.inventario != inventario) {
+            this.inventario = inventario;
+        }
     }
 
     public void setProduct(Product product) {

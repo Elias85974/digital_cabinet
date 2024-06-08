@@ -1,12 +1,12 @@
 package org.austral.ing.lab1;
 
-import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.austral.ing.lab1.model.*;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
+import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.repository.*;
 import org.austral.ing.lab1.model.Product;
 import org.austral.ing.lab1.repository.Products;
@@ -254,6 +254,8 @@ public class Application {
                 inventoriesRepo.persist(inventory);
                 house.setInventario(inventory);
                 housesRepo.persist(house);
+                inventory.setHouse(house);
+                inventoriesRepo.persist(inventory);
                 final LivesIn livesIn = LivesIn.create(user, house, true).build();
                 entityManager.persist(livesIn);
                 entityManager.refresh(user);
@@ -412,8 +414,7 @@ public class Application {
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
-                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                return gson.toJson(product);
+                return product.asJson();
             } catch (Exception e) {
                 resp.status(500);
                 return "An error occurred while creating the product, please try again";
@@ -643,6 +644,7 @@ public class Application {
 
     }
 
+    /*
     private static void storedBasicUser(EntityManagerFactory entityManagerFactory) {
         final EntityManager entityManager = entityManagerFactory.createEntityManager();
         final Users users = new Users(entityManager);
@@ -667,6 +669,7 @@ public class Application {
         tx.commit();
         entityManager.close();
     }
+
 
     // This method creates a user, a house and a relationship between them, this was made for testing purposes
     private static void makeAnUserLiveInAHouse(EntityManagerFactory entityManagerFactory) {
@@ -739,7 +742,7 @@ public class Application {
         return Strings.isNullOrEmpty(name) ? name : name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
 
-
+     */
 
 
 }

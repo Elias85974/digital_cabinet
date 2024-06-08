@@ -122,8 +122,8 @@ public class Product {
     }
 
     public String asJson() {
-    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-    return gson.toJson(this);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(this);
     }
 
     private Product(ProductBuilder builder) {

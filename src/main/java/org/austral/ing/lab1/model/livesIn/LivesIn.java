@@ -1,7 +1,7 @@
 package org.austral.ing.lab1.model.livesIn;
 
 import org.austral.ing.lab1.model.House;
-import org.austral.ing.lab1.model.User;
+import org.austral.ing.lab1.model.user.User;
 
 import javax.persistence.*;
 
@@ -43,6 +43,10 @@ public class LivesIn {
 
     public LivesInId getID() {
         return vive_en_ID;
+    }
+
+    public User getUsuario() {
+        return usuario;
     }
 
     public Long getUsuario_ID() {

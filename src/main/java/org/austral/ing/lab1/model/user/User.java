@@ -1,13 +1,15 @@
-package org.austral.ing.lab1.model;
+package org.austral.ing.lab1.model.user;
 
 import com.google.gson.Gson;
-import org.austral.ing.lab1.TokenResponse;
+import org.austral.ing.lab1.model.House;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "USER")
@@ -18,7 +20,7 @@ public class User {
     private Long usuario_ID;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
-    private List<LivesIn> livesIns;
+    private Set<LivesIn> livesIns = new SpecialSet<>();
 
     @Column(name = "FIRST_NAME", nullable = false)
     private String nombre;
@@ -43,9 +45,12 @@ public class User {
 
     public User() { }
 
+    /*
     public static UserBuilder create(String email) {
         return new UserBuilder(email);
     }
+
+     */
 
     public String getNombre() {
         return nombre;
@@ -87,7 +92,7 @@ public class User {
         return token;
     }
 
-    public List<LivesIn> getLivesIns() {
+    public Set<LivesIn> getLivesIns() {
         return livesIns;
     }
 
@@ -100,12 +105,16 @@ public class User {
         return password;
     }
 
+    /*
     private User(UserBuilder builder) {
         this.nombre = builder.firstName;
         this.apellido = builder.lastName;
         this.password = builder.password;
         this.mail = builder.email;
+        this.livesIns = builder.livesIns;
     }
+
+     */
 
     public static User fromJson(String json) {
         final Gson gson = new Gson();
@@ -145,8 +154,10 @@ public class User {
         return houses;
     }
 
+    /*
     public static class UserBuilder {
         private final String email;
+        private final List<LivesIn> livesIns;
         private String firstName;
         private String lastName;
         private String password;
@@ -160,21 +171,7 @@ public class User {
         }
         public UserBuilder(String email) {
             this.email = email;
-        }
-
-        public UserBuilder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public UserBuilder setFirstName(String firstName) {
-            this.firstName = firstName;
-            return this;
-        }
-
-        public UserBuilder setLastName(String lastName) {
-            this.lastName = lastName;
-            return this;
+            this.livesIns = new ArrayList<>();
         }
 
 
@@ -183,5 +180,7 @@ public class User {
         }
 
     }
+
+     */
 
 }

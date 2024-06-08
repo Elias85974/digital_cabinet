@@ -2,9 +2,12 @@ package org.austral.ing.lab1.repository;
 
 import org.austral.ing.lab1.model.*;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
+import org.austral.ing.lab1.model.user.User;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Inventories {
     private final EntityManager entityManager;
@@ -26,18 +29,20 @@ public class Inventories {
         LivesIns livesIns = new LivesIns(entityManager);
 
         // Add the new stock to the house's inventory
-        house.getInventario().addStock(stock);
-        // Reattach the house entity to the persistence context
-        house = entityManager.merge(house);
+        Inventory inventario = house.getInventario();
+        inventario.addStock(stock);
+        stock.setInventario(inventario);
+        entityManager.persist(stock);
+        entityManager.persist(inventario);
+        entityManager.persist(house);
+        /*
         // Update all LivesIn relationships linked to the house
-        for (LivesIn livesIn : livesIns.getFromHouseId(house.getCasa_ID())) {
-            livesIn.setCasa(house);
-            // Now you can persist the LivesIn entity
-            entityManager.persist(livesIn);
+        List<LivesIn> livesInsOfHouse = livesIns.getFromHouseId(house.getCasa_ID());
+        for (LivesIn livesIn : livesInsOfHouse) {
+            // Merge the LivesIn entity to persist the changes
+            entityManager.merge(livesIn);
         }
 
-        // Merge and persist the changes
-        house = entityManager.merge(house);
-        entityManager.persist(house);
+         */
     }
 }

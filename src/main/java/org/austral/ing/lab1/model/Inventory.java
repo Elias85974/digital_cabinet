@@ -2,6 +2,7 @@ package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,6 +19,10 @@ public class Inventory {
     @GenericGenerator(name = "increment", strategy = "increment")
     private Long inventario_ID;
 
+    @OneToOne
+    @JoinColumn(name = "CASA_ID", referencedColumnName = "CASA_ID")
+    private House casa;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Stock> stocks;
 
@@ -27,6 +32,10 @@ public class Inventory {
 
     public void setID(Long inventarioId) {
         this.inventario_ID = inventarioId;
+    }
+
+    public void setHouse(House casa) {
+        this.casa = casa;
     }
 
     public Long getInventario_ID() {

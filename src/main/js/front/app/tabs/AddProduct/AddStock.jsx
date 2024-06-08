@@ -4,7 +4,7 @@ import Picker from 'react-native-picker-select';
 import { getAllProducts, updateHouseInventory } from '../../Api';
 import {router, useLocalSearchParams} from "expo-router";
 
-export default function AddProduct() {
+export default function AddProduct({navigation}) {
     const { houseId } = useLocalSearchParams();
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -57,24 +57,30 @@ export default function AddProduct() {
                     <Text style={styles.title}>Add some products!</Text>
                     <View style={styles.addProd}>
                         <Text style={styles.info}>Select a Product</Text>
-                        <View style={ styles.picker}>
+                        <View style={styles.picker}>
                             <Picker
                                 onValueChange={(value) => handleChanges(value, 'product')}
-                                items={products.map((product) => ({ label: product.nombre, value: product.producto_ID }))}
+                                items={products.map((product) => ({label: product.nombre, value: product.producto_ID}))}
                                 value={selectedProduct}
                             />
                         </View>
                         <TextInput style={styles.input}
-                            placeholder={"Enter quantity of products"}
-                            value={quantity}
-                            onChangeText={(value) => handleChanges(value, 'quantity')}
-                            inputMode="numeric"
+                                   placeholder={"Enter quantity of products"}
+                                   value={quantity}
+                                   onChangeText={(value) => handleChanges(value, 'quantity')}
+                                   inputMode="numeric"
                         />
                         <View style={styles.linksContainer}>
                             <Pressable style={styles.link} onPress={handleSubmit}>
                                 <Text style={{color: 'white', fontSize: 16}}>Add Stock</Text>
                             </Pressable>
                         </View>
+                    </View>
+                    <p></p>
+                    <View style={styles.linksContainer}>
+                        <Pressable onPress={() => navigation.navigate("House")} style={styles.link}>
+                            <Text style={{color: 'white', fontSize: 16}}>Go Back</Text>
+                        </Pressable>
                     </View>
                 </View>
             </ScrollView>

@@ -136,7 +136,7 @@ export default function RegisterProduct({navigation}) {
                             <Text style={{color: 'white', fontSize: 16}}>Go Back</Text>
                         </Pressable>
                     </View>
-            </View>
+                </View>
             </ScrollView>
         </View>
     );

@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
-import {loginUser} from "../Api";
+import {getUserIdByEmail, loginUser} from "../Api";
 import {AuthContext} from "../context/AuthContext";
 import React from "react"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginPage({navigation}) {
+    const {userToken, email} = React.useContext(AuthContext)
     const {signIn} = React.useContext(AuthContext)
     const [user, setUser] = useState({mail: '', password: ''});
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,6 +22,15 @@ export default function LoginPage({navigation}) {
                 if (response) { // Boolean indicating success of login
                     signIn("", response.email);
                     setIsLoggedIn(true);
+
+                    // Use getUserIdByEmail to get the user ID
+                    const userId = await getUserIdByEmail(userToken, response.email);
+                    console.log("User ID:", userId); // Log the user ID to check if it's correct
+
+                    // Save user ID to AsyncStorage
+                    await AsyncStorage.setItem('userId', userId.toString());
+
+
                     navigation.navigate("Homes");
                 }
             }

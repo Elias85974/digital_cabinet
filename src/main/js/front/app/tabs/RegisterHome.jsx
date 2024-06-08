@@ -2,11 +2,11 @@ import React, {useState} from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
 import {createHouse, getUserIdByEmail} from "../Api";
 import {AuthContext} from "../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RegisterHome({navigation}) {
     let [newHouse, setNewHouse] = useState({nombre: '', direccion: ''});
     const {userToken, email} = React.useContext(AuthContext)
-
 
     const isDirection = (direccion) =>
         /^[A-Z0-9.]+\s+[A-Z0-9.]+\s+[0-9]+$/i.test(direccion);
@@ -24,8 +24,10 @@ export default function RegisterHome({navigation}) {
                 } else {
                     const userId = await getUserIdByEmail(userToken,email);
                     await createHouse(newHouse, userId);
-                    navigation.navigate("Homes")
                     alert("House created successfully!");
+                    setNewHouse(prevState => ({...prevState, nombre: '', direccion: ''}));
+                    navigation.navigate('Homes');
+
                 }
             }
             else {
@@ -33,8 +35,6 @@ export default function RegisterHome({navigation}) {
             }
         } catch (error) {
             console.log("Error creating house:", error);
-        } finally {
-            setNewHouse({nombre: '', direccion: ''});
         }
     };
 

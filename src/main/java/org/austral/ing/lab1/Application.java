@@ -241,7 +241,7 @@ public class Application {
         });*/
 
 
-        // Route to create a Id
+        // Route to create a house
         Spark.post("/houses/:userID", "application/json", (req, resp) -> {
             try {
                 final Long userId = Long.valueOf(req.params("userID"));
@@ -264,7 +264,8 @@ public class Application {
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
-                return house.asJson();
+                // house.asJson();
+                return resp;
             } catch (Exception e) {
                 resp.status(500);
                 return "An error occurred while creating the house, please try again";

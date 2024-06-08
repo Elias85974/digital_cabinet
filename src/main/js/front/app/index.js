@@ -3,7 +3,7 @@ import React from 'react';
 import {Pressable, StyleSheet, View, Image, Text} from "react-native";
 
 
-export default function index({navigation}) {
+export default function Index({navigation}) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Digital Cabinet</Text>

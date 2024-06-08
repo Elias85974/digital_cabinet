@@ -6,9 +6,9 @@ import Homes from '../tabs/Homes'
 import Index from "../index";
 import RegisterHome from "../tabs/RegisterHome";
 import RegisterProduct from "../tabs/RegisterProduct";
-import House from "../tabs/House/[houseId]";
+import House from "../tabs/House/House";
 import Product from "../tabs/House/Product/[categoryId]";
-import AddProduct from "../tabs/AddProduct/[houseId]";
+import AddProduct from "../tabs/AddProduct/AddStock";
 
 const Stack = createStackNavigator();
 
@@ -23,7 +23,8 @@ function AuthNavigator() {
             <Stack.Screen options={{headerShown: false}} name="RegisterProduct" component={RegisterProduct} />
             <Stack.Screen options={{headerShown: false}} name="House" component={House} />
             <Stack.Screen options={{headerShown: false}} name="Product" component={Product} />
-            <Stack.Screen options={{headerShown: false}} name="AddProduct" component={AddProduct}/>
+            <Stack.Screen options={{headerShown: false}} name="AddStock" component={AddProduct}/>
+
         </Stack.Navigator>
     );
 }

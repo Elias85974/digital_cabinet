@@ -132,7 +132,7 @@ export default function RegisterProduct({navigation}) {
                     </View>
                     <p></p>
                     <View style={styles.linksContainer}>
-                        <Pressable onPress={() => movePage("Homes")} style={styles.link}>
+                        <Pressable onPress={() => navigation.navigate("House")} style={styles.link}>
                             <Text style={{color: 'white', fontSize: 16}}>Go Back</Text>
                         </Pressable>
                     </View>

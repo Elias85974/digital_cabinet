@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {Link, router, usePathname} from 'expo-router';
 import {Pressable, Text, View} from 'react-native';
-import {authentication, getHouseInventory} from "../../Api";
+import {getHouseInventory} from "../../Api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function House() {
-    const pathname = usePathname();
-    const id = pathname.split('/')[2]; // Assuming your URL is in the format of '/house/:id'
+
+export default function House({navigation}) {
+    const {userToken, email} = React.useContext(AuthContext)
+    const id = AsyncStorage.getItem('houseId');
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
 
@@ -15,7 +16,9 @@ export default function House() {
 
     const getProducts = async () => {
         try {
-            console.log('id is', id);
+            const userId = await AsyncStorage.getItem('userId');
+
+            console.log('userId is', userId);
             const products = await getHouseInventory(id);
             console.log('getHouseInventory response:', products);
             setProducts(products);
@@ -23,21 +26,6 @@ export default function House() {
             setCategories([...new Set(products.map(product => product.category))]);
         } catch (error) {
             console.log("Error getting products:", error);
-        }
-    }
-
-    const movePage = async (url) => {
-        try {
-            if (await authentication() === true) {
-                router.replace(url);
-            }
-            else {
-                alert("You must be logged in to access this page (Session Expired). Going back to LoginPage");
-                router.replace("LoginPage");
-            }
-        }
-        catch (error) {
-            console.log("Error moving to login page:", error);
         }
     }
 
@@ -49,21 +37,25 @@ export default function House() {
                 <View style={styles.container2}>
                     {categories.map((category, index) => (
                         <View key={index}>
-                            <Link href={`/Product/${category.categoryId}`} state={{ filteredProducts: products.filter(product => product.category === category) }}>{category.nombre}</Link>
+                            <Pressable onPress={() => navigation.navigate("Product")}>
+                                <Text state={{ filteredProducts: products.filter(product => product.category === category) }}>
+                                    {category.nombre}
+                                </Text>
+                            </Pressable>
                         </View>
                     ))}
                 </View>
             </View>
             <p></p>
             <View style={styles.linksContainer}>
-                <Pressable onPress={() => movePage(`../AddProduct/${id}`)}>
+                <Pressable onPress={() => navigation.navigate("AddStock")}>
                     <Text style={styles.link}>Add a Product</Text>
                 </Pressable>
-                <Pressable>
-                    <Link href={"../RegisterProduct"} style={styles.link}>Create a Product</Link>
+                <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
+                    <Text style={styles.link}>Create a Product</Text>
                 </Pressable>
-                <Pressable>
-                    <Link href={"../Homes"} style={styles.link}>Select another home</Link>
+                <Pressable onPress={()=> navigation.navigate("Homes")}>
+                    <Text style={styles.link}>Select another home</Text>
                 </Pressable>
             </View>
         </View>
@@ -71,6 +63,7 @@ export default function House() {
 }
 
 import { StyleSheet } from 'react-native';
+import {AuthContext} from "../../context/AuthContext";
 
 const styles = StyleSheet.create({
     container: {

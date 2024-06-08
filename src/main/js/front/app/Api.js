@@ -144,10 +144,16 @@ export const createHouse = async (houseData, userId) => {
             },
             body: JSON.stringify(houseData)
         });
+
+        // Add a delay here
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        console.log(response);
         if (!response.ok) {
             throw new Error('Network response was not okeyyyyyy girl');
         }
-        return await response.json();
+
+        return null; //await response.json();
     } catch (error) {
         console.error("Failed to create house:", error);
         throw error;

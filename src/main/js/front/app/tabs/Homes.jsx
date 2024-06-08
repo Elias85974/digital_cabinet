@@ -1,28 +1,36 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Pressable, StyleSheet, ScrollView} from "react-native";
-import {Link, router} from "expo-router";
-import {authentication, getUserHouses, getUserIdByEmail} from "../Api";
+import {getUserHouses, getUserIdByEmail} from "../Api";
 import LogoutButton from "./Contents/LogoutButton";
 import {AuthContext} from "../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Homes({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
     const [houses, setHouses] = useState([]);
 
-    useEffect(() => {
-        getHouses();
+    useEffect(async () => {
+        await getHouses();
     }, []);
 
     const getHouses = async () => {
         try {
             const userId = await getUserIdByEmail(userToken, email);
             const userHouses = await getUserHouses(userId);
+
+            // Iterar sobre userHouses y guardar cada houseId en AsyncStorage
+            for (let i = 0; i < userHouses.length; i++) {
+                const houseKey = `house${i + 1}`; // Generar una clave única para cada casa
+                let id = userHouses[i].houseId;
+                console.log(id)
+                await AsyncStorage.setItem(houseKey, id.toString());
+            }
+
             setHouses(userHouses);
         } catch (error) {
             console.log("Error getting houses:", error);
         }
     }
-
 
     return (
         <View style={styles.container}>
@@ -33,7 +41,12 @@ export default function Homes({navigation}) {
                 <View style={styles.container2}>
                     {houses.map((house, index) => (
                         <View key={index} style={styles.circle}>
-                            <Pressable onPress={() => navigation.navigate("House")}>
+                            <Pressable onPress={async () => {
+                                // Obtener el houseId de AsyncStorage
+                                const houseKey = `house${index + 1}`; // Generar la clave correcta para cada casa
+                                // Navegar a la página House con el houseId correcto
+                                navigation.navigate("House");
+                            }}>
                                 <Text style={styles.circleText}>{house.name}</Text>
                             </Pressable>
                         </View>

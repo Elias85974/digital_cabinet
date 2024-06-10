@@ -7,11 +7,16 @@ import com.google.gson.reflect.TypeToken;
 import org.austral.ing.lab1.model.*;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
 import org.austral.ing.lab1.model.User;
+import org.austral.ing.lab1.object.Invitation;
 import org.austral.ing.lab1.repository.*;
 import org.austral.ing.lab1.model.Product;
 import org.austral.ing.lab1.repository.Products;
 import org.austral.ing.lab1.model.Category;
 import org.austral.ing.lab1.repository.Categories;
+import org.austral.ing.lab1.model.Inbox;
+import org.austral.ing.lab1.repository.Inboxes;
+import org.austral.ing.lab1.repository.Users;
+import org.austral.ing.lab1.repository.Houses;
 
 import spark.Spark;
 
@@ -20,6 +25,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,32 +49,37 @@ public class Application {
 
         /* 5. Dynamic Content from Db */
         Spark.get("/persisted-users/:id",
-                (req, resp) -> {
-                    final String id = req.params("id");
+            (req, resp) -> {
+                final String id = req.params("id");
 
-                    /* Business Logic */
-                    final EntityManager entityManager = entityManagerFactory.createEntityManager();
-                    final EntityTransaction tx = entityManager.getTransaction();
-                    tx.begin();
-                    User user = entityManager.find(User.class, Long.valueOf(id));
-                    tx.commit();
-                    entityManager.close();
+                /* Business Logic */
+                final EntityManager entityManager = entityManagerFactory.createEntityManager();
+                final EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                User user = entityManager.find(User.class, Long.valueOf(id));
+                tx.commit();
+                entityManager.close();
 
-                    resp.type("application/json");
-                    return user.asJson();
-                }
+                resp.type("application/json");
+                return user.asJson();
+            }
         );
 
-        /* 6. Receiving data from client */
+        // Route to create a user
         Spark.post("/users", "application/json", (req, resp) -> {
             final User user = User.fromJson(req.body());
+            final WishList wishList = new WishList();
 
             /* Begin Business Logic */
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
             final Users users = new Users(entityManager);
+            final WishLists wishLists = new WishLists(entityManager);
             EntityTransaction tx = entityManager.getTransaction();
             tx.begin();
+            //wishList.setUser(user);
+            //user.setWishList(wishList);
             users.persist(user);
+            //wishLists.persist(wishList);
             resp.type("application/json");
             resp.status(201);
             tx.commit();
@@ -273,6 +284,115 @@ public class Application {
             }
         });
 
+        // Route to invite a user to my house
+        Spark.post("/inviteUser/:email/:houseId", (req, resp) -> {
+            String email = req.params("email");
+            Long houseId = Long.valueOf(req.params("houseId"));
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Users usersRepo = new Users(entityManager);
+            final Houses housesRepo = new Houses(entityManager);
+            final Inboxes inboxesRepo = new Inboxes(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            Optional<User> userOptional = usersRepo.findByEmail(email);
+            Optional<House> houseOptional = housesRepo.findById(houseId);
+
+            if (userOptional.isEmpty() || houseOptional.isEmpty()) {
+                resp.status(404);
+                return "User or House not found";
+            }
+
+            User user = userOptional.get();
+            House house = houseOptional.get();
+
+            Inbox inbox = new Inbox();
+            inbox.setUser(user);
+            inbox.setHouse(house);
+
+            inboxesRepo.persist(inbox);
+
+            tx.commit();
+            entityManager.close();
+
+            resp.status(201);
+            return "Inbox created successfully";
+        });
+
+        // Route to get the inbox of a user
+        Spark.get("/getInbox/:userId", (req, resp) -> {
+            Long userId = Long.parseLong(req.params("userId"));
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Inboxes inboxesRepo = new Inboxes(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            List<Long> houseIds = inboxesRepo.getHousesByUserId(userId);
+
+            tx.commit();
+            entityManager.close();
+
+            resp.status(200);
+            resp.type("application/json");
+            return new Gson().toJson(houseIds);
+        });
+
+        // Route to process the invitations of a user
+        Spark.post("/processInvitations", "application/json", (req, resp) -> {
+            // Parse the JSON array from the request body
+            List<Invitation> invitations = new Gson().fromJson(req.body(), new TypeToken<List<Invitation>>(){}.getType());
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Users usersRepo = new Users(entityManager);
+            final Houses housesRepo = new Houses(entityManager);
+            final Inboxes inboxesRepo = new Inboxes(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            for (Invitation invitation : invitations) {
+                Long userId = Long.parseLong(invitation.getUserId());
+                Long houseId = Long.parseLong(invitation.getHouseId());
+                boolean accepted = invitation.isAccepted();
+
+                Optional<User> userOptional = usersRepo.findById(userId);
+                Optional<House> houseOptional = housesRepo.findById(houseId);
+
+                if (userOptional.isEmpty() || houseOptional.isEmpty()) {
+                    resp.status(404);
+                    return "User or House not found";
+                }
+
+                User user = userOptional.get();
+                House house = houseOptional.get();
+
+                // Remove the Inbox relation
+                Inbox inbox = inboxesRepo.findByUserAndHouse(user, house);
+                inboxesRepo.delete(inbox);
+
+                // If the invitation is accepted, create the LivesIn relation
+                if (accepted) {
+                    LivesIn livesIn = new LivesIn();
+                    livesIn.setUsuario(user);
+                    livesIn.setCasa(house);
+                    entityManager.persist(livesIn);
+                }
+            }
+
+            tx.commit();
+            entityManager.close();
+
+            resp.status(200);
+            return "Invitations processed successfully";
+        });
+
         // Route to change the id a user lives in
         Spark.put("/houses/:houseId/users/:token", "application/json", (req, resp) -> {
             final String houseId = req.params("houseId");
@@ -385,6 +505,33 @@ public class Application {
             resp.status(200);
             return inventoryJson;
         });
+
+        // Route to get the products of the user's wishlist
+        Spark.get("/wishList/:userId", (req, resp) -> {
+            Long userId = Long.parseLong(req.params("userId"));
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Users usersRepo = new Users(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            Optional<User> user = usersRepo.findById(userId);
+
+            tx.commit();
+            entityManager.close();
+
+            if (user.isPresent()) {
+                resp.status(200);
+                resp.type("application/json");
+                return user.get().getWishList().asJson();
+            } else {
+                resp.status(404);
+                return "User not found";
+            }
+        });
+
 
         // Route to get all the products of the database
         Spark.get("/products", (req, resp) -> {

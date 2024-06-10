@@ -1,6 +1,7 @@
 package org.austral.ing.lab1.repository;
 
 import org.austral.ing.lab1.model.User;
+import org.austral.ing.lab1.model.WishList;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -20,18 +21,18 @@ public class Users {
 
     public Optional<User> findByEmail(String email) {
         return entityManager
-                .createQuery("SELECT u FROM User u WHERE u.mail LIKE :email", User.class)
-                .setParameter("email", email).getResultList()
-                .stream()
-                .findFirst();
+            .createQuery("SELECT u FROM User u WHERE u.mail LIKE :email", User.class)
+            .setParameter("email", email).getResultList()
+            .stream()
+            .findFirst();
     }
 
     public Optional<User> findByToken(String token) {
         return entityManager
-                .createQuery("SELECT u FROM User u WHERE u.token LIKE :token", User.class)
-                .setParameter("token", token).getResultList()
-                .stream()
-                .findFirst();
+            .createQuery("SELECT u FROM User u WHERE u.token LIKE :token", User.class)
+            .setParameter("token", token).getResultList()
+            .stream()
+            .findFirst();
     }
 
     public List<User> listAll() {

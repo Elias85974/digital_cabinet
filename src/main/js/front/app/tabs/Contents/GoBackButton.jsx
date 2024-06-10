@@ -1,18 +1,17 @@
 import React from 'react';
 import { Pressable, Text, Alert, StyleSheet } from 'react-native';
 import {AuthContext} from "../../context/AuthContext";
+import {useNavigation} from "@react-navigation/native";
 
-const LogoutButton = ({navigation}) => {
-    const {signOut} = React.useContext(AuthContext);
+const GoBackButton = ({navigation}) => {
 
-    const handleSignOut = () => {
-        signOut()
-        navigation.navigate("Index")
+    const handleGoBack = () => {
+        navigation.goBack();
     }
 
     return (
-        <><Pressable onPress={handleSignOut}  style={styles.logoutButton}>
-            <Text style={styles.logoutText}>Logout</Text>
+        <><Pressable onPress={handleGoBack}  style={styles.logoutButton}>
+            <Text style={styles.logoutText}>Go Back</Text>
         </Pressable>
         </>
     );
@@ -39,4 +38,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LogoutButton;
+export default GoBackButton;

@@ -4,14 +4,19 @@ import {getUserHouses, getUserIdByEmail} from "../../Api";
 import LogoutButton from "../Contents/LogoutButton";
 import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useIsFocused} from "@react-navigation/native";
+import GoBackButton from "../Contents/GoBackButton";
 
 export default function Homes({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
     const [houses, setHouses] = useState([]);
+    const isFocused = useIsFocused();
 
-    useEffect(async () => {
-        await getHouses();
-    }, []);
+    useEffect(() => {
+        if (isFocused){
+            getHouses();
+        }
+    }, [isFocused]);
 
     const getHouses = async () => {
         try {
@@ -59,6 +64,8 @@ export default function Homes({navigation}) {
                     <Text style={styles.link}>Create a Home</Text>
                 </Pressable>
                 <LogoutButton navigation={navigation} /> {/* Add the LogoutButton component */}
+                <GoBackButton navigation={navigation}/> {/* Add the GoBackButton component */}
+
             </View>
             </ScrollView>
         </View>
@@ -67,7 +74,7 @@ export default function Homes({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 2,
+        flex: 4,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',

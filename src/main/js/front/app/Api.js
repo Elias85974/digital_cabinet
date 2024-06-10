@@ -291,3 +291,144 @@ export const updateHouseInventory = async (houseId, productId, quantity) => {
         throw error;
     }
 }
+
+
+//WishList logic here
+export const getWishList = async (userId) => {
+    try {
+        const response = await fetch(`${API_URL}/wishList/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to get wish list:", error);
+        throw error;
+    }
+}
+
+export const addProductToWishList = async (product) => {
+    try {
+        const response = await fetch(`${API_URL}/wishList`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(product),
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to add product to wish list:", error);
+        throw error;
+    }
+
+}
+
+export const deleteProductFromWishList = async (products, userId) => {
+    try {
+        const response = await fetch(`${API_URL}/wishList/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: products
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to delete product from wish list:", error);
+        throw error;
+    }
+}
+
+export const updateProductInWishList = async (product) => {
+    try {
+        const response = await fetch(`${API_URL}/wishList/${product.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(product),
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to update product in wish list:", error);
+        throw error;
+    }
+}
+
+
+
+
+// Function to invite a user to a house
+export const inviteUser = async (email, houseId) => {
+    try {
+        const response = await fetch(`${API_URL}/inviteUser/${email}/${houseId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.text(); // This will be the success message
+    } catch (error) {
+        console.error("Failed to invite user:", error);
+        throw error;
+    }
+};
+
+// Function to get the inbox of a user
+export const getInbox = async (userId) => {
+    try {
+        const response = await fetch(`${API_URL}/getInbox/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json(); // This will be the list of house IDs
+    } catch (error) {
+        console.error("Failed to get inbox:", error);
+        throw error;
+    }
+};
+
+// Function to process invitations of the inbox
+export const processInvitations = async (invitations) => {
+    // Invitations is an array of objects with the following structure:
+    // {"userId": "user_id", "houseId": "house_id", "isAccepted": true_or_false}
+    try {
+        const response = await fetch(`${API_URL}/processInvitations`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(invitations),
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.text(); // This will be the success message
+    } catch (error) {
+        console.error("Failed to process invitations:", error);
+        throw error;
+    }
+};

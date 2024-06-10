@@ -1,13 +1,11 @@
 package org.austral.ing.lab1.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.lang.reflect.Type;
-import java.util.List;
 
 @Entity
 @Table(name = "PRODUCT")

@@ -31,7 +31,7 @@ export default function LoginPage({navigation}) {
                     await AsyncStorage.setItem('userId', userId.toString());
 
 
-                    navigation.navigate("Homes");
+                    navigation.navigate("UserThingsBeforeHouse");
                 }
             }
             else {

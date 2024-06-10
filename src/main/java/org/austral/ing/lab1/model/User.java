@@ -43,6 +43,10 @@ public class User {
     @Column(name = "TOKEN")
     private String token;
 
+    @OneToOne
+    @JoinColumn(name = "WISHLIST_ID")
+    private WishList wishList;
+
     public User() { }
 
     /*
@@ -74,6 +78,14 @@ public class User {
 
     public void setMail(String email) {
         this.mail = email;
+    }
+
+    public void setWishList(WishList wishList) {
+        this.wishList = wishList;
+    }
+
+    public WishList getWishList() {
+        return wishList;
     }
 
     public Long getUsuario_ID() {

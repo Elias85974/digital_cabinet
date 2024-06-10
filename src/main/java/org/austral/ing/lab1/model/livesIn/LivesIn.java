@@ -67,6 +67,10 @@ public class LivesIn {
         this.casa = house;
     }
 
+    public void setUsuario(User user) {
+        this.usuario = user;
+    }
+
     public static class LivesInBuilder {
         private final User usuario;
         private final House casa;

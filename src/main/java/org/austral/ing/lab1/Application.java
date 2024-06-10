@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.austral.ing.lab1.model.*;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
-import org.austral.ing.lab1.model.user.User;
+import org.austral.ing.lab1.model.User;
 import org.austral.ing.lab1.repository.*;
 import org.austral.ing.lab1.model.Product;
 import org.austral.ing.lab1.repository.Products;

@@ -1,14 +1,13 @@
-package org.austral.ing.lab1.model.user;
+package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
-import org.austral.ing.lab1.model.House;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
 //import org.austral.ing.lab1.TokenResponse;
+import org.austral.ing.lab1.object.SpecialSet;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
-import {createHouse, getUserIdByEmail} from "../Api";
-import {AuthContext} from "../context/AuthContext";
+import {createHouse, getUserIdByEmail} from "../../Api";
+import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RegisterHome({navigation}) {

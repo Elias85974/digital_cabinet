@@ -1,13 +1,9 @@
 package org.austral.ing.lab1.repository;
 
 import org.austral.ing.lab1.model.*;
-import org.austral.ing.lab1.model.livesIn.LivesIn;
-import org.austral.ing.lab1.model.user.User;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class Inventories {
     private final EntityManager entityManager;

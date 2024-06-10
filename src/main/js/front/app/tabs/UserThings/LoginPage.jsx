@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
-import {getUserIdByEmail, loginUser} from "../Api";
-import {AuthContext} from "../context/AuthContext";
+import {getUserIdByEmail, loginUser} from "../../Api";
+import {AuthContext} from "../../context/AuthContext";
 import React from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

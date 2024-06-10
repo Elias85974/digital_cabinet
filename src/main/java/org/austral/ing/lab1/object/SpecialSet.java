@@ -1,4 +1,4 @@
-package org.austral.ing.lab1.model.user;
+package org.austral.ing.lab1.object;
 
 import org.jetbrains.annotations.NotNull;
 

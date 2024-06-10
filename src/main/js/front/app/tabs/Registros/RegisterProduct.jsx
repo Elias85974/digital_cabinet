@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
 import Picker from 'react-native-picker-select';
 
-import {createProduct, getCategories, createCategory} from "../Api";
+import {createProduct, getCategories, createCategory} from "../../Api";
 
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});

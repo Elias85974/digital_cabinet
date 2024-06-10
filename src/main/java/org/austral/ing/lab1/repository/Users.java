@@ -1,6 +1,6 @@
 package org.austral.ing.lab1.repository;
 
-import org.austral.ing.lab1.model.user.User;
+import org.austral.ing.lab1.model.User;
 
 import javax.persistence.EntityManager;
 import java.util.List;

@@ -1,11 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginPage from '../tabs/LoginPage';
-import RegisterPage from '../tabs/RegisterPage';
-import Homes from '../tabs/Homes'
+import LoginPage from '../tabs/UserThings/LoginPage';
+import RegisterPage from '../tabs/Registros/RegisterPage';
+import Homes from '../tabs/UserThings/Homes'
 import Index from "../index";
-import RegisterHome from "../tabs/RegisterHome";
-import RegisterProduct from "../tabs/RegisterProduct";
+import RegisterHome from "../tabs/Registros/RegisterHome";
+import RegisterProduct from "../tabs/Registros/RegisterProduct";
 import House from "../tabs/House/House";
 import Product from "../tabs/House/Product/[categoryId]";
 import AddProduct from "../tabs/AddProduct/AddStock";

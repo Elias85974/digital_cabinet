@@ -3,9 +3,9 @@ import {View, Text, TextInput, Pressable, StyleSheet, ScrollView} from 'react-na
 import Picker from 'react-native-picker-select';
 import { getAllProducts, updateHouseInventory } from '../../Api';
 import {router, useLocalSearchParams} from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AddProduct({navigation}) {
-    const { houseId } = useLocalSearchParams();
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState('');
@@ -16,7 +16,6 @@ export default function AddProduct({navigation}) {
 
     const fetchProducts = async () => {
         try {
-            console.log('id is ', houseId);
             const fetchedProducts = await getAllProducts();
             setProducts(fetchedProducts);
             console.log('fetchedProducts:', fetchedProducts)
@@ -34,6 +33,7 @@ export default function AddProduct({navigation}) {
     }
 
     const handleSubmit = async () => {
+        const houseId = await AsyncStorage.getItem('houseId');
         try {
             if (!houseId) {
                 alert('Please select a house');

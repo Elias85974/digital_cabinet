@@ -7,7 +7,7 @@ import Index from "../index";
 import RegisterHome from "../tabs/Registros/RegisterHome";
 import RegisterProduct from "../tabs/Registros/RegisterProduct";
 import House from "../tabs/House/House";
-import Product from "../tabs/House/Product/[categoryId]";
+import FilteredProducts from "../tabs/House/Product/FilteredProducts";
 import AddProduct from "../tabs/AddProduct/AddStock";
 import UserThingsBeforeHouse from "../tabs/UserThings/UserThingsBeforeHouse";
 import WishList from "../tabs/UserThings/WishList";
@@ -25,7 +25,7 @@ function AuthNavigator() {
             <Stack.Screen options={{headerShown: false}} name="RegisterHome" component={RegisterHome} />
             <Stack.Screen options={{headerShown: false}} name="RegisterProduct" component={RegisterProduct} />
             <Stack.Screen options={{headerShown: false}} name="House" component={House} />
-            <Stack.Screen options={{headerShown: false}} name="Product" component={Product} />
+            <Stack.Screen options={{headerShown: false}} name="Product" component={FilteredProducts} />
             <Stack.Screen options={{headerShown: false}} name="AddStock" component={AddProduct}/>
             <Stack.Screen options={{headerShown: false}} name="UserThingsBeforeHouse" component={UserThingsBeforeHouse}/>
             <Stack.Screen options={{headerShown: false}} name="WishList" component={WishList} />

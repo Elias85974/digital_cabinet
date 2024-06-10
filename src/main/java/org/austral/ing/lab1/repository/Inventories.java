@@ -3,7 +3,9 @@ package org.austral.ing.lab1.repository;
 import org.austral.ing.lab1.model.*;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Inventories {
     private final EntityManager entityManager;
@@ -14,6 +16,18 @@ public class Inventories {
 
     public Optional<Inventory> getFromId(Long id) {
         return Optional.ofNullable(entityManager.find(Inventory.class, id));
+    }
+
+    public List<Product> getProductsByCategory(Long inventoryId, String category) {
+        Inventory inventory = entityManager.find(Inventory.class, inventoryId);
+        if (inventory != null) {
+            return inventory.getStocks().stream()
+                    .map(Stock::getProduct)
+                    .filter(product -> product.getCategory().getNombre().equals(category))
+                    .collect(Collectors.toList());
+        } else {
+            return null;
+        }
     }
 
     public Inventory persist(Inventory inventory) {

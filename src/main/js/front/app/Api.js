@@ -145,9 +145,6 @@ export const createHouse = async (houseData, userId) => {
             body: JSON.stringify(houseData)
         });
 
-        // Add a delay here
-        await new Promise(resolve => setTimeout(resolve, 3000));
-
         console.log(response);
         if (!response.ok) {
             throw new Error('Network response was not okeyyyyyy girl');
@@ -194,6 +191,25 @@ export const getHouseInventory = async (houseId) => {
         return await response.json();
     } catch (error) {
         console.error("Failed to get house inventory:", error);
+        throw error;
+    }
+}
+
+// Function that gets the list of products of a house and a category
+export const getProductsFromHouseAndCategory = async (houseId, category) => {
+    try {
+        const response = await fetch(`${API_URL}/houses/${houseId}/products/${category}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to get products:", error);
         throw error;
     }
 }

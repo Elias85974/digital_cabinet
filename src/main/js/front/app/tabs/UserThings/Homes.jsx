@@ -11,6 +11,7 @@ export default function Homes({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
     const [houses, setHouses] = useState([]);
     const isFocused = useIsFocused();
+    const houseId = AsyncStorage.getItem('houseId');
 
     useEffect(() => {
         if (isFocused){
@@ -23,6 +24,7 @@ export default function Homes({navigation}) {
             const userId = await getUserIdByEmail(userToken, email);
             const userHouses = await getUserHouses(userId);
 
+            /*
             // Iterar sobre userHouses y guardar cada houseId en AsyncStorage
             for (let i = 0; i < userHouses.length; i++) {
                 const houseKey = `house${i + 1}`; // Generar una clave única para cada casa
@@ -30,6 +32,8 @@ export default function Homes({navigation}) {
                 console.log(id)
                 await AsyncStorage.setItem(houseKey, id.toString());
             }
+
+             */
 
             setHouses(userHouses);
         } catch (error) {
@@ -48,7 +52,7 @@ export default function Homes({navigation}) {
                         <View key={index} style={styles.circle}>
                             <Pressable onPress={async () => {
                                 // Obtener el houseId de AsyncStorage
-                                const houseKey = `house${index + 1}`; // Generar la clave correcta para cada casa
+                                await AsyncStorage.setItem('houseId', house.houseId.toString());
                                 // Navegar a la página House con el houseId correcto
                                 navigation.navigate("House");
                             }}>

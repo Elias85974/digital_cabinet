@@ -77,4 +77,17 @@ public class Inventory {
                 .create();
         return gson.toJson(productsByCategory);
     }
+
+    public String getCategoriesAsJson() {
+        List<String> categories = new ArrayList<>();
+        for (Stock stock : stocks) {
+            Product product = stock.getProduct();
+            Category category = product.getCategory();
+            if (!categories.contains(category.getNombre())) {
+                categories.add(category.getNombre());
+            }
+        }
+        Gson gson = new Gson();
+        return gson.toJson(categories);
+    }
 }

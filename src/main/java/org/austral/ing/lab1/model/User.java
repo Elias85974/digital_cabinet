@@ -134,8 +134,7 @@ public class User {
     }
 
     public String asJson() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+        return "{\"id\":" + usuario_ID + ",\"name\":\"" + nombre + "\",\"lastName\":\"" + apellido + "\",\"email\":\"" + mail + "\",\"password\":\"" + password + "\",\"phone\":\"" + phone + "\"}";
     }
 
 

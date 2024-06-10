@@ -67,26 +67,33 @@ public class Application {
 
         // Route to create a user
         Spark.post("/users", "application/json", (req, resp) -> {
-            final User user = User.fromJson(req.body());
-            final WishList wishList = new WishList();
+            try {
+                final User user = User.fromJson(req.body());
+                final WishList wishList = new WishList();
 
-            /* Begin Business Logic */
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Users users = new Users(entityManager);
-            final WishLists wishLists = new WishLists(entityManager);
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            //wishList.setUser(user);
-            //user.setWishList(wishList);
-            users.persist(user);
-            //wishLists.persist(wishList);
-            resp.type("application/json");
-            resp.status(201);
-            tx.commit();
-            entityManager.close();
-            /* End Business Logic */
+                /* Begin Business Logic */
+                final EntityManager entityManager = entityManagerFactory.createEntityManager();
+                final Users users = new Users(entityManager);
+                final WishLists wishLists = new WishLists(entityManager);
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                wishList.setUser(user);
+                user.setWishList(wishList);
+                users.persist(user);
+                wishLists.persist(wishList);
+                resp.type("application/json");
+                resp.status(201);
+                tx.commit();
+                entityManager.close();
+                /* End Business Logic */
 
-            return user.asJson();
+                return user.asJson();
+            }
+            catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while creating the user, please try again";
+            }
         });
 
         // Requesting a login with a user
@@ -458,9 +465,10 @@ public class Application {
 
             final House house = houseOptional.get();
             final Inventory inventory = house.getInventario();
+            String categories = inventory.getCategoriesAsJson();
 
             resp.type("application/json");
-            return inventory.asJson();
+            return categories;
         });
 
         // Route to update the inventory of a given house
@@ -498,12 +506,38 @@ public class Application {
             final Inventories inventories = new Inventories(entityManager);
             entityManager.persist(stock);
             inventories.addStockToHouse(house, stock);
-            String inventoryJson = house.getInventario().asJson();
             tx.commit();
             entityManager.close();
             /* End Business Logic */
             resp.status(200);
-            return inventoryJson;
+            return "Everything works fine";
+        });
+
+        // Route to get the filtered by categories products of a house
+        Spark.get("/houses/:houseId/products/:category", (req, resp) -> {
+            Long houseId = Long.parseLong(req.params("houseId"));
+            String category = req.params("category");
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Inventories inventoriesRepo = new Inventories(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            List<Product> products = inventoriesRepo.getProductsByCategory(houseId, category);
+
+            tx.commit();
+            entityManager.close();
+
+            if (products != null) {
+                resp.status(200);
+                resp.type("application/json");
+                return new Gson().toJson(products);
+            } else {
+                resp.status(404);
+                return "House not found";
+            }
         });
 
         // Route to get the products of the user's wishlist

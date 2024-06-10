@@ -6,8 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function House({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
-    const id = AsyncStorage.getItem('houseId');
-    const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -16,14 +14,13 @@ export default function House({navigation}) {
 
     const getProducts = async () => {
         try {
-            const userId = await AsyncStorage.getItem('userId');
+            const houseId = await AsyncStorage.getItem('houseId');
 
-            console.log('userId is', userId);
-            const products = await getHouseInventory(id);
-            console.log('getHouseInventory response:', products);
-            setProducts(products);
-            // Get unique categories from products
-            setCategories([...new Set(products.map(product => product.category))]);
+            console.log('house id is:', houseId);
+            const categories = await getHouseInventory(houseId);
+            console.log('categories are:', categories);
+
+            setCategories(categories);
         } catch (error) {
             console.log("Error getting products:", error);
         }
@@ -37,10 +34,13 @@ export default function House({navigation}) {
                 <View style={styles.container2}>
                     {categories.map((category, index) => (
                         <View key={index}>
-                            <Pressable onPress={() => navigation.navigate("Product")}>
-                                <Text state={{ filteredProducts: products.filter(product => product.category === category) }}>
-                                    {category.nombre}
-                                </Text>
+                            <Pressable onPress={async () => {
+                                // Obtener el houseId de AsyncStorage
+                                await AsyncStorage.setItem('category', category.toString());
+                                // Navegar a la página House con el houseId correcto
+                                navigation.navigate("Product");
+                            }}>
+                                <Text>{category}</Text>
                             </Pressable>
                         </View>
                     ))}

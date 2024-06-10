@@ -12,6 +12,7 @@ import AddProduct from "../tabs/AddProduct/AddStock";
 import UserThingsBeforeHouse from "../tabs/UserThings/UserThingsBeforeHouse";
 import WishList from "../tabs/UserThings/WishList";
 import Inbox from "../tabs/UserThings/Inbox";
+import HouseUsersPage from "../tabs/House/HouseUsersPage";
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,7 @@ function AuthNavigator() {
             <Stack.Screen options={{headerShown: false}} name="UserThingsBeforeHouse" component={UserThingsBeforeHouse}/>
             <Stack.Screen options={{headerShown: false}} name="WishList" component={WishList} />
             <Stack.Screen options={{headerShown: false}} name="Inbox" component={Inbox} />
+            <Stack.Screen options={{headerShown: false}} name="HouseUsersPage" component={HouseUsersPage} />
 
         </Stack.Navigator>
     );

@@ -1,5 +1,6 @@
 const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
 /*const jwt = require('jsonwebtoken');*/
+
 // Function to create a user
 export const createUser = async (userData) => {
     try {

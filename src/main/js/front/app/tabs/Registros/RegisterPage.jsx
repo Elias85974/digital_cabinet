@@ -1,6 +1,6 @@
 import React, {useState } from 'react';
 import {View, ScrollView, TextInput, Pressable, StyleSheet, Text} from 'react-native';
-import {createUser} from '../Api';
+import {createUser} from '../../Api';
 
 export default function RegisterPage({navigation}) {
     let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: ''});

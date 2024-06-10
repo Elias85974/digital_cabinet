@@ -1,16 +1,15 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginPage from '../tabs/LoginPage';
-import RegisterPage from '../tabs/RegisterPage';
-import Homes from '../tabs/Homes'
+import LoginPage from '../tabs/UserThings/LoginPage';
+import RegisterPage from '../tabs/Registros/RegisterPage';
+import Homes from '../tabs/UserThings/Homes'
 import Index from "../index";
-import RegisterHome from "../tabs/RegisterHome";
-import RegisterProduct from "../tabs/RegisterProduct";
+import RegisterHome from "../tabs/Registros/RegisterHome";
+import RegisterProduct from "../tabs/Registros/RegisterProduct";
 import House from "../tabs/House/House";
 import Product from "../tabs/House/Product/[categoryId]";
 import AddProduct from "../tabs/AddProduct/AddStock";
-import HouseUsersPage from "../tabs/HouseUsersPage";
-import Wishlist from "../tabs/WishList";
+import WishList from "../tabs/UserThings/WishList";
 
 const Stack = createStackNavigator();
 
@@ -26,9 +25,7 @@ function AuthNavigator() {
             <Stack.Screen options={{headerShown: false}} name="House" component={House} />
             <Stack.Screen options={{headerShown: false}} name="Product" component={Product} />
             <Stack.Screen options={{headerShown: false}} name="AddStock" component={AddProduct}/>
-            <Stack.Screen options={{headerShown: false}} name="HouseUsersPage" component={HouseUsersPage} />
-            <Stack.Screen options={{HeaderShown: false}} name="Wishlist" component={Wishlist} />
-
+            <Stack.Screen options={{headerShown: false}} name="WishList" component={WishList}/>
         </Stack.Navigator>
     );
 }

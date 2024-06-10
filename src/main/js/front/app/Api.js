@@ -146,7 +146,7 @@ export const createHouse = async (houseData, userId) => {
         });
 
         // Add a delay here
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        //await new Promise(resolve => setTimeout(resolve, 3000));
 
         console.log(response);
         if (!response.ok) {

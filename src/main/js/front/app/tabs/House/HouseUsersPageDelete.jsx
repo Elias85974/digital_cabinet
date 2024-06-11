@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, Button, FlatList, TextInput, StyleSheet} from 'react-native';
+import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable} from 'react-native';
 import axios from 'axios';
-import {getUserHouses, getUserIdByEmail} from "../../Api";
+import {getUserHouses, getUserIdByEmail, inviteUser} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
+import LogoutButton from "../Contents/LogoutButton";
+import GoBackButton from "../Contents/GoBackButton";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -17,33 +19,36 @@ const User = ({ user, onEdit, onDelete }) => (
 );
 
 // HouseUsersPage Component
-const HouseUsersPage = ({ route }) => {
+const HouseUsersPageDelete = ({ navigation }) => {
     const {userToken, email} = React.useContext(AuthContext)
-
     const [house, setHouse] = useState(null);
     const [users, setUsers] = useState([]);
     const [inviteEmail, setInviteEmail] = useState('');
     const isFocused = useIsFocused();
     const userId = AsyncStorage.getItem('userId');
-
+    //const houseId = AsyncStorage.getItem('houseId');
+    const [houseId, setHouseId] = useState(null);
 
     useEffect(() => {
-        if (isFocused){
-            getUserHouses();
-        }
-    }, [isFocused]);
+        getHouseUsers();
 
-    const getUserHouses = async () => {
+    }, [ houseId]);
+
+    const getHouseUsers = async () => {
         try {
-            const userId = await getUserIdByEmail(userToken, email);
-            const userHouses = await getUserHouses(userId);
+            const houseUsers = await getHouseUsers(houseId);
 
-            setUsers(userHouses);
+            if (Array.isArray(houseUsers)) {
+                setUsers(houseUsers);
+            } else {
+                console.error('getHouseUsers did not return an array:', houseUsers);
+                setUsers([]);
+            }
         } catch (error) {
             console.log("Error getting users:", error);
+            setUsers([]);
         }
     }
-
     //idem para esto
     const handleDelete = (userId) => {
         // Make a DELETE request to delete the user
@@ -57,29 +62,37 @@ const HouseUsersPage = ({ route }) => {
                 console.error('Error deleting user:', error);
             });
     };
-
     return (
-        <View>
-            {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
-            <FlatList
-                data={users}
-                keyExtractor={item => item.usuario_ID.toString()}
-                renderItem={({ item }) => (
-                    <User user={item} onEdit={handleEdit} onDelete={handleDelete} />
-                )}
-            />
-            <Button title="Add User" onPress={() => {/* Handle add user */}} />
-            <TextInput
-                value={inviteEmail}
-                onChangeText={setInviteEmail}
-                placeholder="Enter email to invite"
-            />
-            <Button title="Invite User" onPress={handleInvite} />
+        <View style={styles.container}>
+            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+                <Text style={styles.title}>Digital Cabinet</Text>
+                    <Text style={styles.info}>Press a user to delete it.</Text>
+                        <View style={styles.logInCont}>
+                            {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
+                            <View style={styles.container2}>
+                                {users.map((user, index) => (
+                                    <View key={index} style={styles.circle}>
+                                        <Pressable onPress={ () => {
+                                            navigation.navigate("A ningun lado");
+                                        }}>
+                                            <Text style={styles.circleText}>{user.name}</Text>
+                                        </Pressable>
+                                    </View>
+                                ))}
+                            </View>
+                        </View>
+                <p></p>
+                <View style={styles.linksContainer}>
+                    <GoBackButton navigation={navigation}/> {/* Add the GoBackButton component */}
+
+                </View>
+            </ScrollView>
         </View>
     );
+
 };
 
-export default HouseUsersPage;
+export default HouseUsersPageDelete;
 
 const styles = StyleSheet.create({
     container: {

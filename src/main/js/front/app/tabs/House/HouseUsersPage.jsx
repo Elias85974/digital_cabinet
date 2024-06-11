@@ -19,9 +19,8 @@ const User = ({ user, onEdit, onDelete }) => (
 );
 
 // HouseUsersPage Component
-const HouseUsersPage = ({ route }) => {
+const HouseUsersPage = ({ navigation }) => {
     const {userToken, email} = React.useContext(AuthContext)
-
     const [house, setHouse] = useState(null);
     const [users, setUsers] = useState([]);
     const [inviteEmail, setInviteEmail] = useState('');
@@ -31,31 +30,25 @@ const HouseUsersPage = ({ route }) => {
     const [houseId, setHouseId] = useState(null);
 
     useEffect(() => {
-        const fetchHouseId = async () => {
-            const id = await AsyncStorage.getItem('houseId');
-            setHouseId(id);
-        };
+        getHouseUsers();
 
-        fetchHouseId();
-    }, []);
+    }, [ houseId]);
 
-    useEffect(() => {
-        if (isFocused){
-            getUserHouses();
-        }
-    }, [isFocused]);
-
-    const getUserHouses = async () => {
+    const getHouseUsers = async () => {
         try {
-            const userId = await getUserIdByEmail(userToken, email);
-            const userHouses = await getUserHouses(userId);
+            const houseUsers = await getHouseUsers(houseId);
 
-            setUsers(userHouses);
+            if (Array.isArray(houseUsers)) {
+                setUsers(houseUsers);
+            } else {
+                console.error('getHouseUsers did not return an array:', houseUsers);
+                setUsers([]);
+            }
         } catch (error) {
             console.log("Error getting users:", error);
+            setUsers([]);
         }
     }
-
     //envío invitación a usuarios para mi casa
     const handleInvite = () => {
         // Handle invite user
@@ -80,7 +73,7 @@ const HouseUsersPage = ({ route }) => {
                         {users.map((user, index) => (
                             <View key={index} style={styles.circle}>
                                 <Pressable onPress={ () => {
-                                    navigation.navigate("House");
+                                    navigation.navigate("A ningun lado");
                                 }}>
                                     <Text style={styles.circleText}>{user.name}</Text>
                                 </Pressable>
@@ -93,15 +86,13 @@ const HouseUsersPage = ({ route }) => {
                     <Pressable onPress={() => navigation.navigate("HouseUsersPageDelete")}>
                         <Text style={styles.link}>Delete a user</Text>
                     </Pressable>
-                    <Pressable onPress={() => navigation.navigate("HouseUsersPageEdit")}>
-                        <Text style={styles.link}>Edit a user</Text>
-                    </Pressable>
+
                     <TextInput style={styles.input}
                                placeholder="Mail"
                                value={users.mail}
                                onChangeText={(value) => inviteUser(value, houseId)}
                     />
-                    <Pressable style={styles.link} onPress={inviteUser}>
+                    <Pressable style={styles.link} onPress={() => inviteUser(inviteEmail, houseId)}>
                         <Text style={{color: 'white', fontSize: 16}}>Invite a user</Text>
                     </Pressable>
 

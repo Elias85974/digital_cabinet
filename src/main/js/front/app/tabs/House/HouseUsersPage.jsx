@@ -27,8 +27,17 @@ const HouseUsersPage = ({ route }) => {
     const [inviteEmail, setInviteEmail] = useState('');
     const isFocused = useIsFocused();
     const userId = AsyncStorage.getItem('userId');
-    const houseId = AsyncStorage.getItem('houseId');
+    //const houseId = AsyncStorage.getItem('houseId');
+    const [houseId, setHouseId] = useState(null);
 
+    useEffect(() => {
+        const fetchHouseId = async () => {
+            const id = await AsyncStorage.getItem('houseId');
+            setHouseId(id);
+        };
+
+        fetchHouseId();
+    }, []);
 
     useEffect(() => {
         if (isFocused){

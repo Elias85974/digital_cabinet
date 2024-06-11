@@ -407,24 +407,22 @@ export const getWishList = async (userId) => {
     }
 }
 
-export const addProductToWishList = async (product) => {
+export const addProductToWishList = async (product, userId) => {
     try {
-        const response = await fetch(`${API_URL}/wishList`, {
+        const response = await fetch(`${API_URL}/wishList/${userId}/${product}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(product),
         });
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        return await response.json();
+        return await response.text();
     } catch (error) {
         console.error("Failed to add product to wish list:", error);
         throw error;
     }
-
 }
 
 export const deleteProductFromWishList = async (products, userId) => {

@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,9 +44,8 @@ public class User {
     @Column(name = "TOKEN")
     private String token;
 
-    @OneToOne
-    @JoinColumn(name = "WISHLIST_ID")
-    private WishList wishList;
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+    private Set<WishList> wishLists = new HashSet<>();
 
     public User() { }
 
@@ -80,12 +80,12 @@ public class User {
         this.mail = email;
     }
 
-    public void setWishList(WishList wishList) {
-        this.wishList = wishList;
+    public void addWishList(WishList wishList) {
+        this.wishLists.add(wishList);
     }
 
-    public WishList getWishList() {
-        return wishList;
+    public Set<WishList> getWishLists() {
+        return wishLists;
     }
 
     public Long getUsuario_ID() {
@@ -115,6 +115,21 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getWishlistsAsJson() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        int i = 0;
+        for (WishList wishList : wishLists) {
+            sb.append(wishList.asJson());
+            if (i < wishLists.size() - 1) {
+                sb.append(",");
+            }
+            i++;
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     /*

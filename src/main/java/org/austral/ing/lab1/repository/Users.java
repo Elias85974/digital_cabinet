@@ -1,5 +1,6 @@
 package org.austral.ing.lab1.repository;
 
+import org.austral.ing.lab1.model.Product;
 import org.austral.ing.lab1.model.User;
 import org.austral.ing.lab1.model.WishList;
 
@@ -61,5 +62,22 @@ public class Users {
         entityManager.merge(user);
 
         return user;
+    }
+
+    public void addProductToWishList(Long userId, String product) {
+        // Get the user
+        User user = entityManager.find(User.class, userId);
+
+        // Create a new wishlist for the product
+        WishList wishList = new WishList();
+        wishList.setProduct(product);
+
+        // Add the wishlist to the user's list of wishlists
+        user.addWishList(wishList);
+        wishList.setUsuario(user);
+
+        // Persist the updated user and the new wishlist
+        entityManager.persist(wishList);
+        entityManager.persist(user);
     }
 }

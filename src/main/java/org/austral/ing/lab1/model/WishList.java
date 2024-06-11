@@ -2,7 +2,6 @@ package org.austral.ing.lab1.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "WISHLIST")
@@ -12,17 +11,12 @@ public class WishList {
   @GenericGenerator(name = "increment", strategy = "increment")
   private Long wishList_Id;
 
-  @OneToOne
-  @JoinColumn(name = "USUARIO_ID")
-  private User user;
+  @ManyToOne
+  @JoinColumn(name = "USER_ID")
+  private User usuario;
 
-  @ManyToMany
-  @JoinTable(
-      name = "WISHLIST_PRODUCT",
-      joinColumns = @JoinColumn(name = "WISHLIST_ID"),
-      inverseJoinColumns = @JoinColumn(name = "PRODUCTO_ID")
-  )
-  private List<Product> products;
+  @Column(name = "PRODUCT")
+  private String product;
 
   // getters and setters
 
@@ -30,19 +24,23 @@ public class WishList {
     return wishList_Id;
   }
 
-  public User getUser() {
-    return user;
+  public User getUsuario() {
+    return usuario;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUsuario(User user) {
+    this.usuario = user;
   }
 
-  public List<Product> getProducts() {
-    return products;
+  public String getProduct() {
+    return product;
   }
 
   public String asJson() {
-    return "{\"id\":" + wishList_Id + ",\"user\":" + user.getUsuario_ID() + ",\"products\":" + products + "}";
+    return "{\"id\":" + wishList_Id + ",\"user\":" + usuario.getUsuario_ID() + ",\"product\":\"" + product + "\"}";
+  }
+
+  public void setProduct(String product) {
+    this.product = product;
   }
 }

@@ -73,7 +73,6 @@ public class Application {
         Spark.post("/users", "application/json", (req, resp) -> {
             try {
                 final User user = User.fromJson(req.body());
-                final WishList wishList = new WishList();
 
                 /* Begin Business Logic */
                 final EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -81,10 +80,7 @@ public class Application {
                 final WishLists wishLists = new WishLists(entityManager);
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
-                wishList.setUser(user);
-                user.setWishList(wishList);
                 users.persist(user);
-                wishLists.persist(wishList);
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
@@ -697,11 +693,33 @@ public class Application {
             if (user.isPresent()) {
                 resp.status(200);
                 resp.type("application/json");
-                return user.get().getWishList().asJson();
+                return user.get().getWishlistsAsJson();
             } else {
                 resp.status(404);
                 return "User not found";
             }
+        });
+
+        // Route to add a product to the user's wishlist
+        Spark.post("/wishList/:userId/:product", "application/json", (req, resp) -> {
+            Long userId = Long.parseLong(req.params("userId"));
+            String product = req.params("product");
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Users usersRepo = new Users(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            // Call the method to add product to wishlist
+            usersRepo.addProductToWishList(userId, product);
+
+            tx.commit();
+            entityManager.close();
+
+            resp.status(200);
+            return "Product added to wishlist successfully";
         });
 
 

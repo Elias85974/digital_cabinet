@@ -7,7 +7,7 @@ import Tuple from "../Contents/Tuple";
 export default function WishList({navigation}) {
     const [wishList, setWishList] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
-    const userId = AsyncStorage.getItem("userId");
+    const isFocused = navigation.isFocused();
 
     const mockWishList = [
         { id: '1', name: 'Bread', checked: false },
@@ -16,28 +16,28 @@ export default function WishList({navigation}) {
     ];
 
     useEffect(() => {
-        setWishList(mockWishList);
-    }, []);
-
-
-    useEffect(() => {
-        loadWishList();
-    }, []);
+        if (isFocused) {
+            loadWishList().then(() => console.log("WishList loaded"));
+        }
+    }, [isFocused]);
 
 
     const loadWishList = async () => {
         try {
+            const userId = await AsyncStorage.getItem('userId');
             const list = await getWishList(userId);
             setWishList(list);
         } catch (error){
-            console.log(error)
+            console.log(error);
         }
     }
 
     const handleAddProduct = async () => {
+        const userId = await AsyncStorage.getItem('userId');
         const newProduct = prompt("Enter the new product name:");
-        addProductToWishList(newProduct);
-        loadWishList();
+        console.log(newProduct);
+        await addProductToWishList(newProduct, userId);
+        await loadWishList();
     }
 
     const handleCheck = (index) => {
@@ -53,11 +53,12 @@ export default function WishList({navigation}) {
     }
 
     const handleUpdate = async () => {
+        const userId = await AsyncStorage.getItem('userId');
         const selectedProductNames = selectedItems.map(item => item.name);
         console.log(selectedProductNames);
-        deleteProductFromWishList(selectedProductNames, userId);
+        await deleteProductFromWishList(selectedProductNames, userId);
         setSelectedItems([]);
-        loadWishList();
+        await loadWishList();
     }
 
     return (
@@ -72,7 +73,7 @@ export default function WishList({navigation}) {
                                     <TouchableOpacity style={styles.checkbox} onPress={() => handleCheck(index)}>
                                         {item.checked && <View style={styles.check} />}
                                     </TouchableOpacity>
-                                    <Text style={styles.label}>{item.name}</Text>
+                                    <Text style={styles.label}>{item.product}</Text>
                                 </View>
                             ))}
                         </View>

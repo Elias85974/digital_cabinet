@@ -15,6 +15,7 @@ import Inbox from "../tabs/UserThings/Inbox";
 import HouseUsersPage from "../tabs/House/HouseUsersPage";
 import HouseUsersPageDelete from "../tabs/House/HouseUsersPageDelete";
 import LowOnStockProducts from "../tabs/House/Product/LowOnStockProducts";
+import { App as PieChart } from '../tabs/Graphs/PieChart'; // Import the PieChart component
 
 const Stack = createStackNavigator();
 
@@ -35,10 +36,7 @@ function AuthNavigator() {
             <Stack.Screen options={{headerShown: false}} name="Inbox" component={Inbox} />
             <Stack.Screen options={{headerShown: false}} name="HouseUsersPage" component={HouseUsersPage} />
             <Stack.Screen options={{headerShown: false}} name="HouseUsersPageDelete" component={HouseUsersPageDelete} />
-            <Stack.Screen options={{headerShown: false}} name="LowOnStock" component={LowOnStockProducts} />
-
-
-
+            <Stack.Screen options={{headerShown: false}} name="LowOnStock" component={LowOnStockProducts} /><Stack.Screen options={{headerShown: false}} name="PieChart" component={(props) => <PieChart navigation={props.navigation} />} />
 
         </Stack.Navigator>
     );

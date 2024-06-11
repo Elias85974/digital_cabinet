@@ -66,19 +66,32 @@ const HouseUsersPage = ({ navigation }) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const houseId = await AsyncStorage.getItem('houseId');
         const userId = await AsyncStorage.getItem('userId');
+        const token = await AsyncStorage.getItem('userToken');
 
         // Check if the email is valid
         if (emailRegex.test(inviteEmail)) {
-            // If the email is valid, call the inviteUser function
-            console.log("am i calling the invite method?");
-            await inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
-            alert("The invitation was sent");
-            setInviteEmail('');
+            // If the email is valid, check if the user exists
+            try {
+                const invitedUserId = await getUserIdByEmail(token, inviteEmail);
+                if (invitedUserId) {
+                    // If the user exists, call the inviteUser function
+                    console.log("am i calling the invite method?");
+                    await inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
+                    alert("The invitation was sent");
+                    setInviteEmail('');
+                } else {
+                    // If the user does not exist, show an alert
+                    alert('User does not exist.');
+                }
+            } catch (error) {
+                // Handle the error from getUserIdByEmail
+                alert('An error occurred while checking if the user exists :(');
+            }
         } else {
             // If the email is not valid, show an alert
             alert('Please enter a valid email.');
         }
-    };
+    }
 
     return (
         <View style={styles.container}>

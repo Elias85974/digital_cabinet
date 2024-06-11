@@ -5,6 +5,12 @@ public class Invitation {
   private String houseId;
   private boolean state;
 
+  public Invitation(String userId, String houseId, boolean state) {
+      this.userId = userId;
+      this.houseId = houseId;
+      this.state = state;
+  }
+
   // Getters and setters
   public String getUserId() {
     return userId;

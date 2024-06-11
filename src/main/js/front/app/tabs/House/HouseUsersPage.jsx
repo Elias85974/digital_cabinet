@@ -25,18 +25,25 @@ const HouseUsersPage = ({ navigation }) => {
     const [users, setUsers] = useState([]);
     const [inviteEmail, setInviteEmail] = useState('');
     const isFocused = useIsFocused();
-    const userId = AsyncStorage.getItem('userId');
+    // const userId = AsyncStorage.getItem('userId');
     //const houseId = AsyncStorage.getItem('houseId');
-    const [houseId, setHouseId] = useState(null);
+    //const [houseId, setHouseId] = useState('');
 
+    /*
     useEffect(() => {
-        getHouseUsers();
-
-    }, [ houseId]);
+        if (isFocused) {
+            console.log("IM HERE, PLIS");
+            getHouseUsers().then(r => console.log("Users loaded")).catch(e => console.log("Error loading users"));
+        }
+    }, [ isFocused ]);
 
     const getHouseUsers = async () => {
         try {
-            const houseUsers = await getHouseUsers(houseId);
+            const houseId = await AsyncStorage.getItem('houseId');
+            const userId = await AsyncStorage.getItem('userId');
+            console.log("what the hell");
+            const houseUsers = await getUserHouses();
+            console.log("is going on?");
 
             if (Array.isArray(houseUsers)) {
                 setUsers(houseUsers);
@@ -49,18 +56,27 @@ const HouseUsersPage = ({ navigation }) => {
             setUsers([]);
         }
     }
-    //envío invitación a usuarios para mi casa
-    const handleInvite = () => {
-        // Handle invite user
-        axios.post('/api/invitations', { email: inviteEmail })
-            .then(response => {
-                // Handle successful response
-                console.log('Invitation sent:', response.data);
-            })
-            .catch(error => {
-                // Handle error
-                console.error('Error sending invitation:', error);
-            });
+
+     */
+
+    // Envío invitación a usuarios para mi casa
+    const handleInvite = async () => {
+        // Regular expression for email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const houseId = await AsyncStorage.getItem('houseId');
+        const userId = await AsyncStorage.getItem('userId');
+
+        // Check if the email is valid
+        if (emailRegex.test(inviteEmail)) {
+            // If the email is valid, call the inviteUser function
+            console.log("am i calling the invite method?");
+            await inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
+            alert("The invitation was sent");
+            setInviteEmail('');
+        } else {
+            // If the email is not valid, show an alert
+            alert('Please enter a valid email.');
+        }
     };
 
     return (
@@ -73,7 +89,10 @@ const HouseUsersPage = ({ navigation }) => {
                         {users.map((user, index) => (
                             <View key={index} style={styles.circle}>
                                 <Pressable onPress={ () => {
-                                    navigation.navigate("A ningun lado");
+                                    {/*
+                                        navigation.navigate("A ningun lado");
+                                    */
+                                    }
                                 }}>
                                     <Text style={styles.circleText}>{user.name}</Text>
                                 </Pressable>
@@ -89,14 +108,15 @@ const HouseUsersPage = ({ navigation }) => {
 
                     <TextInput style={styles.input}
                                placeholder="Mail"
-                               value={users.mail}
-                               onChangeText={(value) => inviteUser(value, houseId)}
+                               value={inviteEmail} // Use the mail state variable here
+                               onChangeText={(value) => setInviteEmail(value)} // Update the mail state when the text input changes
                     />
-                    <Pressable style={styles.link} onPress={() => inviteUser(inviteEmail, houseId)}>
+                    <Pressable style={styles.link} onPress={async() => await handleInvite()}>
                         <Text style={{color: 'white', fontSize: 16}}>Invite a user</Text>
                     </Pressable>
 
                     <GoBackButton navigation={navigation}/> {/* Add the GoBackButton component */}
+                    <LogoutButton navigation={navigation}/> {/* Add the LogoutButton component */}
 
                 </View>
             </ScrollView>

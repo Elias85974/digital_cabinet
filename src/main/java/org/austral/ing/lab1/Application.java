@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static spark.Spark.halt;
 
@@ -295,9 +296,12 @@ public class Application {
         });
 
         // Route to invite a user to my house
-        Spark.post("/inviteUser/:email/:houseId", (req, resp) -> {
-            String email = req.params("email");
-            Long houseId = Long.valueOf(req.params("houseId"));
+        Spark.put("/inviteUser", "application/json", (req, resp) -> {
+            // Parse the JSON body of the request
+            JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
+            String userId = jsonObject.get("invitingUser").getAsString();
+            String invitedUserEmail = jsonObject.get("invitedUser").getAsString();
+            Long houseId = jsonObject.get("houseId").getAsLong();
 
             // Begin Business Logic
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -308,7 +312,49 @@ public class Application {
             EntityTransaction tx = entityManager.getTransaction();
             tx.begin();
 
-            Optional<User> userOptional = usersRepo.findByEmail(email);
+            Optional<User> invitingUserOptional = usersRepo.findById(Long.parseLong(userId));
+            Optional<User> invitedUserOptional = usersRepo.findByEmail(invitedUserEmail);
+            Optional<House> houseOptional = housesRepo.findById(houseId);
+
+            if (invitingUserOptional.isEmpty() || invitedUserOptional.isEmpty() || houseOptional.isEmpty()) {
+                resp.status(404);
+                return "Inviting User, Invited User or House not found";
+            }
+
+            User invitingUser = invitingUserOptional.get();
+            User invitedUser = invitedUserOptional.get();
+            House house = houseOptional.get();
+
+            Inbox inbox = new Inbox();
+            inbox.setInviterUsername(invitingUser.getNombre());
+            inbox.setInvitedUser(invitedUser);
+            inbox.setHouse(house);
+
+            inboxesRepo.persist(inbox);
+
+            tx.commit();
+            entityManager.close();
+
+            resp.status(201);
+            return "Inbox created successfully";
+        });
+
+        // Route to remove users from my house
+        // Route to delete a user from a house
+        Spark.delete("/houses/:houseId/users/:userId", (req, resp) -> {
+            Long houseId = Long.parseLong(req.params("houseId"));
+            Long userId = Long.parseLong(req.params("userId"));
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Users usersRepo = new Users(entityManager);
+            final Houses housesRepo = new Houses(entityManager);
+            final LivesIns livesInsRepo = new LivesIns(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            Optional<User> userOptional = usersRepo.findById(userId);
             Optional<House> houseOptional = housesRepo.findById(houseId);
 
             if (userOptional.isEmpty() || houseOptional.isEmpty()) {
@@ -319,17 +365,20 @@ public class Application {
             User user = userOptional.get();
             House house = houseOptional.get();
 
-            Inbox inbox = new Inbox();
-            inbox.setUser(user);
-            inbox.setHouse(house);
+            LivesIn livesIn = livesInsRepo.findByUserAndHouse(user, house);
 
-            inboxesRepo.persist(inbox);
+            if (livesIn == null) {
+                resp.status(404);
+                return "User is not living in this house";
+            }
+
+            livesInsRepo.delete(livesIn);
 
             tx.commit();
             entityManager.close();
 
-            resp.status(201);
-            return "Inbox created successfully";
+            resp.status(200);
+            return "User successfully removed from house";
         });
 
         // Route to get the inbox of a user
@@ -343,20 +392,27 @@ public class Application {
             EntityTransaction tx = entityManager.getTransaction();
             tx.begin();
 
-            List<Long> houseIds = inboxesRepo.getHousesByUserId(userId);
+            List<Map<String, Object>> inboxMessage = inboxesRepo.getHousesByUserId(userId);
 
             tx.commit();
             entityManager.close();
 
             resp.status(200);
             resp.type("application/json");
-            return new Gson().toJson(houseIds);
+            return new Gson().toJson(inboxMessage);
         });
 
         // Route to process the invitations of a user
         Spark.post("/processInvitations", "application/json", (req, resp) -> {
             // Parse the JSON array from the request body
-            List<Invitation> invitations = new Gson().fromJson(req.body(), new TypeToken<List<Invitation>>(){}.getType());
+            List<Map<String, Object>> invitationMaps = new Gson().fromJson(req.body(), new TypeToken<List<Map<String, Object>>>(){}.getType());
+
+            List<Invitation> invitations = invitationMaps.stream().map(invitationMap -> {
+                String userId = (String) invitationMap.get("userId");
+                String houseId = (String) invitationMap.get("houseId");
+                boolean isAccepted = (Boolean) invitationMap.get("isAccepted");
+                return new Invitation(userId, houseId, isAccepted);
+            }).collect(Collectors.toList());
 
             // Begin Business Logic
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -389,9 +445,7 @@ public class Application {
 
                 // If the invitation is accepted, create the LivesIn relation
                 if (accepted) {
-                    LivesIn livesIn = new LivesIn();
-                    livesIn.setUsuario(user);
-                    livesIn.setCasa(house);
+                    LivesIn livesIn = LivesIn.create(user, house, false).build();
                     entityManager.persist(livesIn);
                 }
             }
@@ -829,6 +883,33 @@ public class Application {
             resp.type("application/json");
             return user.getHousesAsJson();
         });
+
+        // Route to get the users living in the same house
+        Spark.get("/houses/:houseId/users", (req, resp) -> {
+            Long houseId = Long.parseLong(req.params("houseId"));
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Houses housesRepo = new Houses(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            List<Map<String, String>> usersJson = housesRepo.getUsersOfHouse(houseId);
+
+            tx.commit();
+            entityManager.close();
+
+            if (usersJson != null) {
+                resp.status(200);
+                resp.type("application/json");
+                return new Gson().toJson(usersJson);
+            } else {
+                resp.status(404);
+                return "House not found";
+            }
+        });
+
 
         // Route to get the ID of a user by email
         Spark.get("/user/email/:email", (req, resp) -> {

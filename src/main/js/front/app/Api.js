@@ -179,6 +179,25 @@ export const getUserHouses = async (userId) => {
     }
 }
 
+// Function to get the list of users of a house
+export const getUsersOfAHouse = async (houseId) => {
+    try {
+        const response = await fetch(`${API_URL}/houses/${houseId}/users`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to get house users:", error);
+        throw error;
+    }
+}
+
 // function that get the list of stocks of a house
 export const getHouseInventory = async (houseId) => {
     try {
@@ -416,13 +435,14 @@ export const updateProductInWishList = async (product) => {
 
 
 // Function to invite a user to a house
-export const inviteUser = async (email, houseId) => {
+export const inviteUser = async (data) => {
     try {
-        const response = await fetch(`${API_URL}/inviteUser/${email}/${houseId}`, {
-            method: 'POST',
+        const response = await fetch(`${API_URL}/inviteUser`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify(data)
         });
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -434,8 +454,24 @@ export const inviteUser = async (email, houseId) => {
     }
 };
 
+// Function to delete a user from a house
+export const deleteUserFromHouse = async (houseId, userId) => {
+    try {
+        const response = await fetch(`${API_URL}/houses/${houseId}/users/${userId}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.text(); // This will be the success message
+    } catch (error) {
+        console.error("Failed to delete user from house:", error);
+        throw error;
+    }
+};
+
 // Function to get the inbox of a user
-export const getInbox = async (userId) => {
+export const getUsersInbox = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/getInbox/${userId}`, {
             method: 'GET',

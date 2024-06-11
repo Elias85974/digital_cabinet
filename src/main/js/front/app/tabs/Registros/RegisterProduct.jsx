@@ -50,6 +50,7 @@ export default function RegisterProduct({navigation}) {
         setCategories([...categories, createdCategory]);
         setNewProduct({...newProduct, categoryId: createdCategory.id});
         setShowNewCategoryInput(false);
+        setNewCategory('');
     };
 
     const handleCreateProduct = async() => {

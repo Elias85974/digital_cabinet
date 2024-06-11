@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable} from 'react-native';
 import axios from 'axios';
-import {getUserHouses, getUserIdByEmail, inviteUser} from "../../Api";
+import {deleteUserFromHouse, getUserHouses, getUserIdByEmail, getUsersOfAHouse, inviteUser} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
@@ -27,16 +27,21 @@ const HouseUsersPageDelete = ({ navigation }) => {
     const isFocused = useIsFocused();
     const userId = AsyncStorage.getItem('userId');
     //const houseId = AsyncStorage.getItem('houseId');
-    const [houseId, setHouseId] = useState(null);
+    // const [houseId, setHouseId] = useState(null);
 
     useEffect(() => {
-        getHouseUsers();
-
-    }, [ houseId]);
+        if (isFocused) {
+            console.log("IM HERE, PLIS");
+            getHouseUsers().then(r => console.log("Users loaded")).catch(e => console.log("Error loading users"));
+        }
+    }, [ isFocused ]);
 
     const getHouseUsers = async () => {
         try {
-            const houseUsers = await getHouseUsers(houseId);
+            const houseId = await AsyncStorage.getItem('houseId');
+            console.log("what the hell");
+            const houseUsers = await getUsersOfAHouse(houseId);
+            console.log("is going on?");
 
             if (Array.isArray(houseUsers)) {
                 setUsers(houseUsers);
@@ -50,44 +55,40 @@ const HouseUsersPageDelete = ({ navigation }) => {
         }
     }
     //idem para esto
-    const handleDelete = (userId) => {
+    const handleDelete = async (userId) => {
         // Make a DELETE request to delete the user
-        axios.delete(`/api/users/${userId}`)
-            .then(response => {
-                // Handle successful response
-                console.log('User deleted:', response.data);
-            })
-            .catch(error => {
-                // Handle error
-                console.error('Error deleting user:', error);
-            });
+        const houseId = await AsyncStorage.getItem('houseId');
+        await deleteUserFromHouse(houseId, userId);
+        alert('User deleted successfully');
+        // Update the users list
+        await getHouseUsers();
     };
     return (
-        <View style={styles.container}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
-                <Text style={styles.title}>Digital Cabinet</Text>
-                    <Text style={styles.info}>Press a user to delete it.</Text>
-                        <View style={styles.logInCont}>
-                            {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
-                            <View style={styles.container2}>
-                                {users.map((user, index) => (
-                                    <View key={index} style={styles.circle}>
-                                        <Pressable onPress={ () => {
-                                            navigation.navigate("A ningun lado");
-                                        }}>
-                                            <Text style={styles.circleText}>{user.name}</Text>
-                                        </Pressable>
-                                    </View>
-                                ))}
-                            </View>
+    <View style={styles.container}>
+        <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+            <Text style={styles.title}>Digital Cabinet</Text>
+            <Text style={styles.info}>Press a user to delete it.</Text>
+            <View style={styles.logInCont}>
+                {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
+                <View style={styles.container2}>
+                    {users.map((user, index) => (
+                        <View key={index} style={styles.circle}>
+                            <Pressable style={styles.pressableSquare} onPress={ async () => {
+                                await handleDelete(user.userId); // Call handleDelete with userId
+                            }}>
+                                <Text style={styles.circleText}>{user.username}</Text>
+                            </Pressable>
                         </View>
-                <p></p>
-                <View style={styles.linksContainer}>
-                    <GoBackButton navigation={navigation}/> {/* Add the GoBackButton component */}
-
+                    ))}
                 </View>
-            </ScrollView>
-        </View>
+            </View>
+            <p></p>
+            <View style={styles.linksContainer}>
+                <GoBackButton navigation={navigation}/>
+                <LogoutButton navigation={navigation}/>
+            </View>
+        </ScrollView>
+    </View>
     );
 
 };
@@ -173,5 +174,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#717336',
         borderColor: '#5d5e24',
         borderWidth: 2,
-    }
+    },
+    pressableSquare: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#4B5940', // or any color you want
+        padding: 10,
+        borderRadius: 10, // adjust this to control the roundness of the corners
+    },
 });

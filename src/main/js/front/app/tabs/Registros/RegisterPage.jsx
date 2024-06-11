@@ -1,6 +1,7 @@
 import React, {useState } from 'react';
 import {View, ScrollView, TextInput, Pressable, StyleSheet, Text} from 'react-native';
 import {createUser} from '../../Api';
+import Tuple from "../Contents/Tuple";
 
 export default function RegisterPage({navigation}) {
     let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: ''});

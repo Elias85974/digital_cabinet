@@ -22,6 +22,8 @@ const styles = StyleSheet.create({
     logoutButton: {
         marginTop: 15,
         marginBottom: 10,
+        marginRight: 10,
+        marginLeft: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 3, // Add border

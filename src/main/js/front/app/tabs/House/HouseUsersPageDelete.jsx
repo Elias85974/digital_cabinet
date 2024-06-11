@@ -7,6 +7,7 @@ import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
 import LogoutButton from "../Contents/LogoutButton";
 import GoBackButton from "../Contents/GoBackButton";
+import Tuple from "../Contents/Tuple";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -80,10 +81,7 @@ const HouseUsersPageDelete = ({ navigation }) => {
                 </View>
             </View>
             <p></p>
-            <View style={styles.linksContainer}>
-                <GoBackButton navigation={navigation}/>
-                <LogoutButton navigation={navigation}/>
-            </View>
+            <Tuple navigation={navigation}/>
         </ScrollView>
     </View>
     );

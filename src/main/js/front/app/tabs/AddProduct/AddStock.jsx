@@ -9,6 +9,10 @@ export default function AddProduct({navigation}) {
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState('');
+    const [expiration, setExpiration] = useState('');
+    const isValidDate = (date) => {
+        return /^(\d{2}\/\d{2}\/\d{4})$/.test(date);
+    }
 
     useEffect(() => {
         fetchProducts();
@@ -30,6 +34,9 @@ export default function AddProduct({navigation}) {
         } else if (type === 'quantity') {
             setQuantity(Number(value));
         }
+        else if (type === 'expiration') {
+            setExpiration(value);
+        }
     }
 
     const handleSubmit = async () => {
@@ -41,10 +48,14 @@ export default function AddProduct({navigation}) {
             }
             if (!selectedProduct || !quantity) {
                 alert('Please select a product and enter a quantity');
+            } else if (!isValidDate(expiration)) {
+                alert('Please enter a valid expiration date in the format DD/MM/YYYY');
             } else {
-                await updateHouseInventory(houseId, selectedProduct, quantity);
+                await updateHouseInventory(houseId, selectedProduct, quantity, expiration);
                 alert('Inventory updated successfully!');
             }
+            setExpiration('');
+            setQuantity('');
         } catch (error) {
             console.log("Error updating inventory:", error);
         }
@@ -66,9 +77,15 @@ export default function AddProduct({navigation}) {
                         </View>
                         <TextInput style={styles.input}
                                    placeholder={"Enter quantity of products"}
-                                   value={quantity}
+                                   value={quantity.toString()}
                                    onChangeText={(value) => handleChanges(value, 'quantity')}
                                    inputMode="numeric"
+                        />
+                        <TextInput style={styles.input}
+                                   placeholder={"Enter an expiration date"}
+                                   value={expiration}
+                                   onChangeText={(value) => handleChanges(value, 'expiration')}
+                                   inputMode="text"
                         />
                         <View style={styles.linksContainer}>
                             <Pressable style={styles.link} onPress={handleSubmit}>

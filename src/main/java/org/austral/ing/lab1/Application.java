@@ -8,6 +8,7 @@ import org.austral.ing.lab1.model.*;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
 import org.austral.ing.lab1.model.User;
 import org.austral.ing.lab1.object.Invitation;
+import org.austral.ing.lab1.object.ProductInfo;
 import org.austral.ing.lab1.repository.*;
 import org.austral.ing.lab1.model.Product;
 import org.austral.ing.lab1.repository.Products;
@@ -25,6 +26,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -472,10 +475,18 @@ public class Application {
         });
 
         // Route to update the inventory of a given house
-        Spark.put("/houses/:houseId/inventory/:productId/:quantity", "application/json", (req, resp) -> {
+        Spark.put("/houses/:houseId/inventory", "application/json", (req, resp) -> {
             final String houseId = req.params("houseId");
-            final String productId = req.params("productId");
-            final long cantidad = Long.parseLong(req.params("quantity"));
+
+            // Parse the JSON body of the request
+            JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
+            final String productId = jsonObject.get("productId").getAsString();
+            final long quantity = jsonObject.get("quantity").getAsLong();
+            final String expirationString = jsonObject.get("expiration").getAsString();
+
+            // Parse the expiration string into a java.util.Date object
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date expiration = formatter.parse(expirationString);
 
             /* Begin Business Logic */
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -500,7 +511,7 @@ public class Application {
 
             final House house = houseOptional.get();
             Product product = productOptional.get();
-            final Stock stock = Stock.create(cantidad).setProduct(product).build();
+            final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration).build();
 
             /* Begin Business Logic */
             final Inventories inventories = new Inventories(entityManager);
@@ -511,6 +522,24 @@ public class Application {
             /* End Business Logic */
             resp.status(200);
             return "Everything works fine";
+        });
+
+        // Route to reduce the stock of an already existing product in the given house
+        Spark.post("/houses/:houseId/inventory", "application/json", (req, resp) -> {
+            Long houseId = Long.parseLong(req.params("houseId"));
+
+            // Parse the JSON body of the request
+            JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
+            Long productId = jsonObject.get("productId").getAsLong();
+            Long quantity = jsonObject.get("quantity").getAsLong();
+
+            Inventories inventoriesRepo = new Inventories(entityManagerFactory.createEntityManager());
+
+            // Call the method to reduce stock
+            inventoriesRepo.reduceStock(houseId, productId, quantity);
+
+            resp.status(200);
+            return "Stock reduced successfully";
         });
 
         // Route to get the filtered by categories products of a house
@@ -525,7 +554,7 @@ public class Application {
             EntityTransaction tx = entityManager.getTransaction();
             tx.begin();
 
-            List<Product> products = inventoriesRepo.getProductsByCategory(houseId, category);
+            List<ProductInfo> products = inventoriesRepo.getProductsByCategory(houseId, category);
 
             tx.commit();
             entityManager.close();

@@ -24,7 +24,7 @@ public class Stock {
     @Column(name = "QUANTITY_EXPIRATION_DATE")
     private Long cantidadVencimiento;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "PRODUCTO_ID")
     private Product product;
 
@@ -33,14 +33,27 @@ public class Stock {
     private Stock(StockBuilder stockBuilder) {
         this.cantidadVencimiento = stockBuilder.cantidad;
         this.product = stockBuilder.product;
+        this.vencimiento = stockBuilder.vencimiento;
     }
 
     public static StockBuilder create(long cantidad) {
         return new StockBuilder(cantidad);
     }
 
+    public Long getId() {
+        return stock_ID;
+    }
+
+    public Date getExpirationDate() {
+        return vencimiento;
+    }
+
     public Long getCantidadVencimiento() {
         return cantidadVencimiento;
+    }
+
+    public void setCantidadVencimiento(Long cantidadVencimiento) {
+        this.cantidadVencimiento = cantidadVencimiento;
     }
 
     public Product getProduct() {
@@ -68,12 +81,18 @@ public class Stock {
     public static class StockBuilder {
         private final long cantidad;
         private Product product;
+        private Date vencimiento;
         public StockBuilder(long cantidad) {
             this.cantidad = cantidad;
         }
 
         public StockBuilder setProduct(Product product) {
             this.product = product;
+            return this;
+        }
+
+        public StockBuilder setExpiration(Date vencimiento) {
+            this.vencimiento = vencimiento;
             return this;
         }
 

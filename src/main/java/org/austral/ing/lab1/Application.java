@@ -887,7 +887,7 @@ public class Application {
         });
 
         // Route to get the users living in the same house
-        Spark.get("/houses/:houseId/users", (req, resp) -> {
+        Spark.get("/house/:houseId/users", (req, resp) -> {
             Long houseId = Long.parseLong(req.params("houseId"));
 
             // Begin Business Logic

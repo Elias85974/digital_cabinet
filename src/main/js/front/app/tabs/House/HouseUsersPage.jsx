@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable} from 'react-native';
 import axios from 'axios';
-import {getUserHouses, getUserIdByEmail, inviteUser} from "../../Api";
+import {getUserHouses, getUserIdByEmail, getUsersOfAHouse, inviteUser} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
@@ -19,45 +19,61 @@ const User = ({ user, onEdit, onDelete }) => (
 );
 
 // HouseUsersPage Component
-const HouseUsersPage = ({ navigation }) => {
+export default function HouseUsersPage({ navigation }) {
     const {userToken, email} = React.useContext(AuthContext)
     const [house, setHouse] = useState(null);
     const [users, setUsers] = useState([]);
     const [inviteEmail, setInviteEmail] = useState('');
     const isFocused = useIsFocused();
-    // const userId = AsyncStorage.getItem('userId');
-    //const houseId = AsyncStorage.getItem('houseId');
+
+    const houseId = AsyncStorage.getItem('houseId');
     //const [houseId, setHouseId] = useState('');
 
-    /*
+
     useEffect(() => {
         if (isFocused) {
-            console.log("IM HERE, PLIS");
-            getHouseUsers().then(r => console.log("Users loaded")).catch(e => console.log("Error loading users"));
+            getUsersFromHouse().then(r => console.log("Users loaded")).catch(e => console.log("Error loading users"));
         }
-    }, [ isFocused ]);
+    },[isFocused]);
 
-    const getHouseUsers = async () => {
+    const getUsersFromHouse = async () => {
         try {
-            const houseId = await AsyncStorage.getItem('houseId');
-            const userId = await AsyncStorage.getItem('userId');
-            console.log("what the hell");
-            const houseUsers = await getUserHouses();
-            console.log("is going on?");
+            const houseUsers = await getUsersOfAHouse(houseId);
+            console.log("House users:", houseUsers);
+            setUsers(houseUsers);
 
-            if (Array.isArray(houseUsers)) {
-                setUsers(houseUsers);
-            } else {
-                console.error('getHouseUsers did not return an array:', houseUsers);
-                setUsers([]);
-            }
         } catch (error) {
             console.log("Error getting users:", error);
-            setUsers([]);
         }
     }
 
-     */
+    /*    useEffect(() => {
+            if (isFocused) {
+                console.log("IM HERE, PLIS");
+                getHouseUsers().then(r => console.log("Users loaded")).catch(e => console.log("Error loading users"));
+            }
+       , [ isFocused ]);
+    /*
+        const getHouseUsers = async () => {
+            try {
+                const houseId = await AsyncStorage.getItem('houseId');
+                const userId = await AsyncStorage.getItem('userId');
+                console.log("what the hell");
+                const houseUsers = await getUserHouses();
+                console.log("is going on?");
+
+                if (Array.isArray(houseUsers)) {
+                    setUsers(houseUsers);
+                } else {
+                    console.error('getHouseUsers did not return an array:', houseUsers);
+                    setUsers([]);
+                }
+            } catch (error) {
+                console.log("Error getting users:", error);
+                setUsers([]);
+            }
+        }
+        */
 
     // Envío invitación a usuarios para mi casa
     const handleInvite = async () => {
@@ -88,12 +104,7 @@ const HouseUsersPage = ({ navigation }) => {
                     <View style={styles.container2}>
                         {users.map((user, index) => (
                             <View key={index} style={styles.circle}>
-                                <Pressable onPress={ () => {
-                                    {/*
-                                        navigation.navigate("A ningun lado");
-                                    */
-                                    }
-                                }}>
+                                <Pressable>
                                     <Text style={styles.circleText}>{user.name}</Text>
                                 </Pressable>
                             </View>
@@ -125,7 +136,6 @@ const HouseUsersPage = ({ navigation }) => {
 
 };
 
-export default HouseUsersPage;
 
 const styles = StyleSheet.create({
     container: {

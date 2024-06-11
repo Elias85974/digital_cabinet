@@ -160,7 +160,7 @@ export const createHouse = async (houseData, userId) => {
     }
 };
 
-
+// Function to get the list of houses of a user
 export const getUserHouses = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/user/${userId}/houses`, {
@@ -182,14 +182,15 @@ export const getUserHouses = async (userId) => {
 // Function to get the list of users of a house
 export const getUsersOfAHouse = async (houseId) => {
     try {
-        const response = await fetch(`${API_URL}/houses/${houseId}/users`, {
+        //house*s* no conecta con server
+        const response = await fetch(`${API_URL}/house/${houseId}/users`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Network response was not right');
         }
         return await response.json();
     } catch (error) {
@@ -435,7 +436,7 @@ export const deleteProductFromWishList = async (products, userId) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: products
+            body: JSON.stringify({ products }), //products
         });
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -447,6 +448,7 @@ export const deleteProductFromWishList = async (products, userId) => {
     }
 }
 
+/*
 export const updateProductInWishList = async (product) => {
     try {
         const response = await fetch(`${API_URL}/wishList/${product.id}`, {
@@ -464,7 +466,7 @@ export const updateProductInWishList = async (product) => {
         console.error("Failed to update product in wish list:", error);
         throw error;
     }
-}
+}*/
 
 
 

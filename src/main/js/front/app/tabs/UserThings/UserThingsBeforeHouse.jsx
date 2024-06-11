@@ -1,5 +1,7 @@
 import React from 'react';
 import {View, Text, Pressable, StyleSheet, ScrollView} from "react-native";
+import LogoutButton from "../Contents/LogoutButton";
+import GoBackButton from "../Contents/GoBackButton";
 
 export default function UserThingsBeforeHouse({navigation}) {
     return (
@@ -24,6 +26,7 @@ export default function UserThingsBeforeHouse({navigation}) {
                         </Pressable>
                     </View>
                 </View>
+                <LogoutButton navigation={navigation}/>
             </ScrollView>
         </View>
     );

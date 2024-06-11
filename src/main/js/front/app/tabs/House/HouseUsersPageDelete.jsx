@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable} from 'react-native';
+import {View, Text, Button, FlatList, TextInput, StyleSheet} from 'react-native';
 import axios from 'axios';
-import {getUserHouses, getUserIdByEmail, inviteUser} from "../../Api";
+import {getUserHouses, getUserIdByEmail} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
-import LogoutButton from "../Contents/LogoutButton";
-import GoBackButton from "../Contents/GoBackButton";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -27,7 +25,6 @@ const HouseUsersPage = ({ route }) => {
     const [inviteEmail, setInviteEmail] = useState('');
     const isFocused = useIsFocused();
     const userId = AsyncStorage.getItem('userId');
-    const houseId = AsyncStorage.getItem('houseId');
 
 
     useEffect(() => {
@@ -47,62 +44,39 @@ const HouseUsersPage = ({ route }) => {
         }
     }
 
-    //envío invitación a usuarios para mi casa
-    const handleInvite = () => {
-        // Handle invite user
-        axios.post('/api/invitations', { email: inviteEmail })
+    //idem para esto
+    const handleDelete = (userId) => {
+        // Make a DELETE request to delete the user
+        axios.delete(`/api/users/${userId}`)
             .then(response => {
                 // Handle successful response
-                console.log('Invitation sent:', response.data);
+                console.log('User deleted:', response.data);
             })
             .catch(error => {
                 // Handle error
-                console.error('Error sending invitation:', error);
+                console.error('Error deleting user:', error);
             });
     };
 
     return (
-        <View style={styles.container}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
-                <Text style={styles.title}>Digital Cabinet</Text>
-                <View style={styles.logInCont}>
-                    {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
-                    <View style={styles.container2}>
-                        {users.map((user, index) => (
-                            <View key={index} style={styles.circle}>
-                                <Pressable onPress={ () => {
-                                    navigation.navigate("House");
-                                }}>
-                                    <Text style={styles.circleText}>{user.name}</Text>
-                                </Pressable>
-                            </View>
-                        ))}
-                    </View>
-                </View>
-                <p></p>
-                <View style={styles.linksContainer}>
-                    <Pressable onPress={() => navigation.navigate("HouseUsersPageDelete")}>
-                        <Text style={styles.link}>Delete a user</Text>
-                    </Pressable>
-                    <Pressable onPress={() => navigation.navigate("HouseUsersPageEdit")}>
-                        <Text style={styles.link}>Edit a user</Text>
-                    </Pressable>
-                    <TextInput style={styles.input}
-                               placeholder="Mail"
-                               value={users.mail}
-                               onChangeText={(value) => inviteUser(value, houseId)}
-                    />
-                    <Pressable style={styles.link} onPress={inviteUser}>
-                        <Text style={{color: 'white', fontSize: 16}}>Invite a user</Text>
-                    </Pressable>
-
-                    <GoBackButton navigation={navigation}/> {/* Add the GoBackButton component */}
-
-                </View>
-            </ScrollView>
+        <View>
+            {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
+            <FlatList
+                data={users}
+                keyExtractor={item => item.usuario_ID.toString()}
+                renderItem={({ item }) => (
+                    <User user={item} onEdit={handleEdit} onDelete={handleDelete} />
+                )}
+            />
+            <Button title="Add User" onPress={() => {/* Handle add user */}} />
+            <TextInput
+                value={inviteEmail}
+                onChangeText={setInviteEmail}
+                placeholder="Enter email to invite"
+            />
+            <Button title="Invite User" onPress={handleInvite} />
         </View>
     );
-
 };
 
 export default HouseUsersPage;

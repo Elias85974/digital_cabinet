@@ -23,7 +23,7 @@ public class Inboxes {
 
   public List<Map<String, Object>> getHousesByUserId(Long userId) {
     // Getting the houses that the user has pending requests for
-    List<Inbox> inboxes = entityManager.createQuery("SELECT i FROM Inbox i WHERE i.invitedUser.id = :userId AND i.pending = true", Inbox.class)
+    List<Inbox> inboxes = entityManager.createQuery("SELECT i FROM Inbox i WHERE i.invitedUser.id = :userId", Inbox.class)
         .setParameter("userId", userId)
         .getResultList();
 

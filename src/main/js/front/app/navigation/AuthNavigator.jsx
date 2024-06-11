@@ -14,6 +14,7 @@ import WishList from "../tabs/UserThings/WishList";
 import Inbox from "../tabs/UserThings/Inbox";
 import HouseUsersPage from "../tabs/House/HouseUsersPage";
 import HouseUsersPageDelete from "../tabs/House/HouseUsersPageDelete";
+import LowOnStockProducts from "../tabs/House/Product/LowOnStockProducts";
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ function AuthNavigator() {
             <Stack.Screen options={{headerShown: false}} name="Inbox" component={Inbox} />
             <Stack.Screen options={{headerShown: false}} name="HouseUsersPage" component={HouseUsersPage} />
             <Stack.Screen options={{headerShown: false}} name="HouseUsersPageDelete" component={HouseUsersPageDelete} />
+            <Stack.Screen options={{headerShown: false}} name="LowOnStock" component={LowOnStockProducts} />
 
 
 

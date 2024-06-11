@@ -7,10 +7,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function House({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
     const [categories, setCategories] = useState([]);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        getProducts();
-    }, []);
+        if (isFocused){
+            getProducts().then(r => console.log("Products loaded")).catch(e => console.log("Error loading products"));
+        }
+    }, [isFocused]);
 
     const getProducts = async () => {
         try {
@@ -48,6 +51,9 @@ export default function House({navigation}) {
             </View>
             <p></p>
             <View style={styles.linksContainer}>
+                <Pressable onPress={() => navigation.navigate("LowOnStock")}>
+                    <Text style={styles.link}>Low on stock products</Text>
+                </Pressable>
                 <Pressable onPress={() => navigation.navigate("AddStock")}>
                     <Text style={styles.link}>Add a Product</Text>
                 </Pressable>
@@ -67,6 +73,7 @@ export default function House({navigation}) {
 
 import { StyleSheet } from 'react-native';
 import {AuthContext} from "../../context/AuthContext";
+import {useIsFocused} from "@react-navigation/native";
 
 const styles = StyleSheet.create({
     container: {

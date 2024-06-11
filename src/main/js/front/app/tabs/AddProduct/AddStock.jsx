@@ -10,6 +10,7 @@ export default function AddProduct({navigation}) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState('');
     const [expiration, setExpiration] = useState('');
+    const [lowStockIndicator, setLowStockIndicator] = useState('');
     const isValidDate = (date) => {
         return /^(\d{2}\/\d{2}\/\d{4})$/.test(date);
     }
@@ -37,6 +38,9 @@ export default function AddProduct({navigation}) {
         else if (type === 'expiration') {
             setExpiration(value);
         }
+        else if (type === 'lowStockIndicator') {
+            setLowStockIndicator(value);
+        }
     }
 
     const handleSubmit = async () => {
@@ -51,15 +55,20 @@ export default function AddProduct({navigation}) {
             } else if (!isValidDate(expiration)) {
                 alert('Please enter a valid expiration date in the format DD/MM/YYYY');
             } else {
-                await updateHouseInventory(houseId, selectedProduct, quantity, expiration);
+                const stockUpdate = {productId: selectedProduct,
+                    quantity: quantity, expiration: expiration, lowStockIndicator: lowStockIndicator};
+                console.log('stockUpdate:', stockUpdate);
+                await updateHouseInventory(houseId, stockUpdate);
                 alert('Inventory updated successfully!');
             }
             setExpiration('');
             setQuantity('');
+            setLowStockIndicator('');
         } catch (error) {
             console.log("Error updating inventory:", error);
         }
     }
+
 
     return (
         <View style={styles.container}>
@@ -86,6 +95,12 @@ export default function AddProduct({navigation}) {
                                    value={expiration}
                                    onChangeText={(value) => handleChanges(value, 'expiration')}
                                    inputMode="text"
+                        />
+                        <TextInput style={styles.input}
+                                   placeholder={"Enter your low stock indicator"}
+                                   value={lowStockIndicator}
+                                   onChangeText={(value) => handleChanges(value, 'lowStockIndicator')}
+                                   inputMode="numeric"
                         />
                         <View style={styles.linksContainer}>
                             <Pressable style={styles.link} onPress={handleSubmit}>

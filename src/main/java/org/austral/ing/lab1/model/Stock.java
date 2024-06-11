@@ -28,12 +28,16 @@ public class Stock {
     @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "PRODUCTO_ID")
     private Product product;
 
+    @Column(name = "LowStockIndicator")
+    private Long lowStockIndicator;
+
     public Stock() {}
 
     private Stock(StockBuilder stockBuilder) {
         this.cantidadVencimiento = stockBuilder.cantidad;
         this.product = stockBuilder.product;
         this.vencimiento = stockBuilder.vencimiento;
+        this.lowStockIndicator = stockBuilder.lowStockIndicator;
     }
 
     public static StockBuilder create(long cantidad) {
@@ -82,6 +86,7 @@ public class Stock {
         private final long cantidad;
         private Product product;
         private Date vencimiento;
+        private Long lowStockIndicator;
         public StockBuilder(long cantidad) {
             this.cantidad = cantidad;
         }
@@ -93,6 +98,11 @@ public class Stock {
 
         public StockBuilder setExpiration(Date vencimiento) {
             this.vencimiento = vencimiento;
+            return this;
+        }
+
+        public StockBuilder setLowStockIndicator(Long lowStockIndicator) {
+            this.lowStockIndicator = lowStockIndicator;
             return this;
         }
 

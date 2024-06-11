@@ -20,7 +20,7 @@ export default function UserThingsBeforeHouse({navigation}) {
                     </View>
                     <View style={styles.linksContainer}>
                         <Pressable onPress={() => navigation.navigate("Homes")}>
-                            <Text style={styles.link}>Choose your home here!</Text>
+                            <Text style={styles.link}>Manage your houses!</Text>
                         </Pressable>
                     </View>
                 </View>

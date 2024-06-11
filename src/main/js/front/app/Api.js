@@ -236,6 +236,25 @@ export const getProductsFromHouseAndCategory = async (houseId, category) => {
     }
 }
 
+// Function that gets the list of products low on stock of a house
+export const getLowOnStockProducts = async (houseId) => {
+    try {
+        const response = await fetch(`${API_URL}/houses/${houseId}/lowOnStock`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to get low on stock products:", error);
+        throw error;
+    }
+}
+
 // function to create a product
 export const createProduct = async (productData) => {
     try {
@@ -311,18 +330,14 @@ export const getAllProducts = async () => {
     }
 }
 
-export const updateHouseInventory = async (houseId, productId, quantity, expiration) => {
+export const updateHouseInventory = async (houseId, stockData) => {
     try {
         const response = await fetch(`${API_URL}/houses/${houseId}/inventory`, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                productId: productId,
-                quantity: quantity,
-                expiration: expiration
-            })
+            body: JSON.stringify(stockData)
         });
         console.log(response);
         if (!response.ok) {
@@ -334,15 +349,35 @@ export const updateHouseInventory = async (houseId, productId, quantity, expirat
     }
 }
 
-// Route to reduce stock of a house
-export const reduceStock = async (houseId, productId, quantity) => {
+// Function to add stock directly to a house
+export const addStock = async (houseId, stockData) => {
     try {
         const response = await fetch(`${API_URL}/houses/${houseId}/inventory`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({productId: productId, quantity: quantity})
+            body: JSON.stringify(stockData)
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+    } catch (error) {
+        console.error("Failed to add stock:", error);
+        throw error;
+    }
+
+}
+
+// Route to reduce stock of a house
+export const reduceStock = async (houseId, stockData) => {
+    try {
+        const response = await fetch(`${API_URL}/houses/${houseId}/inventory/addStock`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(stockData)
         });
         if (!response.ok) {
             throw new Error('Network response was not ok');

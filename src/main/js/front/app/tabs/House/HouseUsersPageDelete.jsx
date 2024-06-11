@@ -39,10 +39,7 @@ const HouseUsersPageDelete = ({ navigation }) => {
     const getHouseUsers = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
-            console.log("what the hell");
             const houseUsers = await getUsersOfAHouse(houseId);
-            console.log("is going on?");
-
             if (Array.isArray(houseUsers)) {
                 setUsers(houseUsers);
             } else {

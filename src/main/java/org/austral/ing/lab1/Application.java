@@ -529,7 +529,7 @@ public class Application {
         });
 
         // Route to update the inventory of a given house
-        Spark.put("/houses/:houseId/inventory", "application/json", (req, resp) -> {
+        Spark.post("/houses/:houseId/inventory", "application/json", (req, resp) -> {
             final String houseId = req.params("houseId");
 
             // Parse the JSON body of the request
@@ -537,6 +537,7 @@ public class Application {
             final String productId = jsonObject.get("productId").getAsString();
             final long quantity = jsonObject.get("quantity").getAsLong();
             final String expirationString = jsonObject.get("expiration").getAsString();
+            final long lowStockIndicator = jsonObject.get("lowStockIndicator").getAsLong();
 
             // Parse the expiration string into a java.util.Date object
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -565,7 +566,8 @@ public class Application {
 
             final House house = houseOptional.get();
             Product product = productOptional.get();
-            final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration).build();
+            final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration)
+                    .setLowStockIndicator(lowStockIndicator).build();
 
             /* Begin Business Logic */
             final Inventories inventories = new Inventories(entityManager);

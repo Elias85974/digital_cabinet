@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Button, Modal, TextInput, Alert} from 'react-native';
+import {StyleSheet, Text, View, Button, Modal, TextInput, Alert, Pressable} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getProductsFromHouseAndCategory, reduceStock} from "../../../Api";
 import GoBackButton from "../../Contents/GoBackButton";
+import Tuple from "../../Contents/Tuple";
+
 
 export default function Product({navigation}) {
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -52,11 +54,15 @@ export default function Product({navigation}) {
                     <Text style={styles.productText}>Producto: {productInfo.product.nombre}</Text>
                     <Text style={styles.productText}>Marca: {productInfo.product.marca}</Text>
                     <Text style={styles.productText}>Cantidad total: {productInfo.totalQuantity}</Text>
-                    <Text style={styles.productText}>Proximo a vencer en: {new Date(productInfo.nearestExpirationDate).toLocaleDateString()}</Text>
-                    <Button title="Reduce Stock" onPress={() => {setSelectedProduct(productInfo); setModalVisible(true);}} />
+                    <Text style={styles.productText}>Próximo a vencer en: {new Date(productInfo.nearestExpirationDate).toLocaleDateString()}</Text>
+                    <View style={styles.linksContainer}>
+                        <Pressable onPress={() => {setSelectedProduct(productInfo); setModalVisible(true);}}>
+                            <Text style={styles.link}>Reduce Stock</Text>
+                        </Pressable>
+                    </View>
                 </View>
             ))}
-            <GoBackButton navigation={navigation}/>
+            <Tuple navigation={navigation}/>
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -75,8 +81,16 @@ export default function Product({navigation}) {
                             keyboardType="numeric"
                             placeholder="Enter quantity to reduce"
                         />
-                        <Button title="Confirm Reduction" onPress={handleReduceStock} />
-                        <Button title="Cancel" onPress={() => setModalVisible(false)} />
+                        <View style={styles.linksContainer}>
+                            <Pressable onPress={handleReduceStock}>
+                                <Text style={styles.link}>Confirm Reduction</Text>
+                            </Pressable>
+                        </View>
+                        <View style={styles.linksContainer}>
+                            <Pressable onPress={() => setModalVisible(false)} >
+                                <Text style={styles.link}>Cancel</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -92,8 +106,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     productSquare: {
-        width: '80%',
-        backgroundColor: '#FFFFFF',
+        width: 300,
+        backgroundColor: '#4B5940',
         borderRadius: 10,
         padding: 20,
         marginBottom: 20,
@@ -101,7 +115,7 @@ const styles = StyleSheet.create({
     },
     productText: {
         fontSize: 16,
-        color: '#000000',
+        color: '#fff',
         marginBottom: 10,
     },
     centeredView: {
@@ -118,12 +132,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
-            width: 0,
-            height: 2
+            width: 10,
+            height: 20,
         },
-        shadowOpacity: 0.25,
+        shadowOpacity: 0.5,
         shadowRadius: 4,
-        elevation: 5
+        elevation: 15
     },
     modalText: {
         marginBottom: 15,
@@ -135,5 +149,26 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
+    },
+    link: {
+        marginTop: 15,
+        marginBottom: 10,
+        color: '#F2EFE9',
+        textDecorationLine: 'underline',
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 3, // Add border
+        borderColor: '#717336', // Set border color
+        padding: 10, // Add some padding so the text isn't right up against the border
+        backgroundColor: '#717336', // Set background color
+        width: 200, // Set width
+        alignSelf: 'center',
+        alignContent: 'center',
+        borderRadius: 100,
+        fontSize: 16,
+    },
+    linksContainer: {
+        marginTop: 20,
     },
 });

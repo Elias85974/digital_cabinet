@@ -36,14 +36,14 @@ export default function House({navigation}) {
                 <Text style={styles.info}>Select a Category</Text>
                 <View style={styles.container2}>
                     {categories.map((category, index) => (
-                        <View key={index}>
+                        <View key={index} style={styles.circle}>
                             <Pressable onPress={async () => {
                                 // Obtener el houseId de AsyncStorage
                                 await AsyncStorage.setItem('category', category.toString());
                                 // Navegar a la página House con el houseId correcto
                                 navigation.navigate("Product");
                             }}>
-                                <Text>{category}</Text>
+                                <Text style={styles.circleText}>{category}</Text>
                             </Pressable>
                         </View>
                     ))}
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#4B5940',
         padding: 20,
         borderRadius: 20,
-        width: 300,
+        width: 500,
         alignSelf: 'center',
     },
     info: {
@@ -139,14 +139,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     container2: {
-        flex: 2,
+        flex: 3,
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
     },
     circle: {
-        width: 100,
-        height: 100,
+        paddingVertical: 10, // Controla el tamaño vertical del círculo
+        paddingHorizontal: 20, // Controla el tamaño horizontal del círculo
         borderRadius: 35,
         backgroundColor: '#BFAC9B',
         justifyContent: 'center',

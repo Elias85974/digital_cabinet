@@ -133,11 +133,6 @@ export default function RegisterProduct({navigation}) {
                         </Pressable>
                     </View>
                     <p></p>
-                    <View style={styles.linksContainer}>
-                        <Pressable onPress={() => navigation.navigate("House")} style={styles.link}>
-                            <Text style={{color: 'white', fontSize: 16}}>Go Back</Text>
-                        </Pressable>
-                    </View>
                     <Tuple navigation={navigation}/>
                 </View>
             </ScrollView>

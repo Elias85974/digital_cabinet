@@ -3,6 +3,7 @@ import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-na
 import {createHouse, getUserIdByEmail} from "../../Api";
 import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Tuple from "../Contents/Tuple";
 
 export default function RegisterHome({navigation}) {
     let [newHouse, setNewHouse] = useState({nombre: '', direccion: ''});
@@ -66,6 +67,7 @@ export default function RegisterHome({navigation}) {
                             <Text style={{color: 'white', fontSize: 16}}>Select a house</Text>
                         </Pressable>
                     </View>
+                    <Tuple navigation={navigation}/>
                 </View>
             </ScrollView>
         </View>

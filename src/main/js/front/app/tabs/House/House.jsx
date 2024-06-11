@@ -51,22 +51,27 @@ export default function House({navigation}) {
             </View>
             <p></p>
             <View style={styles.linksContainer}>
-                <Pressable onPress={() => navigation.navigate("LowOnStock")}>
-                    <Text style={styles.link}>Low on stock products</Text>
-                </Pressable>
-                <Pressable onPress={() => navigation.navigate("AddStock")}>
-                    <Text style={styles.link}>Add a Product</Text>
-                </Pressable>
-                <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
-                    <Text style={styles.link}>Create a Product</Text>
-                </Pressable>
-                <Pressable onPress={()=> navigation.navigate("Homes")}>
-                    <Text style={styles.link}>Select another home</Text>
-                </Pressable>
-                <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
-                    <Text style={styles.link}>Manage users</Text>
-                </Pressable>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <Pressable onPress={() => navigation.navigate("LowOnStock")}>
+                        <Text style={styles.link}>Low on stock products</Text>
+                    </Pressable>
+                    <Pressable onPress={() => navigation.navigate("AddStock")}>
+                        <Text style={styles.link}>Add a Product</Text>
+                    </Pressable>
+                    <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
+                        <Text style={styles.link}>Create a Product</Text>
+                    </Pressable>
+                </View>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <Pressable onPress={()=> navigation.navigate("Homes")}>
+                        <Text style={styles.link}>Select another home</Text>
+                    </Pressable>
+                    <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
+                        <Text style={styles.link}>Manage users</Text>
+                    </Pressable>
+                </View>
             </View>
+            <Tuple navigation={navigation}/>
         </View>
     );
 }
@@ -74,6 +79,9 @@ export default function House({navigation}) {
 import { StyleSheet } from 'react-native';
 import {AuthContext} from "../../context/AuthContext";
 import {useIsFocused} from "@react-navigation/native";
+import Tuple from "../Contents/Tuple";
+import ScrollViewWithEventThrottle
+    from "react-native-web/dist/vendor/react-native/Animated/components/AnimatedScrollView";
 
 const styles = StyleSheet.create({
     container: {

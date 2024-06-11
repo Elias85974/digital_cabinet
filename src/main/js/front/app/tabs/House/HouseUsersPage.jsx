@@ -7,6 +7,7 @@ import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
 import LogoutButton from "../Contents/LogoutButton";
 import GoBackButton from "../Contents/GoBackButton";
+import Tuple from "../Contents/Tuple";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -115,8 +116,7 @@ const HouseUsersPage = ({ navigation }) => {
                         <Text style={{color: 'white', fontSize: 16}}>Invite a user</Text>
                     </Pressable>
 
-                    <GoBackButton navigation={navigation}/> {/* Add the GoBackButton component */}
-                    <LogoutButton navigation={navigation}/> {/* Add the LogoutButton component */}
+                    <Tuple navigation={navigation}/>
 
                 </View>
             </ScrollView>

@@ -1,28 +1,32 @@
 import React from 'react';
 import {View, Text, Pressable, StyleSheet, ScrollView} from "react-native";
+import Tuple from "../Contents/Tuple";
 
 export default function UserThingsBeforeHouse({navigation}) {
     return (
         <View style={styles.container}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
-                <Text style={styles.title}>Digital Cabinet</Text>
-                <View style={styles.logInCont}>
-                    <Text style={styles.info}>Choose your preference</Text>
-                    <View style={styles.linksContainer}>
-                        <Pressable onPress={() => navigation.navigate("WishList")}>
-                            <Text style={styles.link}>See your WishList! :)</Text>
-                        </Pressable>
+                <View>
+                    <Text style={styles.title}>Digital Cabinet</Text>
+                    <View style={styles.logInCont}>
+                        <Text style={styles.info}>Choose your preference</Text>
+                        <View style={styles.linksContainer}>
+                            <Pressable onPress={() => navigation.navigate("WishList")}>
+                                <Text style={styles.link}>See your WishList! :)</Text>
+                            </Pressable>
+                        </View>
+                        <View style={styles.linksContainer}>
+                            <Pressable onPress={() => navigation.navigate("Inbox")}>
+                                <Text style={styles.link}>See your Inbox!</Text>
+                            </Pressable>
+                        </View>
+                        <View style={styles.linksContainer}>
+                            <Pressable onPress={() => navigation.navigate("Homes")}>
+                                <Text style={styles.link}>Manage your houses!</Text>
+                            </Pressable>
+                        </View>
                     </View>
-                    <View style={styles.linksContainer}>
-                        <Pressable onPress={() => navigation.navigate("Inbox")}>
-                            <Text style={styles.link}>See your Inbox!</Text>
-                        </Pressable>
-                    </View>
-                    <View style={styles.linksContainer}>
-                        <Pressable onPress={() => navigation.navigate("Homes")}>
-                            <Text style={styles.link}>Manage your houses!</Text>
-                        </Pressable>
-                    </View>
+                    <Tuple navigation={navigation}/>
                 </View>
             </ScrollView>
         </View>

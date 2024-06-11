@@ -4,6 +4,7 @@ import Picker from 'react-native-picker-select';
 import { getAllProducts, updateHouseInventory } from '../../Api';
 import {router, useLocalSearchParams} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Tuple from "../Contents/Tuple";
 
 export default function AddProduct({navigation}) {
     const [products, setProducts] = useState([]);
@@ -91,7 +92,7 @@ export default function AddProduct({navigation}) {
                                    inputMode="numeric"
                         />
                         <TextInput style={styles.input}
-                                   placeholder={"Enter an expiration date"}
+                                   placeholder={"Enter an expiration date in the format DD/MM/YYYY"}
                                    value={expiration}
                                    onChangeText={(value) => handleChanges(value, 'expiration')}
                                    inputMode="text"
@@ -114,6 +115,7 @@ export default function AddProduct({navigation}) {
                             <Text style={{color: 'white', fontSize: 16}}>Go Back</Text>
                         </Pressable>
                     </View>
+                    <Tuple navigation={navigation}/>
                 </View>
             </ScrollView>
         </View>

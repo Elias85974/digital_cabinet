@@ -1,7 +1,6 @@
 import React from 'react';
 import { Pressable, Text, Alert, StyleSheet } from 'react-native';
-import {AuthContext} from "../../context/AuthContext";
-import {useNavigation} from "@react-navigation/native";
+
 
 const GoBackButton = ({navigation}) => {
 
@@ -21,6 +20,8 @@ const styles = StyleSheet.create({
     logoutButton: {
         marginTop: 15,
         marginBottom: 10,
+        marginRight: 10,
+        marginLeft: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 3, // Add border

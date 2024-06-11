@@ -3,6 +3,7 @@ import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-na
 import Picker from 'react-native-picker-select';
 
 import {createProduct, getCategories, createCategory} from "../../Api";
+import Tuple from "../Contents/Tuple";
 
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
@@ -137,6 +138,7 @@ export default function RegisterProduct({navigation}) {
                             <Text style={{color: 'white', fontSize: 16}}>Go Back</Text>
                         </Pressable>
                     </View>
+                    <Tuple navigation={navigation}/>
                 </View>
             </ScrollView>
         </View>

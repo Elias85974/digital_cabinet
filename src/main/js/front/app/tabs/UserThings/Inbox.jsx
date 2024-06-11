@@ -68,15 +68,21 @@ export default function Inbox({navigation}) {
                                                 <View style={styles.textWrap}>
                                                     <Text style={styles.textContent}>
                                                         <Text style={styles.textLink}>{item.username}</Text>
-                                                        has invited you to access to its Digital Cabinet!!!
+                                                         has invited you to access to its Digital Cabinet!!!
                                                     </Text>
                                                     <Text style={styles.time}>1 minute</Text>
                                                 </View>
                                                 <View style={styles.buttonWrap}>
-                                                    <TouchableOpacity style={styles.primaryCta} onPress={() => handleAccept(item.houseId)}>
+                                                    <TouchableOpacity
+                                                        style={[styles.primaryCta, {backgroundColor: lastPressed[item.houseId] === 'accept' ? 'darkgreen' : 'green'}]}
+                                                        onPress={() => handleAccept(item.houseId)}
+                                                    >
                                                         <Text style={styles.buttonText}>Accept</Text>
                                                     </TouchableOpacity>
-                                                    <TouchableOpacity style={styles.secondaryCta} onPress={() => handleReject(item.houseId)}>
+                                                    <TouchableOpacity
+                                                        style={[styles.secondaryCta, {backgroundColor: lastPressed[item.houseId] === 'reject' ? 'darkred' : 'red'}]}
+                                                        onPress={() => handleReject(item.houseId)}
+                                                    >
                                                         <Text style={styles.buttonText}>Reject</Text>
                                                     </TouchableOpacity>
                                                 </View>
@@ -219,6 +225,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 10,
+        margin: 8,
+
     },
     primaryCta: {
         backgroundColor: 'transparent',
@@ -226,9 +234,11 @@ const styles = StyleSheet.create({
     },
     secondaryCta: {
         backgroundColor: 'transparent',
+        borderRadius: 15,
     },
     buttonText: {
         fontSize: 15,
-        color: '#1677ff',
+        color: '#fff',
+        margin: 8,
     },
 });

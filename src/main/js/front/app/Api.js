@@ -352,7 +352,7 @@ export const updateHouseInventory = async (houseId, stockData) => {
 // Function to add stock directly to a house
 export const addStock = async (houseId, stockData) => {
     try {
-        const response = await fetch(`${API_URL}/houses/${houseId}/inventory`, {
+        const response = await fetch(`${API_URL}/houses/${houseId}/addLowStock`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -366,7 +366,6 @@ export const addStock = async (houseId, stockData) => {
         console.error("Failed to add stock:", error);
         throw error;
     }
-
 }
 
 // Route to reduce stock of a house

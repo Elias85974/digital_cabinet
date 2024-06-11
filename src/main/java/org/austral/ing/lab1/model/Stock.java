@@ -60,6 +60,10 @@ public class Stock {
         this.cantidadVencimiento = cantidadVencimiento;
     }
 
+    public Long getLowStockIndicator() {
+        return lowStockIndicator;
+    }
+
     public Product getProduct() {
         return product;
     }

@@ -625,6 +625,59 @@ public class Application {
             }
         });
 
+        // Route to get the products low on stock of a house
+        Spark.get("/houses/:houseId/lowOnStock", (req, resp) -> {
+            Long houseId = Long.parseLong(req.params("houseId"));
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Inventories inventoriesRepo = new Inventories(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            List<ProductInfo> products = inventoriesRepo.getLowOnStockProducts(houseId);
+
+            tx.commit();
+            entityManager.close();
+
+            if (products != null) {
+                resp.status(200);
+                resp.type("application/json");
+                return new Gson().toJson(products);
+            } else {
+                resp.status(404);
+                return "House not found";
+            }
+        });
+
+        // Route to add stock to the last stock of a product
+        Spark.post("/houses/:houseId/addLowStock", "application/json", (req, resp) -> {
+            Long houseId = Long.parseLong(req.params("houseId"));
+
+            // Parse the JSON body of the request
+            JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
+            Long productId = jsonObject.get("productId").getAsLong();
+            Long quantity = jsonObject.get("quantity").getAsLong();
+
+            // Begin Business Logic
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final Inventories inventoriesRepo = new Inventories(entityManager);
+
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+
+            // Call the method to add stock
+            inventoriesRepo.addStock(houseId, productId, quantity);
+
+            tx.commit();
+            entityManager.close();
+
+            resp.status(200);
+            return "Stock added successfully";
+        });
+
+
         // Route to get the products of the user's wishlist
         Spark.get("/wishList/:userId", (req, resp) -> {
             Long userId = Long.parseLong(req.params("userId"));

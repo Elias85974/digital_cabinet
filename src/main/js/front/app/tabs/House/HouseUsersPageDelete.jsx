@@ -19,7 +19,7 @@ const User = ({ user, onEdit, onDelete }) => (
 );
 
 // HouseUsersPage Component
-const HouseUsersPage = ({ navigation }) => {
+const HouseUsersPageDelete = ({ navigation }) => {
     const {userToken, email} = React.useContext(AuthContext)
     const [house, setHouse] = useState(null);
     const [users, setUsers] = useState([]);
@@ -49,53 +49,40 @@ const HouseUsersPage = ({ navigation }) => {
             setUsers([]);
         }
     }
-    //envío invitación a usuarios para mi casa
-    const handleInvite = () => {
-        // Handle invite user
-        axios.post('/api/invitations', { email: inviteEmail })
+    //idem para esto
+    const handleDelete = (userId) => {
+        // Make a DELETE request to delete the user
+        axios.delete(`/api/users/${userId}`)
             .then(response => {
                 // Handle successful response
-                console.log('Invitation sent:', response.data);
+                console.log('User deleted:', response.data);
             })
             .catch(error => {
                 // Handle error
-                console.error('Error sending invitation:', error);
+                console.error('Error deleting user:', error);
             });
     };
-
     return (
         <View style={styles.container}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
                 <Text style={styles.title}>Digital Cabinet</Text>
-                <View style={styles.logInCont}>
-                    {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
-                    <View style={styles.container2}>
-                        {users.map((user, index) => (
-                            <View key={index} style={styles.circle}>
-                                <Pressable onPress={ () => {
-                                    navigation.navigate("A ningun lado");
-                                }}>
-                                    <Text style={styles.circleText}>{user.name}</Text>
-                                </Pressable>
+                    <Text style={styles.info}>Press a user to delete it.</Text>
+                        <View style={styles.logInCont}>
+                            {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
+                            <View style={styles.container2}>
+                                {users.map((user, index) => (
+                                    <View key={index} style={styles.circle}>
+                                        <Pressable onPress={ () => {
+                                            navigation.navigate("A ningun lado");
+                                        }}>
+                                            <Text style={styles.circleText}>{user.name}</Text>
+                                        </Pressable>
+                                    </View>
+                                ))}
                             </View>
-                        ))}
-                    </View>
-                </View>
+                        </View>
                 <p></p>
                 <View style={styles.linksContainer}>
-                    <Pressable onPress={() => navigation.navigate("HouseUsersPageDelete")}>
-                        <Text style={styles.link}>Delete a user</Text>
-                    </Pressable>
-
-                    <TextInput style={styles.input}
-                               placeholder="Mail"
-                               value={users.mail}
-                               onChangeText={(value) => inviteUser(value, houseId)}
-                    />
-                    <Pressable style={styles.link} onPress={() => inviteUser(inviteEmail, houseId)}>
-                        <Text style={{color: 'white', fontSize: 16}}>Invite a user</Text>
-                    </Pressable>
-
                     <GoBackButton navigation={navigation}/> {/* Add the GoBackButton component */}
 
                 </View>
@@ -105,7 +92,7 @@ const HouseUsersPage = ({ navigation }) => {
 
 };
 
-export default HouseUsersPage;
+export default HouseUsersPageDelete;
 
 const styles = StyleSheet.create({
     container: {

@@ -4,6 +4,8 @@ import Picker from 'react-native-picker-select';
 import { getAllProducts, updateHouseInventory } from '../../Api';
 import {router, useLocalSearchParams} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import GoBackButton from "../Contents/GoBackButton";
+import LogoutButton from "../Contents/LogoutButton";
 
 export default function AddProduct({navigation}) {
     const [products, setProducts] = useState([]);
@@ -110,9 +112,10 @@ export default function AddProduct({navigation}) {
                     </View>
                     <p></p>
                     <View style={styles.linksContainer}>
-                        <Pressable onPress={() => navigation.navigate("House")} style={styles.link}>
-                            <Text style={{color: 'white', fontSize: 16}}>Go Back</Text>
-                        </Pressable>
+                        <View style={styles.linksContainer}>
+                            <GoBackButton navigation={navigation}/>
+                            <LogoutButton navigation={navigation}/>
+                        </View>
                     </View>
                 </View>
             </ScrollView>

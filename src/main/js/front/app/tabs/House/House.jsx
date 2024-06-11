@@ -60,6 +60,9 @@ export default function House({navigation}) {
                 <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
                     <Text style={styles.link}>Create a Product</Text>
                 </Pressable>
+                <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
+                    <Text style={styles.link}>See your expenses</Text>
+                </Pressable>
                 <Pressable onPress={()=> navigation.navigate("Homes")}>
                     <Text style={styles.link}>Select another home</Text>
                 </Pressable>

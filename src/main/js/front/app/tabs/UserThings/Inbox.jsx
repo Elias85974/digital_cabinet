@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {ScrollView, StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import { View, Text, Button, FlatList, Pressable } from 'react-native';
 import { getUsersInbox, processInvitations } from '../../Api';
 import GoBackButton from "../Contents/GoBackButton";
@@ -62,21 +62,24 @@ export default function Inbox({navigation}) {
                                     data={inbox}
                                     keyExtractor={item => item.houseId.toString()}
                                     renderItem={({ item }) => (
-                                        <View style={{borderWidth: 1, borderColor: 'black', margin: 10, padding: 10}}>
-                                            <Text>{item.username} has invited you to access to its digital cabinet!!!</Text>
-                                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
-                                                <Pressable
-                                                    style={{backgroundColor: lastPressed[item.houseId] === 'accept' ? 'darkgreen' : 'green', padding: 10}}
-                                                    onPress={() => handleAccept(item.houseId)}
-                                                >
-                                                    <Text style={{color: 'white'}}>Accept</Text>
-                                                </Pressable>
-                                                <Pressable
-                                                    style={{backgroundColor: lastPressed[item.houseId] === 'reject' ? 'darkred' : 'red', padding: 10}}
-                                                    onPress={() => handleReject(item.houseId)}
-                                                >
-                                                    <Text style={{color: 'white'}}>Reject</Text>
-                                                </Pressable>
+                                        <View style={styles.card}>
+                                            <View style={styles.statusInd}></View>
+                                            <View style={styles.right}>
+                                                <View style={styles.textWrap}>
+                                                    <Text style={styles.textContent}>
+                                                        <Text style={styles.textLink}>{item.username}</Text>
+                                                        has invited you to access to its Digital Cabinet!!!
+                                                    </Text>
+                                                    <Text style={styles.time}>1 minute</Text>
+                                                </View>
+                                                <View style={styles.buttonWrap}>
+                                                    <TouchableOpacity style={styles.primaryCta} onPress={() => handleAccept(item.houseId)}>
+                                                        <Text style={styles.buttonText}>Accept</Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity style={styles.secondaryCta} onPress={() => handleReject(item.houseId)}>
+                                                        <Text style={styles.buttonText}>Reject</Text>
+                                                    </TouchableOpacity>
+                                                </View>
                                             </View>
                                         </View>
                                     )}
@@ -86,7 +89,13 @@ export default function Inbox({navigation}) {
                                     <Text>You have no recent invitations</Text>
                                 </View>
                             )}
-                            {inbox.length > 0 && <Button title="Send Updates" onPress={sendUpdates} />}
+                            {inbox.length > 0 &&
+                                <View style={styles.linksContainer}>
+                                    <Pressable onPress={sendUpdates}>
+                                        <Text style={styles.link}>Send Updates</Text>
+                                    </Pressable>
+                                </View>
+                            }
                         </View>
                     </View>
                     <Tuple navigation={navigation}/>
@@ -156,7 +165,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 20,
         marginBottom: 20,
-        color: '#F2EFE9',
+        color: '#BFAC9B',
         lineHeight: 30,
     },
     linksContainer: {
@@ -167,7 +176,59 @@ const styles = StyleSheet.create({
         backgroundColor: '#4B5940',
         padding: 20,
         borderRadius: 20,
-        width: 150,
+        width: 500,
         alignSelf: 'center',
-    }
+    },
+
+
+    card: {
+        flexDirection: 'row',
+        backgroundColor: '#f2f3f7',
+        borderRadius: 10,
+        padding: 10,
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5,
+    },
+    statusInd: {
+        width: 10,
+        height: 10,
+        backgroundColor: '#ff0000',
+        borderRadius: 5,
+        marginRight: 10,
+    },
+    right: {
+        flex: 1,
+    },
+    textWrap: {
+        flexDirection: 'column',
+    },
+    textContent: {
+        color: '#333',
+    },
+    textLink: {
+        fontWeight: 'bold',
+    },
+    time: {
+        color: '#777',
+    },
+    buttonWrap: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10,
+    },
+    primaryCta: {
+        backgroundColor: 'transparent',
+        borderRadius: 15,
+    },
+    secondaryCta: {
+        backgroundColor: 'transparent',
+    },
+    buttonText: {
+        fontSize: 15,
+        color: '#1677ff',
+    },
 });

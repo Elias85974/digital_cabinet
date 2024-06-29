@@ -4,10 +4,15 @@ import {createHouse, getUserIdByEmail} from "../../Api";
 import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Tuple from "../Contents/Tuple";
+import ModalAlert from "../Contents/ModalAlert";
 
 export default function RegisterHome({navigation}) {
     let [newHouse, setNewHouse] = useState({nombre: '', direccion: ''});
     const {userToken, email} = React.useContext(AuthContext)
+
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+
 
     const isDirection = (direccion) =>
         /^[A-Z0-9.]+\s+[A-Z0-9.]+\s+[0-9]+$/i.test(direccion);
@@ -21,18 +26,25 @@ export default function RegisterHome({navigation}) {
         try {
             if (newHouse.nombre && newHouse.direccion) {
                 if (!isDirection(newHouse.direccion)) {
-                    alert("Incorrect house format. Please try again.")
+                    setModalMessage("Incorrect house format. Please try again."); // Muestra el modal en lugar de un alert
+                    setModalVisible(true);
                 } else {
                     const userId = await getUserIdByEmail(userToken,email);
                     await createHouse(newHouse, userId);
-                    alert("House created successfully!");
+                    setModalMessage("House created successfully!"); // Muestra el modal en lugar de un alert
+                    setModalVisible(true);
                     setNewHouse(prevState => ({...prevState, nombre: '', direccion: ''}));
-                    navigation.navigate('Homes');
+                    setTimeout(() => {
+                        setModalVisible(false);
+                        // Navega a la siguiente página después de un retraso
+                        navigation.navigate('Homes');
+                    }, 5000);
 
                 }
             }
             else {
-                alert("Please fill in all fields.")
+                setModalMessage("Please fill in all fields."); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
             }
         } catch (error) {
             console.log("Error creating house:", error);
@@ -42,6 +54,7 @@ export default function RegisterHome({navigation}) {
     return (
         <View style={styles.container}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+                <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Homes</Text>
                     <View style={styles.signInCont}>
@@ -133,5 +146,12 @@ const styles = StyleSheet.create({
     linksContainer: {
         marginBottom: 20,
         marginTop: 20,
+    },
+    signInCont: {
+        backgroundColor: '#4B5940',
+        padding: 20,
+        borderRadius: 20,
+        width: 400,
+        alignSelf: 'center',
     },
 });

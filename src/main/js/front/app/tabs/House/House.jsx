@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     linksContainer: {
         marginBottom: 20,
         marginTop: 20,
-        witdh: 300,
+        width: '100%',
     },
     link: {
         marginTop: 15,

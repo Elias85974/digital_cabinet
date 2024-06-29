@@ -179,26 +179,6 @@ export const getUserHouses = async (userId) => {
     }
 }
 
-// Funcion que mediando el houseId, devuelva todos los datos de la casa
-export const getHouse = async (houseId) => {
-    try {
-        const response = await fetch(`${API_URL}/houses/${houseId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to get house:", error);
-        throw error;
-    }
-
-}
-
 // Function to get the list of users of a house
 export const getUsersOfAHouse = async (houseId) => {
     try {

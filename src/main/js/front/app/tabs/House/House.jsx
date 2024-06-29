@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Pressable, Text, View} from 'react-native';
+import {Dimensions, Pressable, Text, View} from 'react-native';
 import {getHouseInventory} from "../../Api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet } from 'react-native';
@@ -55,7 +55,6 @@ export default function House({navigation}) {
             </View>
             <p></p>
             <View style={styles.linksContainer}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Pressable onPress={() => navigation.navigate("LowOnStock")}>
                         <Text style={styles.link}>Low on stock products</Text>
                     </Pressable>
@@ -65,8 +64,6 @@ export default function House({navigation}) {
                     <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
                         <Text style={styles.link}>Create a Product</Text>
                     </Pressable>
-                </View>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Pressable onPress={()=> navigation.navigate("Homes")}>
                         <Text style={styles.link}>Select another home</Text>
                     </Pressable>
@@ -76,12 +73,24 @@ export default function House({navigation}) {
                     <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
                         <Text style={styles.link}>Manage users</Text>
                     </Pressable>
-                </View>
             </View>
             <Tuple navigation={navigation}/>
         </View>
     );
 }
+
+
+
+// Obtén el ancho de la pantalla
+const screenWidth = Dimensions.get('window').width;
+
+// Calcula cuántos elementos deberían aparecer en una fila
+// Estos valores son solo ejemplos, puedes ajustarlos según tus necesidades
+const itemsPerRow = screenWidth > 700 ? 3 : screenWidth > 500 ? 2 : 1;
+
+// Calcula el ancho de cada elemento
+const itemWidth = screenWidth / itemsPerRow - 20; // Restamos 20 para tener en cuenta los márgenes
+
 
 const styles = StyleSheet.create({
     container: {
@@ -117,10 +126,13 @@ const styles = StyleSheet.create({
         lineHeight: 30,
     },
     linksContainer: {
-        marginBottom: 20,
         marginTop: 20,
-        width: '60%',
+        width: '50%',
         alignSelf: 'center',
+        flex: 3,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
     },
     link: {
         marginTop: 15,

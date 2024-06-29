@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, Button, Modal, TextInput, Alert} from 'react-nat
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getLowOnStockProducts, addStock} from "../../../Api";
-import GoBackButton from "../../Contents/GoBackButton";
+import Tuple from "../../Contents/Tuple";
 
 export default function LowOnStockProducts({navigation}) {
     const [products, setProducts] = useState([]);
@@ -49,7 +49,7 @@ export default function LowOnStockProducts({navigation}) {
                     <Button title="Add Stock" onPress={() => {setSelectedProduct(productInfo); setModalVisible(true);}} />
                 </View>
             ))}
-            <GoBackButton navigation={navigation}/>
+            <Tuple navigation={navigation}/>
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -79,10 +79,16 @@ export default function LowOnStockProducts({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 4,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+    },
+    container2: {
+        flex: 4,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
     },
     productSquare: {
         width: '80%',

@@ -56,7 +56,7 @@ export default function Product({navigation}) {
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
-                    <View style={styles.container}>
+                    <View style={styles.container2}>
                         {filteredProducts.map((productInfo, index) => (
                             <View key={index} style={styles.productSquare}>
                                 <Text style={styles.productText}>Producto: {productInfo.product.nombre}</Text>
@@ -70,40 +70,42 @@ export default function Product({navigation}) {
                                 </View>
                             </View>
                         ))}
-                        <Tuple navigation={navigation}/>
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={modalVisible2}
-                            onRequestClose={() => {
-                                setModalVisible2(!modalVisible2);
-                            }}
-                        >
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <Text style={styles.modalText}>Reduce Stock for {selectedProduct?.product.nombre}</Text>
-                                    <TextInput
-                                        style={styles.input}
-                                        onChangeText={setQuantityToReduce}
-                                        value={quantityToReduce}
-                                        keyboardType="numeric"
-                                        placeholder="Enter quantity to reduce"
-                                    />
-                                    <View style={styles.linksContainer}>
-                                        <Pressable onPress={handleReduceStock}>
-                                            <Text style={styles.link}>Confirm Reduction</Text>
-                                        </Pressable>
-                                    </View>
-                                    <View style={styles.linksContainer}>
-                                        <Pressable onPress={() => setModalVisible2(false)} >
-                                            <Text style={styles.link}>Cancel</Text>
-                                        </Pressable>
-                                    </View>
+                    </View>
+
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible2}
+                        onRequestClose={() => {
+                            setModalVisible2(!modalVisible2);
+                        }}
+                    >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Text style={styles.modalText}>Reduce Stock for {selectedProduct?.product.nombre}</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={setQuantityToReduce}
+                                    value={quantityToReduce}
+                                    keyboardType="numeric"
+                                    placeholder="Enter quantity to reduce"
+                                />
+                                <View style={styles.linksContainer}>
+                                    <Pressable onPress={handleReduceStock}>
+                                        <Text style={styles.link}>Confirm Reduction</Text>
+                                    </Pressable>
+                                </View>
+                                <View style={styles.linksContainer}>
+                                    <Pressable onPress={() => setModalVisible2(false)} >
+                                        <Text style={styles.link}>Cancel</Text>
+                                    </Pressable>
                                 </View>
                             </View>
-                        </Modal>
-                    </View>
+                        </View>
+                    </Modal>
+
                 </View>
+                <Tuple navigation={navigation}/>
             </ScrollView>
         </View>
     );
@@ -111,18 +113,26 @@ export default function Product({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 4,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+    },
+    container2: {
+        flex: 4,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     productSquare: {
         width: 300,
         backgroundColor: '#4B5940',
         borderRadius: 10,
         padding: 20,
-        marginBottom: 20,
+        marginBottom: 10,
         alignItems: 'center',
+        margin: 10,
     },
     productText: {
         fontSize: 16,

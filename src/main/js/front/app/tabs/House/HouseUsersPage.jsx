@@ -8,6 +8,7 @@ import {AuthContext} from "../../context/AuthContext";
 import LogoutButton from "../Contents/LogoutButton";
 import GoBackButton from "../Contents/GoBackButton";
 import Tuple from "../Contents/Tuple";
+import ModalAlert from "../Contents/ModalAlert";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -26,39 +27,10 @@ const HouseUsersPage = ({ navigation }) => {
     const [users, setUsers] = useState([]);
     const [inviteEmail, setInviteEmail] = useState('');
     const isFocused = useIsFocused();
-    // const userId = AsyncStorage.getItem('userId');
-    //const houseId = AsyncStorage.getItem('houseId');
-    //const [houseId, setHouseId] = useState('');
 
-    /*
-    useEffect(() => {
-        if (isFocused) {
-            console.log("IM HERE, PLIS");
-            getHouseUsers().then(r => console.log("Users loaded")).catch(e => console.log("Error loading users"));
-        }
-    }, [ isFocused ]);
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
 
-    const getHouseUsers = async () => {
-        try {
-            const houseId = await AsyncStorage.getItem('houseId');
-            const userId = await AsyncStorage.getItem('userId');
-            console.log("what the hell");
-            const houseUsers = await getUserHouses();
-            console.log("is going on?");
-
-            if (Array.isArray(houseUsers)) {
-                setUsers(houseUsers);
-            } else {
-                console.error('getHouseUsers did not return an array:', houseUsers);
-                setUsers([]);
-            }
-        } catch (error) {
-            console.log("Error getting users:", error);
-            setUsers([]);
-        }
-    }
-
-     */
 
     // Envío invitación a usuarios para mi casa
     const handleInvite = async () => {
@@ -75,13 +47,16 @@ const HouseUsersPage = ({ navigation }) => {
                 const invitedUserId = await getUserIdByEmail(token, inviteEmail);
                 if (invitedUserId) {
                     // If the user exists, call the inviteUser function
-                    console.log("am i calling the invite method?");
                     await inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
-                    alert("The invitation was sent");
+                    setModalMessage("The invitation was sent"); // Muestra el modal en lugar de un alert
+                    setModalVisible(true);
+
                     setInviteEmail('');
                 } else {
                     // If the user does not exist, show an alert
-                    alert('User does not exist.');
+                    setModalMessage("User does not exist."); // Muestra el modal en lugar de un alert
+                    setModalVisible(true);
+
                 }
             } catch (error) {
                 // Handle the error from getUserIdByEmail
@@ -89,49 +64,35 @@ const HouseUsersPage = ({ navigation }) => {
             }
         } else {
             // If the email is not valid, show an alert
-            alert('Please enter a valid email.');
+            setModalMessage("Please enter a valid email."); // Muestra el modal en lugar de un alert
+            setModalVisible(true);
+
         }
     }
 
     return (
         <View style={styles.container}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+                <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)}/>
                 <Text style={styles.title}>Digital Cabinet</Text>
-                <View style={styles.logInCont}>
-                    {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
-                    <View style={styles.container2}>
-                        {users.map((user, index) => (
-                            <View key={index} style={styles.circle}>
-                                <Pressable onPress={ () => {
-                                    {/*
-                                        navigation.navigate("A ningun lado");
-                                    */
-                                    }
-                                }}>
-                                    <Text style={styles.circleText}>{user.name}</Text>
-                                </Pressable>
-                            </View>
-                        ))}
-                    </View>
-                </View>
-                <p></p>
-                <View style={styles.linksContainer}>
-                    <Pressable onPress={() => navigation.navigate("HouseUsersPageDelete")}>
-                        <Text style={styles.link}>Delete a user</Text>
-                    </Pressable>
-
+                <View style={styles.addUser}>
                     <TextInput style={styles.input}
                                placeholder="Mail"
                                value={inviteEmail} // Use the mail state variable here
                                onChangeText={(value) => setInviteEmail(value)} // Update the mail state when the text input changes
                     />
-                    <Pressable style={styles.link} onPress={async() => await handleInvite()}>
+                    <Pressable style={styles.link} onPress={async () => await handleInvite()}>
                         <Text style={{color: 'white', fontSize: 16}}>Invite a user</Text>
                     </Pressable>
-
-                    <Tuple navigation={navigation}/>
-
                 </View>
+                <p></p>
+                <View style={styles.deleteUsers}>
+                    <Pressable style={{alignSelf:'center'}} onPress={() => navigation.navigate("HouseUsersPageDelete")}>
+                        <Text style={styles.linkdel}>Delete a user</Text>
+                    </Pressable>
+                </View>
+                <p></p>
+                <Tuple navigation={navigation}/>
             </ScrollView>
         </View>
     );
@@ -219,5 +180,38 @@ const styles = StyleSheet.create({
         backgroundColor: '#717336',
         borderColor: '#5d5e24',
         borderWidth: 2,
-    }
+    },
+    addUser: {
+        backgroundColor: '#4B5940',
+        padding: 20,
+        borderRadius: 20,
+        width: 300,
+        alignSelf: 'center',
+    },
+    deleteUsers: {
+        backgroundColor: '#4B5940',
+        borderRadius: 20,
+        width: 150,
+        height: 70,
+        alignSelf: 'center',
+        alignItems: 'center',
+    },
+    linkdel: {
+        marginTop: 10,
+        marginBottom: 10,
+        color: '#F2EFE9',
+        textDecorationLine: 'underline',
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 3, // Add border
+        borderColor: '#717336', // Set border color
+        padding: 10, // Add some padding so the text isn't right up against the border
+        backgroundColor: '#717336', // Set background color
+        width: 200, // Set width
+        alignSelf: 'center',
+        alignContent: 'center',
+        borderRadius: 100,
+        fontSize: 16,
+    },
 });

@@ -2,9 +2,13 @@ import React, {useState } from 'react';
 import {View, ScrollView, TextInput, Pressable, StyleSheet, Text} from 'react-native';
 import {createUser} from '../../Api';
 import Tuple from "../Contents/Tuple";
+import ModalAlert from "../Contents/ModalAlert";
 
 export default function RegisterPage({navigation}) {
     let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: ''});
+
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
 
     const isEmail = (email) =>
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
@@ -17,14 +21,24 @@ export default function RegisterPage({navigation}) {
         try {
             if (newUser.mail && newUser.nombre && newUser.apellido && newUser.password) {
                 if (!isEmail(newUser.mail)) {
-                    alert("Incorrect email format. Please try again.")
+                    setModalMessage("Incorrect email format. Please try again."); // Muestra el modal en lugar de un alert
+                    setModalVisible(true);
                 } else {
                     await createUser(newUser);
-                    navigation.navigate("LoginPage")
+                    setModalMessage("User created successfully!"); // Muestra el modal en lugar de un alert
+                    setModalVisible(true);
+
+                    setTimeout(() => {
+                        setModalVisible(false);
+                        // Navega a la siguiente página después de un retraso
+                        navigation.navigate('LoginPage');
+                    }, 5000);
                 }
             }
             else {
-                alert("Please fill in all fields.")
+                setModalMessage("Please fill in all fields."); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
+
             }
             setNewUser({mail: '', nombre: '', apellido: '', password: ''});
         } catch (error) {
@@ -35,6 +49,7 @@ export default function RegisterPage({navigation}) {
     return (
         <View style={styles.container}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+                <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Sign Up</Text>
                     <View style={styles.signInCont}>

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {View, Text, TextInput, Pressable, StyleSheet, ScrollView} from 'react-native';
 import Picker from 'react-native-picker-select';
 import { getAllProducts, updateHouseInventory } from '../../Api';
-import {router, useLocalSearchParams} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Tuple from "../Contents/Tuple";
+import ModalAlert from "../Contents/ModalAlert";
 
 export default function AddProduct({navigation}) {
     const [products, setProducts] = useState([]);
@@ -12,6 +12,10 @@ export default function AddProduct({navigation}) {
     const [quantity, setQuantity] = useState('');
     const [expiration, setExpiration] = useState('');
     const [lowStockIndicator, setLowStockIndicator] = useState('');
+
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+
     const isValidDate = (date) => {
         return /^(\d{2}\/\d{2}\/\d{4})$/.test(date);
     }
@@ -48,19 +52,28 @@ export default function AddProduct({navigation}) {
         const houseId = await AsyncStorage.getItem('houseId');
         try {
             if (!houseId) {
-                alert('Please select a house');
-                router.replace('../Homes');
+                setModalMessage("Please select a house."); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
+                setTimeout(() => {
+                    setModalVisible(false);
+                    // Navega a la siguiente página después de un retraso
+                    navigation.navigate('Homes');
+                }, 5000);
+
             }
             if (!selectedProduct || !quantity) {
-                alert('Please select a product and enter a quantity');
+                setModalMessage("Please select a product and enter a quantity."); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
             } else if (!isValidDate(expiration)) {
-                alert('Please enter a valid expiration date in the format DD/MM/YYYY');
+                setModalMessage("Please enter a valid expiration date in the format DD/MM/YYYY"); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
             } else {
                 const stockUpdate = {productId: selectedProduct,
                     quantity: quantity, expiration: expiration, lowStockIndicator: lowStockIndicator};
                 console.log('stockUpdate:', stockUpdate);
                 await updateHouseInventory(houseId, stockUpdate);
-                alert('Inventory updated successfully!');
+                setModalMessage("Inventory updated successfully!"); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
             }
             setExpiration('');
             setQuantity('');
@@ -74,6 +87,7 @@ export default function AddProduct({navigation}) {
     return (
         <View style={styles.container}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+                <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Add some products!</Text>
                     <View style={styles.addProd}>
@@ -86,19 +100,19 @@ export default function AddProduct({navigation}) {
                             />
                         </View>
                         <TextInput style={styles.input}
-                                   placeholder={"Enter quantity of products"}
+                                   placeholder={"Quantity of products"}
                                    value={quantity.toString()}
                                    onChangeText={(value) => handleChanges(value, 'quantity')}
                                    inputMode="numeric"
                         />
                         <TextInput style={styles.input}
-                                   placeholder={"Enter an expiration date in the format DD/MM/YYYY"}
+                                   placeholder={"DD/MM/YYYY"}
                                    value={expiration}
                                    onChangeText={(value) => handleChanges(value, 'expiration')}
                                    inputMode="text"
                         />
                         <TextInput style={styles.input}
-                                   placeholder={"Enter your low stock indicator"}
+                                   placeholder={"Low stock indicator"}
                                    value={lowStockIndicator}
                                    onChangeText={(value) => handleChanges(value, 'lowStockIndicator')}
                                    inputMode="numeric"

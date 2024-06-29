@@ -119,7 +119,8 @@ const styles = StyleSheet.create({
     linksContainer: {
         marginBottom: 20,
         marginTop: 20,
-        width: '100%',
+        width: '60%',
+        alignSelf: 'center',
     },
     link: {
         marginTop: 15,
@@ -146,8 +147,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     circle: {
-        width: 100,
-        height: 100,
+        paddingVertical: 10, // Controla el tamaño vertical del círculo
+        paddingHorizontal: 20, // Controla el tamaño horizontal del círculo
         borderRadius: 35,
         backgroundColor: '#BFAC9B',
         justifyContent: 'center',

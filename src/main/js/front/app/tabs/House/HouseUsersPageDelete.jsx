@@ -8,6 +8,7 @@ import {AuthContext} from "../../context/AuthContext";
 import LogoutButton from "../Contents/LogoutButton";
 import GoBackButton from "../Contents/GoBackButton";
 import Tuple from "../Contents/Tuple";
+import ModalAlert from "../Contents/ModalAlert";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -27,13 +28,15 @@ const HouseUsersPageDelete = ({ navigation }) => {
     const [inviteEmail, setInviteEmail] = useState('');
     const isFocused = useIsFocused();
     const userId = AsyncStorage.getItem('userId');
-    //const houseId = AsyncStorage.getItem('houseId');
-    // const [houseId, setHouseId] = useState(null);
+
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+
 
     useEffect(() => {
         if (isFocused) {
-            console.log("IM HERE, PLIS");
             getHouseUsers().then(r => console.log("Users loaded")).catch(e => console.log("Error loading users"));
+
         }
     }, [ isFocused ]);
 
@@ -56,28 +59,42 @@ const HouseUsersPageDelete = ({ navigation }) => {
     const handleDelete = async (userId) => {
         // Make a DELETE request to delete the user
         const houseId = await AsyncStorage.getItem('houseId');
+        const currentUserId = await AsyncStorage.getItem('userId'); // Obtén el userId del usuario actual
+
         await deleteUserFromHouse(houseId, userId);
-        alert('User deleted successfully');
+        setModalMessage("User deleted successfully"); // Muestra el modal en lugar de un alert
+        setModalVisible(true);
+        setTimeout(() => {
+            setModalVisible(false);
+            // Si el usuario eliminado es el usuario actual, navega a la página de Homes
+            if (userId === currentUserId) {
+                navigation.navigate('Homes');
+            }
+        }, 2500);
+
         // Update the users list
         await getHouseUsers();
     };
     return (
     <View style={styles.container}>
         <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+            <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+
             <Text style={styles.title}>Digital Cabinet</Text>
-            <Text style={styles.info}>Press a user to delete it.</Text>
-            <View style={styles.logInCont}>
-                {house ? <Text> Value = {house.nombre}</Text> : <Text>Loading...</Text>}
-                <View style={styles.container2}>
-                    {users.map((user, index) => (
-                        <View key={index} style={styles.circle}>
-                            <Pressable style={styles.pressableSquare} onPress={ async () => {
-                                await handleDelete(user.userId); // Call handleDelete with userId
-                            }}>
-                                <Text style={styles.circleText}>{user.username}</Text>
-                            </Pressable>
-                        </View>
-                    ))}
+            <View style={styles.signInCont}>
+                <Text style={styles.info}>Press a user to delete it.</Text>
+                <View style={styles.logInCont}>
+                    <View style={styles.container2}>
+                        {users.map((user, index) => (
+                            <View key={index} style={styles.circle}>
+                                <Pressable style={styles.pressableSquare} onPress={ async () => {
+                                    await handleDelete(user.userId); // Call handleDelete with userId
+                                }}>
+                                    <Text style={styles.circleText}>{user.username}</Text>
+                                </Pressable>
+                            </View>
+                        ))}
+                    </View>
                 </View>
             </View>
             <p></p>
@@ -92,13 +109,26 @@ export default HouseUsersPageDelete;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 4,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
+    container2: {
+        flex: 4,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+    },
+    signInCont: {
+        backgroundColor: '#3b0317',
+        padding: 20,
+        borderRadius: 20,
+        width: 400,
+        alignSelf: 'center',
+    },
     link: {
-        marginTop: 15,
+        marginTop: 10,
         marginBottom: 10,
         color: '#F2EFE9',
         textDecorationLine: 'underline',
@@ -149,7 +179,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     logInCont: {
-        backgroundColor: '#4B5940',
+        backgroundColor: '#3b0317',
         padding: 20,
         borderRadius: 20,
         width: 300,
@@ -162,20 +192,17 @@ const styles = StyleSheet.create({
         width: 400,
         alignSelf: 'center',
     },
-    picker:{
-        width: '20%',
-        alignSelf: 'center',
-        height: 20,
-        backgroundColor: '#717336',
-        borderColor: '#5d5e24',
-        borderWidth: 2,
-    },
-    pressableSquare: {
-        flex: 1,
-        alignItems: 'center',
+    circle: {
+        paddingVertical: 10, // Controla el tamaño vertical del círculo
+        paddingHorizontal: 20, // Controla el tamaño horizontal del círculo
+        borderRadius: 35,
+        backgroundColor: '#BFAC9B',
         justifyContent: 'center',
-        backgroundColor: '#4B5940', // or any color you want
-        padding: 10,
-        borderRadius: 10, // adjust this to control the roundness of the corners
+        alignItems: 'center',
+        margin: 10,
+    },
+    circleText: {
+        color: 'white',
+        fontSize: 25,
     },
 });

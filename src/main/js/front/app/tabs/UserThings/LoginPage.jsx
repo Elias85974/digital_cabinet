@@ -4,12 +4,16 @@ import {getUserIdByEmail, loginUser} from "../../Api";
 import {AuthContext} from "../../context/AuthContext";
 import React from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ModalAlert from "../Contents/ModalAlert";
 
 export default function LoginPage({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
     const {signIn} = React.useContext(AuthContext)
     const [user, setUser] = useState({mail: '', password: ''});
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
 
     const handleInputChange = (field, value) => {
         setUser({...user, [field]: value});
@@ -35,11 +39,14 @@ export default function LoginPage({navigation}) {
                 }
             }
             else {
-                alert("Please fill in all fields.")
+                setModalMessage("Please fill in all fields."); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
+
             }
         } catch (error) {
             console.log("Error logging in user:", error);
-            alert("Incorrect email or password. Please try again.")
+            setModalMessage("Incorrect email or password. Please try again."); // Muestra el modal en lugar de un alert
+            setModalVisible(true);
         }
         finally {
             setUser({mail: '', password: ''}); // Reset user state
@@ -51,6 +58,8 @@ export default function LoginPage({navigation}) {
         return (
             <View style={styles.container}>
                 <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
+                    <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+
                     <View>
                         <Text style={styles.title}>Digital Cabinet</Text>
                         <View style={styles.logInCont}>

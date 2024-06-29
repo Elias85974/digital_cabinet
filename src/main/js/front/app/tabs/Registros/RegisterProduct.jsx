@@ -4,19 +4,18 @@ import Picker from 'react-native-picker-select';
 
 import {createProduct, getCategories, createCategory} from "../../Api";
 import Tuple from "../Contents/Tuple";
+import ModalAlert from "../Contents/ModalAlert";
 
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
-    // no quiere funcionar con redirect ni router --> const [houseCreated, setHouseCreated] = useState(false);
     let [categories, setCategories] = useState([]);
     let [newCategory, setNewCategory] = useState('');
     let [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
     const quantityTypes = ['Gramos', 'Litros', 'Unidades', 'Kilogramos'];
 
-    /*
-    const isTipoDeCant = (tipoDeCantidad) =>
-        /^[A-Z0-9.]+\s+[0-9]+$/i.test(tipoDeCantidad);
-     */
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+
 
     useEffect(() => {
         fetchCategories();
@@ -57,10 +56,18 @@ export default function RegisterProduct({navigation}) {
     const handleCreateProduct = async() => {
         try {
             if (newProduct.nombre && newProduct.marca && newProduct.tipoDeCantidad && newProduct.categoryId) {
-                createProduct(newProduct).then(r => alert("Product created successfully!"));
-                navigation.navigate("House")
+                createProduct(newProduct).then(r =>
+                    setModalMessage("Product created successfully!"), // Muestra el modal en lugar de un alert
+                    setModalVisible(true),
+                );
+                setTimeout(() => {
+                    setModalVisible(false);
+                    // Navega a la siguiente página después de un retraso
+                    navigation.navigate('House');
+                }, 5000);
             } else {
-                alert("Please fill in all fields.")
+                setModalMessage("Please fill in all fields."); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
             }
         } catch (error) {
             console.log("Error creating product:", error);
@@ -71,6 +78,7 @@ export default function RegisterProduct({navigation}) {
     return (
         <View style={styles.container}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+                <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Products</Text>
                     <View style={styles.createprod}>

@@ -16,6 +16,8 @@ import HouseUsersPage from "../tabs/House/HouseUsersPage";
 import HouseUsersPageDelete from "../tabs/House/HouseUsersPageDelete";
 import LowOnStockProducts from "../tabs/House/Product/LowOnStockProducts";
 
+import Test from "../test.";
+
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
@@ -36,6 +38,7 @@ function AuthNavigator() {
             <Stack.Screen options={{headerShown: false}} name="HouseUsersPage" component={HouseUsersPage} />
             <Stack.Screen options={{headerShown: false}} name="HouseUsersPageDelete" component={HouseUsersPageDelete} />
             <Stack.Screen options={{headerShown: false}} name="LowOnStock" component={LowOnStockProducts} />
+                <Stack.Screen name={"test" } component={Test} />
 
         </Stack.Navigator>
     );

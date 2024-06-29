@@ -98,7 +98,7 @@ export default function WishList({navigation}) {
 
 const styles = StyleSheet.create({
     checklist: {
-        flex: 1,
+        flex: 3,
         flexDirection: 'row',
         flexWrap: 'wrap',
         alignItems: 'center',
@@ -109,8 +109,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     checkbox: {
-        width: 18,
-        height: 18,
+        width: 16,
+        height: 16,
         margin: 10,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
@@ -126,7 +126,8 @@ const styles = StyleSheet.create({
         marginRight: 20,
     },
     container: {
-        flex: 1,
+        height: '100%',
+        width: '100%',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',

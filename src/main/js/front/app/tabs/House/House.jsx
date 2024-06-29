@@ -56,7 +56,7 @@ export default function House({navigation}) {
             <p></p>
             <View style={styles.linksContainer}>
                     <Pressable onPress={() => navigation.navigate("LowOnStock")}>
-                        <Text style={styles.link}>Low on stock products</Text>
+                        <Text style={styles.link}>Low stock</Text>
                     </Pressable>
                     <Pressable onPress={() => navigation.navigate("AddStock")}>
                         <Text style={styles.link}>Add a Product</Text>
@@ -68,7 +68,7 @@ export default function House({navigation}) {
                         <Text style={styles.link}>Select another home</Text>
                     </Pressable>
                     <Pressable onPress={()=> navigation.navigate("PieChart")}>
-                        <Text style={styles.link}>See your expenses</Text>
+                        <Text style={styles.link}>See expenses</Text>
                     </Pressable>
                     <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
                         <Text style={styles.link}>Manage users</Text>
@@ -82,7 +82,8 @@ export default function House({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height: '100%',
+        width: '100%',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
     },
     linksContainer: {
         marginTop: 20,
-        width: '50%',
+        width: '80%',
         alignSelf: 'center',
         flex: 3,
         flexWrap: 'wrap',
@@ -123,8 +124,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     link: {
-        marginTop: 15,
-        marginBottom: 10,
+        marginTop: 5,
+        marginBottom: 1,
         color: '#F2EFE9',
         textDecorationLine: 'underline',
         textAlign: 'center',
@@ -132,9 +133,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 3, // Add border
         borderColor: '#717336', // Set border color
-        padding: 10, // Add some padding so the text isn't right up against the border
+        padding: 15, // Add some padding so the text isn't right up against the border
         backgroundColor: '#717336', // Set background color
-        width: 200, // Set width
+        width: 'auto', // Set width
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,

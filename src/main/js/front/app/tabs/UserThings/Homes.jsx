@@ -77,13 +77,14 @@ export default function Homes({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 3,
+        height: '100%',
+        width: '100%',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
     container2: {
-        flex: 3,
+        width: '90%',
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#4B5940',
         padding: 20,
         borderRadius: 20,
-        width: 500,
+        width: '90%',
         alignSelf: 'center',
     }
 });

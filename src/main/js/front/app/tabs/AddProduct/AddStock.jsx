@@ -89,7 +89,7 @@ export default function AddProduct({navigation}) {
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
-                    <Text style={styles.title}>Add some products!</Text>
+                    <Text style={styles.title}>Add products!</Text>
                     <View style={styles.addProd}>
                         <Text style={styles.info}>Select a Product</Text>
                         <View style={styles.picker}>
@@ -134,7 +134,8 @@ export default function AddProduct({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height: '100%',
+        width: '100%',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -171,8 +172,8 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 30,
-        marginBottom: 50,
+        marginTop: 20,
+        marginBottom: 40,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,
@@ -181,8 +182,8 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontFamily: 'lucida grande',
         textAlign: 'center',
-        marginTop: 20,
-        marginBottom: 20,
+        marginTop: 10,
+        marginBottom: 10,
         color: '#F2EFE9',
         lineHeight: 30,
     },

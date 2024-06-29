@@ -73,7 +73,6 @@ export default function RegisterHome({navigation}) {
                             <Text style={{color: 'white', fontSize: 16}} >Create House</Text>
                         </Pressable>
                     </View>
-                    <p></p>
                     <View style={styles.linksContainer}>
                         <Pressable onPress={() => navigation.navigate("Homes")}
                         style={styles.link}>
@@ -91,7 +90,8 @@ export default function RegisterHome({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height: '100%',
+        width: '100%',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',

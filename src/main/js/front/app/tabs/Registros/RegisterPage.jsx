@@ -82,7 +82,7 @@ export default function RegisterPage({navigation}) {
                     <p></p>
                     <View style={styles.linksContainer}>
                         <Pressable style={styles.link} onPress={() => navigation.navigate("LoginPage")}>
-                            <Text href={"/LoginPage"} style={{color: 'white'}}>Log In</Text>
+                            <Text style={{color: 'white'}}>Log In</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -93,7 +93,8 @@ export default function RegisterPage({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height: '100%',
+        width: '100%',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',

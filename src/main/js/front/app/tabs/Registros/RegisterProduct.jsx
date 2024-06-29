@@ -114,8 +114,8 @@ export default function RegisterProduct({navigation}) {
                                     onChangeText={handleNewCategoryChange}
                                 />
                                 <View style={styles.linksContainer}>
-                                    <Pressable style={styles.link} onPress={handleCreateCategory}>
-                                        <Text style={{color: 'white', fontSize: 16}}>Create Category</Text>
+                                    <Pressable onPress={handleCreateCategory}>
+                                        <Text style={styles.link}>Create Category</Text>
                                     </Pressable>
                                 </View>
                             </View>
@@ -150,14 +150,15 @@ export default function RegisterProduct({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height: '100%',
+        width: '100%',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
     link: {
-        marginTop: 15,
-        marginBottom: 10,
+        marginTop: 10,
+        marginBottom: 5,
         color: '#F2EFE9',
         textDecorationLine: 'underline',
         textAlign: 'center',
@@ -217,13 +218,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#4B5940',
         padding: 20,
         borderRadius: 20,
-        width: 400,
+        width: '90%',
         alignSelf: 'center',
     },
     picker:{
-        width: '20%',
+        width: '80%',
+        height: 30,
         alignSelf: 'center',
-        height: 20,
         backgroundColor: '#717336',
         borderColor: '#5d5e24',
         borderWidth: 2,

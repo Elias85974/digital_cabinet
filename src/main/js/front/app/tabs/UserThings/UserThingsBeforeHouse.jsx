@@ -5,7 +5,7 @@ import LogoutButton from "../Contents/LogoutButton";
 export default function UserThingsBeforeHouse({navigation}) {
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+            <ScrollView>
                 <View>
                     <Text style={styles.title}>Digital Cabinet</Text>
                     <View style={styles.logInCont}>
@@ -37,32 +37,11 @@ export default function UserThingsBeforeHouse({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 2,
+        height: '100%',
+        width: '100%',
         backgroundColor: '#BFAC9B',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        padding: 20,
     },
-
-    container2: {
-        flex: 2,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-    },
-    circle: {
-        width: 100,
-        height: 100,
-        borderRadius: 35,
-        backgroundColor: '#BFAC9B',
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 10,
-    },
-    circleText: {
-        color: 'white',
-        fontSize: 25,
-    },
-
     link: {
         marginTop: 15,
         marginBottom: 10,
@@ -81,16 +60,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         fontSize: 16,
     },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        color: 'white',
-        backgroundColor: '#4B5940',
-        padding: 10,
-        justifyContent: 'center',
-        alignContent: 'center',
-    },
+
     title: {
         fontSize: 60,
         fontWeight: 'bold',

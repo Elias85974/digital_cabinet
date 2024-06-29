@@ -68,7 +68,7 @@ export default function Inbox({navigation}) {
                                                 <View style={styles.textWrap}>
                                                     <Text style={styles.textContent}>
                                                         <Text style={styles.textLink}>{item.username}</Text>
-                                                         has invited you to access to its Digital Cabinet!!!
+                                                          has invited you to access to its Digital Cabinet!!!
                                                     </Text>
                                                     <Text style={styles.time}>1 minute</Text>
                                                 </View>
@@ -92,7 +92,7 @@ export default function Inbox({navigation}) {
                                 />
                             ) : (
                                 <View style={styles.emptyInbox}>
-                                    <Text>You have no recent invitations</Text>
+                                    <Text style={{alignSelf: 'center'}}>You have no recent invitations</Text>
                                 </View>
                             )}
                             {inbox.length > 0 &&
@@ -114,7 +114,7 @@ export default function Inbox({navigation}) {
 const styles = StyleSheet.create({
     // ... other styles
     emptyInbox: {
-        flex: 50,
+        width: '50%',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 10,
@@ -122,7 +122,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#4B5940', // or any color you want
     },
     container: {
-        flex: 1,
+        height: '100%',
+        width: '100%',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#4B5940',
         padding: 20,
         borderRadius: 20,
-        width: 500,
+        width: '90%',
         alignSelf: 'center',
     },
 

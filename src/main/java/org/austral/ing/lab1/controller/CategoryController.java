@@ -18,44 +18,48 @@ public class CategoryController {
     }
 
     public void init() {
-        // Route to get the existing categories
         Spark.get("/categories", (req, resp) -> {
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             Categories categoriesRepo = new Categories(entityManager);
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            String categoriesJson = gson.toJson(categoriesRepo.listAll());
-            tx.commit();
-            entityManager.close();
-
-            resp.type("application/json");
-            return categoriesJson;
+            try {
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                String categoriesJson = gson.toJson(categoriesRepo.listAll());
+                tx.commit();
+                resp.type("application/json");
+                return categoriesJson;
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the categories, please try again";
+            } finally {
+                entityManager.close();
+            }
         });
 
-        // Route to create a category
         Spark.post("/categories", "application/json", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Categories categoriesRepo = new Categories(entityManager);
             try {
                 final Category category = Category.fromJson(req.body());
-                final EntityManager entityManager = entityManagerFactory.createEntityManager();
-                Categories categoriesRepo = new Categories(entityManager);
-
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
                 categoriesRepo.persist(category);
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
-
                 return category.asJson();
             } catch (Exception e) {
                 resp.status(500);
-                return "An error occurred while creating the category";
+                System.out.println(e.getMessage());
+                return "An error occurred while creating the category, please try again";
+            } finally {
+                entityManager.close();
             }
         });
 
-        /* Route to get a category by name
+                /* Route to get a category by name
         Spark.get("/categories/:name", (req, resp) -> {
             final String name = req.params("name");
             final EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -77,40 +81,51 @@ public class CategoryController {
 
          */
 
-        // Route to update a category
+
         Spark.put("/categories/:name", "application/json", (req, resp) -> {
-            final String name = req.params("name");
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             Categories categoriesRepo = new Categories(entityManager);
-            final Category newCategoryData = Category.fromJson(req.body());
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            Category updatedCategory = categoriesRepo.modify(name, newCategoryData);
-            tx.commit();
-
-            if (updatedCategory != null) {
-                resp.type("application/json");
-                return updatedCategory.asJson();
-            } else {
-                resp.status(404);
-                return "Category not found";
+            try {
+                final String name = req.params("name");
+                final Category newCategoryData = Category.fromJson(req.body());
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                Category updatedCategory = categoriesRepo.modify(name, newCategoryData);
+                tx.commit();
+                if (updatedCategory != null) {
+                    resp.type("application/json");
+                    return updatedCategory.asJson();
+                } else {
+                    resp.status(404);
+                    return "Category not found";
+                }
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while updating the category, please try again";
+            } finally {
+                entityManager.close();
             }
         });
 
-        // Route to delete a category
         Spark.delete("/categories/:name", (req, resp) -> {
-            final String name = req.params("name");
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             Categories categoriesRepo = new Categories(entityManager);
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            categoriesRepo.delete(name);
-            tx.commit();
-
-            resp.status(204);
-            return "Category deleted";
+            try {
+                final String name = req.params("name");
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                categoriesRepo.delete(name);
+                tx.commit();
+                resp.status(204);
+                return "Category deleted";
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while deleting the category, please try again";
+            } finally {
+                entityManager.close();
+            }
         });
     }
 }

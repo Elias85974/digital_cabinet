@@ -21,29 +21,32 @@ public class ProductController {
     }
 
     public void init() {
-        // Route to get all the products of the database
         Spark.get("/products", (req, resp) -> {
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            String productsJson = gson.toJson(productsRepo.listAll());
-            tx.commit();
-            entityManager.close();
-
-            resp.type("application/json");
-            return productsJson;
+            try {
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                String productsJson = gson.toJson(productsRepo.listAll());
+                tx.commit();
+                resp.type("application/json");
+                return productsJson;
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the products, please try again";
+            } finally {
+                entityManager.close();
+            }
         });
 
-        // Route to create a product
         Spark.post("/products/:categoryId", "application/json", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+            Categories categoriesRepo = new Categories(entityManager);
             try {
                 final Long categoryId = Long.valueOf(req.params("categoryId"));
-                final EntityManager entityManager = entityManagerFactory.createEntityManager();
-                Products productsRepo = new Products(entityManager);
-                Categories categoriesRepo = new Categories(entityManager);
                 final Product product = Product.fromJson(req.body());
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
@@ -56,59 +59,71 @@ public class ProductController {
                 return product.asJson();
             } catch (Exception e) {
                 resp.status(500);
+                System.out.println(e.getMessage());
                 return "An error occurred while creating the product, please try again";
+            } finally {
+                entityManager.close();
             }
         });
 
-        // Route to get a product by name
         Spark.get("/products/:name", (req, resp) -> {
-            final String name = req.params("name");
-
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            Optional<Product> productOptional = productsRepo.findByName(name);
-            tx.commit();
-
-            if (productOptional.isPresent()) {
-                resp.type("application/json");
-                return productOptional.get().asJson();
-            } else {
-                resp.status(404);
-                return "Product not found";
-            }
-        });
-
-        // Route to update a product
-        Spark.put("/products/:name", "application/json", (req, resp) -> {
-            final String name = req.params("name");
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Products productsRepo = new Products(entityManager);
-            final Product newProductData = Product.fromJson(req.body());
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            Product updatedProduct = productsRepo.modify(name, newProductData);
-            tx.commit();
-
-            if (updatedProduct != null) {
-                resp.type("application/json");
-                return updatedProduct.asJson();
-            } else {
-                resp.status(404);
-                return "Product not found";
-            }
-        });
-
-        // Route to delete a product
-        Spark.delete("/products/:name", (req, resp) -> {
             try {
                 final String name = req.params("name");
-                final EntityManager entityManager = entityManagerFactory.createEntityManager();
-                Products productsRepo = new Products(entityManager);
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                Optional<Product> productOptional = productsRepo.findByName(name);
+                tx.commit();
 
+                if (productOptional.isPresent()) {
+                    resp.type("application/json");
+                    return productOptional.get().asJson();
+                } else {
+                    resp.status(404);
+                    return "Product not found";
+                }
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the product, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        Spark.put("/products/:name", "application/json", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+            try {
+                final String name = req.params("name");
+                final Product newProductData = Product.fromJson(req.body());
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                Product updatedProduct = productsRepo.modify(name, newProductData);
+                tx.commit();
+
+                if (updatedProduct != null) {
+                    resp.type("application/json");
+                    return updatedProduct.asJson();
+                } else {
+                    resp.status(404);
+                    return "Product not found";
+                }
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while updating the product, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        Spark.delete("/products/:name", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+            try {
+                final String name = req.params("name");
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
                 productsRepo.delete(name);
@@ -118,7 +133,10 @@ public class ProductController {
                 return "Product deleted";
             } catch (Exception e) {
                 resp.status(500);
+                System.out.println(e.getMessage());
                 return "An error occurred while deleting the product, please try again";
+            } finally {
+                entityManager.close();
             }
         });
     }

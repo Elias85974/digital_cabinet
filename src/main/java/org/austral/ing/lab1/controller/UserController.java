@@ -30,6 +30,7 @@ public class UserController {
                 users.createUserFromJson(req.body());
                 resp.type("application/json");
                 resp.status(201);
+                System.out.println("User created");
                 return resp.body();
             } catch (Exception e) {
                 resp.status(500);

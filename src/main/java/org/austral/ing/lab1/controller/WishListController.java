@@ -19,50 +19,60 @@ public class WishListController {
     public void init() {
         // Route to get the products of the user's wishlist
         Spark.get("/wishList/:userId", (req, resp) -> {
-            Long userId = Long.parseLong(req.params("userId"));
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Users usersRepo = new Users(entityManager);
+            try {
+                Long userId = Long.parseLong(req.params("userId"));
 
-            // Begin Business Logic
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Users usersRepo = new Users(entityManager);
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
 
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
+                Optional<User> user = usersRepo.findById(userId);
 
-            Optional<User> user = usersRepo.findById(userId);
+                tx.commit();
 
-            tx.commit();
-            entityManager.close();
-
-            if (user.isPresent()) {
-                resp.status(200);
-                resp.type("application/json");
-                return user.get().getWishlistsAsJson();
-            } else {
-                resp.status(404);
-                return "User not found";
+                if (user.isPresent()) {
+                    resp.status(200);
+                    resp.type("application/json");
+                    return user.get().getWishlistsAsJson();
+                } else {
+                    resp.status(404);
+                    return "User not found";
+                }
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the wishlist, please try again";
+            } finally {
+                entityManager.close();
             }
         });
 
         // Route to add a product to the user's wishlist
         Spark.post("/wishList/:userId/:product", "application/json", (req, resp) -> {
-            Long userId = Long.parseLong(req.params("userId"));
-            String product = req.params("product");
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Users usersRepo = new Users(entityManager);
+            try {
+                Long userId = Long.parseLong(req.params("userId"));
+                String product = req.params("product");
 
-            // Begin Business Logic
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Users usersRepo = new Users(entityManager);
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
 
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
+                // Call the method to add product to wishlist
+                usersRepo.addProductToWishList(userId, product);
 
-            // Call the method to add product to wishlist
-            usersRepo.addProductToWishList(userId, product);
+                tx.commit();
 
-            tx.commit();
-            entityManager.close();
-
-            resp.status(200);
-            return "Product added to wishlist successfully";
+                resp.status(200);
+                return "Product added to wishlist successfully";
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while adding the product to the wishlist, please try again";
+            } finally {
+                entityManager.close();
+            }
         });
     }
 }

@@ -28,180 +28,192 @@ public class InventoryController {
     }
 
     public void init() {
-        // Requesting an inventory of a house
         Spark.get("/houses/:houseId/inventory", (req, resp) -> {
-            final String houseId = req.params("houseId");
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Houses houses = new Houses(entityManager);
+            try {
+                final String houseId = req.params("houseId");
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
+                tx.commit();
 
-            /* Begin Business Logic */
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Houses houses = new Houses(entityManager);
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
-            tx.commit();
-            entityManager.close();
-            /* End Business Logic */
+                if (houseOptional.isEmpty()) {
+                    resp.status(404);
+                    return "House not exists";
+                }
 
-            if (houseOptional.isEmpty()) {
-                resp.status(404);
-                return "House not exists";
+                final House house = houseOptional.get();
+                final Inventory inventory = house.getInventario();
+                String categories = inventory.getCategoriesAsJson();
+
+                resp.type("application/json");
+                return categories;
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the inventory, please try again";
+            } finally {
+                entityManager.close();
             }
-
-            final House house = houseOptional.get();
-            final Inventory inventory = house.getInventario();
-            String categories = inventory.getCategoriesAsJson();
-
-            resp.type("application/json");
-            return categories;
         });
 
-        // Route to update the inventory of a given house
         Spark.post("/houses/:houseId/inventory", "application/json", (req, resp) -> {
-            final String houseId = req.params("houseId");
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Houses houses = new Houses(entityManager);
+            Products products = new Products(entityManager);
+            try {
+                final String houseId = req.params("houseId");
+                JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
+                final String productId = jsonObject.get("productId").getAsString();
+                final long quantity = jsonObject.get("quantity").getAsLong();
+                final String expirationString = jsonObject.get("expiration").getAsString();
+                final long lowStockIndicator = jsonObject.get("lowStockIndicator").getAsLong();
 
-            // Parse the JSON body of the request
-            JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
-            final String productId = jsonObject.get("productId").getAsString();
-            final long quantity = jsonObject.get("quantity").getAsLong();
-            final String expirationString = jsonObject.get("expiration").getAsString();
-            final long lowStockIndicator = jsonObject.get("lowStockIndicator").getAsLong();
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                Date expiration = formatter.parse(expirationString);
 
-            // Parse the expiration string into a java.util.Date object
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            Date expiration = formatter.parse(expirationString);
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
+                final Optional<Product> productOptional = products.findById(Long.valueOf(productId));
 
-            /* Begin Business Logic */
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Houses houses = new Houses(entityManager);
-            final Products products = new Products(entityManager);
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
-            final Optional<Product> productOptional = products.findById(Long.valueOf(productId));
+                if (houseOptional.isEmpty()) {
+                    resp.status(404);
+                    return "House not found";
+                }
 
-            /* End Business Logic */
+                if (productOptional.isEmpty()) {
+                    resp.status(404);
+                    return "Product not found";
+                }
 
-            if (houseOptional.isEmpty()) {
-                resp.status(404);
-                return "House not found";
+                final House house = houseOptional.get();
+                Product product = productOptional.get();
+                final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration)
+                        .setLowStockIndicator(lowStockIndicator).build();
+
+                Inventories inventories = new Inventories(entityManager);
+                entityManager.persist(stock);
+                inventories.addStockToHouse(house, stock);
+                tx.commit();
+
+                resp.status(200);
+                return "Everything works fine";
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while updating the inventory, please try again";
+            } finally {
+                entityManager.close();
             }
-
-            if (productOptional.isEmpty()) {
-                resp.status(404);
-                return "Product not found";
-            }
-
-            final House house = houseOptional.get();
-            Product product = productOptional.get();
-            final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration)
-                    .setLowStockIndicator(lowStockIndicator).build();
-
-            /* Begin Business Logic */
-            final Inventories inventories = new Inventories(entityManager);
-            entityManager.persist(stock);
-            inventories.addStockToHouse(house, stock);
-            tx.commit();
-            entityManager.close();
-            /* End Business Logic */
-            resp.status(200);
-            return "Everything works fine";
         });
 
-        // Route to reduce the stock of an already existing product in the given house
         Spark.post("/houses/:houseId/inventory", "application/json", (req, resp) -> {
-            Long houseId = Long.parseLong(req.params("houseId"));
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Inventories inventoriesRepo = new Inventories(entityManager);
+            try {
+                Long houseId = Long.parseLong(req.params("houseId"));
+                JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
+                Long productId = jsonObject.get("productId").getAsLong();
+                Long quantity = jsonObject.get("quantity").getAsLong();
 
-            // Parse the JSON body of the request
-            JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
-            Long productId = jsonObject.get("productId").getAsLong();
-            Long quantity = jsonObject.get("quantity").getAsLong();
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                inventoriesRepo.reduceStock(houseId, productId, quantity);
+                tx.commit();
 
-            Inventories inventoriesRepo = new Inventories(entityManagerFactory.createEntityManager());
-
-            // Call the method to reduce stock
-            inventoriesRepo.reduceStock(houseId, productId, quantity);
-
-            resp.status(200);
-            return "Stock reduced successfully";
+                resp.status(200);
+                return "Stock reduced successfully";
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while reducing the stock, please try again";
+            } finally {
+                entityManager.close();
+            }
         });
 
-        // Route to get the filtered by categories products of a house
         Spark.get("/houses/:houseId/products/:category", (req, resp) -> {
-            Long houseId = Long.parseLong(req.params("houseId"));
-            String category = req.params("category");
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Inventories inventoriesRepo = new Inventories(entityManager);
+            try {
+                Long houseId = Long.parseLong(req.params("houseId"));
+                String category = req.params("category");
 
-            // Begin Business Logic
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Inventories inventoriesRepo = new Inventories(entityManager);
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                List<ProductInfo> products = inventoriesRepo.getProductsByCategory(houseId, category);
+                tx.commit();
 
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-
-            List<ProductInfo> products = inventoriesRepo.getProductsByCategory(houseId, category);
-
-            tx.commit();
-            entityManager.close();
-
-            if (products != null) {
-                resp.status(200);
-                resp.type("application/json");
-                return new Gson().toJson(products);
-            } else {
-                resp.status(404);
-                return "House not found";
+                if (products != null) {
+                    resp.status(200);
+                    resp.type("application/json");
+                    return new Gson().toJson(products);
+                } else {
+                    resp.status(404);
+                    return "House not found";
+                }
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the products, please try again";
+            } finally {
+                entityManager.close();
             }
         });
 
-        // Route to get the products low on stock of a house
         Spark.get("/houses/:houseId/lowOnStock", (req, resp) -> {
-            Long houseId = Long.parseLong(req.params("houseId"));
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Inventories inventoriesRepo = new Inventories(entityManager);
+            try {
+                Long houseId = Long.parseLong(req.params("houseId"));
 
-            // Begin Business Logic
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Inventories inventoriesRepo = new Inventories(entityManager);
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                List<ProductInfo> products = inventoriesRepo.getLowOnStockProducts(houseId);
+                tx.commit();
 
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-
-            List<ProductInfo> products = inventoriesRepo.getLowOnStockProducts(houseId);
-
-            tx.commit();
-            entityManager.close();
-
-            if (products != null) {
-                resp.status(200);
-                resp.type("application/json");
-                return new Gson().toJson(products);
-            } else {
-                resp.status(404);
-                return "House not found";
+                if (products != null) {
+                    resp.status(200);
+                    resp.type("application/json");
+                    return new Gson().toJson(products);
+                } else {
+                    resp.status(404);
+                    return "House not found";
+                }
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the products, please try again";
+            } finally {
+                entityManager.close();
             }
         });
 
-        // Route to add stock to the last stock of a product
         Spark.post("/houses/:houseId/addLowStock", "application/json", (req, resp) -> {
-            Long houseId = Long.parseLong(req.params("houseId"));
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Inventories inventoriesRepo = new Inventories(entityManager);
+            try {
+                Long houseId = Long.parseLong(req.params("houseId"));
+                JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
+                Long productId = jsonObject.get("productId").getAsLong();
+                Long quantity = jsonObject.get("quantity").getAsLong();
 
-            // Parse the JSON body of the request
-            JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
-            Long productId = jsonObject.get("productId").getAsLong();
-            Long quantity = jsonObject.get("quantity").getAsLong();
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                inventoriesRepo.addStock(houseId, productId, quantity);
+                tx.commit();
 
-            // Begin Business Logic
-            final EntityManager entityManager = entityManagerFactory.createEntityManager();
-            final Inventories inventoriesRepo = new Inventories(entityManager);
-
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-
-            // Call the method to add stock
-            inventoriesRepo.addStock(houseId, productId, quantity);
-
-            tx.commit();
-            entityManager.close();
-
-            resp.status(200);
-            return "Stock added successfully";
+                resp.status(200);
+                return "Stock added successfully";
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while adding the stock, please try again";
+            } finally {
+                entityManager.close();
+            }
         });
     }
 }

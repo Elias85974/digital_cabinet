@@ -6,6 +6,7 @@ import org.austral.ing.lab1.model.livesIn.LivesIn;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 public class LivesIns {
     private final EntityManager entityManager;
@@ -29,10 +30,10 @@ public class LivesIns {
         entityManager.remove(livesIn);
     }
 
-    public LivesIn findByUserAndHouse(User user, House house) {
-        return entityManager.createQuery("SELECT l FROM LivesIn l WHERE l.usuario = :user AND l.casa = :house", LivesIn.class)
+    public Optional<LivesIn> findByUserAndHouse(User user, House house) {
+        return Optional.ofNullable(entityManager.createQuery("SELECT l FROM LivesIn l WHERE l.usuario = :user AND l.casa = :house", LivesIn.class)
                 .setParameter("user", user)
                 .setParameter("house", house)
-                .getSingleResult();
+                .getSingleResult());
     }
 }

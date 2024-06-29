@@ -7,7 +7,7 @@ import Index from "../index";
 import RegisterHome from "../tabs/Registros/RegisterHome";
 import RegisterProduct from "../tabs/Registros/RegisterProduct";
 import House from "../tabs/House/House";
-import Product from "../tabs/House/Product/FilteredProducts";
+import Product from "../tabs/House/Product/Products";
 import AddProduct from "../tabs/AddProduct/AddStock";
 import UserThingsBeforeHouse from "../tabs/UserThings/UserThingsBeforeHouse";
 import WishList from "../tabs/UserThings/WishList";

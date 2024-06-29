@@ -3,7 +3,6 @@ import {StyleSheet, Text, View, Button, Modal, TextInput, Alert, Pressable, Scro
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getProductsFromHouseAndCategory, reduceStock} from "../../../Api";
-import GoBackButton from "../../Contents/GoBackButton";
 import Tuple from "../../Contents/Tuple";
 import ModalAlert from "../../Contents/ModalAlert";
 

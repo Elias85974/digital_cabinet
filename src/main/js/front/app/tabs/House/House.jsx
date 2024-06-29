@@ -80,18 +80,6 @@ export default function House({navigation}) {
 }
 
 
-
-// Obtén el ancho de la pantalla
-const screenWidth = Dimensions.get('window').width;
-
-// Calcula cuántos elementos deberían aparecer en una fila
-// Estos valores son solo ejemplos, puedes ajustarlos según tus necesidades
-const itemsPerRow = screenWidth > 700 ? 3 : screenWidth > 500 ? 2 : 1;
-
-// Calcula el ancho de cada elemento
-const itemWidth = screenWidth / itemsPerRow - 20; // Restamos 20 para tener en cuenta los márgenes
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

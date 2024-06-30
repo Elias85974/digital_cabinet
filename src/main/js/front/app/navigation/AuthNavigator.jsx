@@ -38,7 +38,6 @@ function AuthNavigator() {
             <Stack.Screen options={{headerShown: false}} name="HouseUsersPage" component={HouseUsersPage} />
             <Stack.Screen options={{headerShown: false}} name="HouseUsersPageDelete" component={HouseUsersPageDelete} />
             <Stack.Screen options={{headerShown: false}} name="LowOnStock" component={LowOnStockProducts} />
-                <Stack.Screen name={"test" } component={Test} />
 
         </Stack.Navigator>
     );

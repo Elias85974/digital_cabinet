@@ -1,5 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Button, Modal, TextInput, Alert, Pressable, ScrollView} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Modal,
+    TextInput,
+    Pressable,
+    ScrollView,
+    FlatList,
+    TouchableOpacity
+} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getProductsFromHouseAndCategory, reduceStock} from "../../../Api";
@@ -10,6 +20,8 @@ import ModalAlert from "../../Contents/ModalAlert";
 export default function Product({navigation}) {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [modalVisible2, setModalVisible2] = useState(false);
+    const [modalVisible3, setModalVisible3] = useState(false);
+
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantityToReduce, setQuantityToReduce] = useState('');
     const [refreshKey, setRefreshKey] = useState(0);
@@ -17,6 +29,9 @@ export default function Product({navigation}) {
 
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+
+    const [query, setQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
 
     useEffect(() => {
         if (isFocused) {
@@ -31,6 +46,7 @@ export default function Product({navigation}) {
             const products = await getProductsFromHouseAndCategory(houseId, category);
             console.log(products);
             setFilteredProducts(products);
+            setSuggestions(products); // Initialize suggestions with the fetched products
         } catch (error) {
             console.log("Error getting products:", error);
         }
@@ -46,30 +62,75 @@ export default function Product({navigation}) {
         // Call your API method here to reduce the stock
         // After successful reduction, close the modal and reset the quantity to reduce
         await reduceStock(houseId, selectedProduct.product.producto_ID, quantityToReduce);
-        setModalVisible2(false);
+        setModalVisible3(false);
         setQuantityToReduce('');
         setRefreshKey(oldKey => oldKey + 1);
     }
 
+
+
+
+    const handleInputChange = (text) => {
+        setQuery(text);
+
+        if (text === '') {
+            setSuggestions(filteredProducts);
+        } else {
+            const regex = new RegExp(`${text.trim()}`, 'i');
+            setSuggestions(filteredProducts.filter(product => product.product.nombre.search(regex) >= 0));
+        }
+    };
+
+    const handleSuggestionPress = (suggestion) => {
+        setQuery(suggestion.product.nombre);
+        setSuggestions([]);
+        setSelectedProduct(suggestion);
+    };
+
+        /*return (
+            <View style={styles.productSquare}>
+                <Text style={styles.productText}>Producto: {item.product.nombre}</Text>
+                <Text style={styles.productText}>Marca: {item.product.marca}</Text>
+                <Text style={styles.productText}>Cantidad total: {item.totalQuantity}</Text>
+                <Text style={styles.productText}>Próximo a vencer en: {new Date(item.nearestExpirationDate).toLocaleDateString()}</Text>
+                <View style={styles.linksContainer}>
+                    <Pressable onPress={() => {setSelectedProduct(item); setModalVisible2(true);}}>
+                        <Text style={styles.link}>Reduce Stock</Text>
+                    </Pressable>
+                </View>
+            </View>
+        );*/
+
+    const renderItem = ({ item }) => {
+
+        return (
+            <View style={styles.productSquare}>
+                <Pressable onPress={() => {setSelectedProduct(item); setModalVisible2(true);}}>
+                    <Text style={styles.productText}>{item.product.nombre}</Text>
+                </Pressable>
+            </View>
+        );
+    };
+
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <View style={styles.container2}>
-                        {filteredProducts.map((productInfo, index) => (
-                            <View key={index} style={styles.productSquare}>
-                                <Text style={styles.productText}>Producto: {productInfo.product.nombre}</Text>
-                                <Text style={styles.productText}>Marca: {productInfo.product.marca}</Text>
-                                <Text style={styles.productText}>Cantidad total: {productInfo.totalQuantity}</Text>
-                                <Text style={styles.productText}>Próximo a vencer en: {new Date(productInfo.nearestExpirationDate).toLocaleDateString()}</Text>
-                                <View style={styles.linksContainer}>
-                                    <Pressable onPress={() => {setSelectedProduct(productInfo); setModalVisible2(true);}}>
-                                        <Text style={styles.link}>Reduce Stock</Text>
-                                    </Pressable>
-                                </View>
-                            </View>
-                        ))}
+                        <View style={{backgroundColor: '#3b0317', borderRadius: 30}}>
+                            <TextInput
+                                style={styles.input}
+                                onChangeText={handleInputChange}
+                                value={query}
+                                placeholder="Search product"
+                            />
+                        </View>
+                        <FlatList
+                            data={suggestions}
+                            renderItem={renderItem}
+                            keyExtractor={(item, index) => index.toString()}
+                            numColumns={2}
+                        />
                     </View>
 
                     <Modal
@@ -82,62 +143,87 @@ export default function Product({navigation}) {
                     >
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
-                                <Text style={styles.modalText}>Reduce Stock for {selectedProduct?.product.nombre}</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    onChangeText={setQuantityToReduce}
-                                    value={quantityToReduce}
-                                    keyboardType="numeric"
-                                    placeholder="Enter quantity to reduce"
-                                />
+                                <Text style={styles.modalText}>Producto: {selectedProduct?.product.nombre}</Text>
+                                <Text style={styles.modalText}>Marca: {selectedProduct?.product.marca}</Text>
+                                <Text style={styles.modalText}>Cantidad total: {selectedProduct?.totalQuantity}</Text>
+                                <Text style={styles.modalText}>Próximo a vencer en: {new Date(selectedProduct?.nearestExpirationDate).toLocaleDateString()}</Text>
                                 <View style={styles.linksContainer}>
-                                    <Pressable onPress={handleReduceStock}>
-                                        <Text style={styles.link}>Confirm Reduction</Text>
+                                    <Pressable onPress={() => setModalVisible3(true)}>
+                                        <Text style={styles.link}>Reduce Stock</Text>
                                     </Pressable>
-                                </View>
-                                <View style={styles.linksContainer}>
                                     <Pressable onPress={() => setModalVisible2(false)} >
-                                        <Text style={styles.link}>Cancel</Text>
+                                        <Text style={styles.link}>Cerrar</Text>
                                     </Pressable>
                                 </View>
+
+                                <Modal
+                                    animationType="fade"
+                                    transparent={true}
+                                    visible={modalVisible3}
+                                    onRequestClose={() => {
+                                        setModalVisible3(!modalVisible3);
+                                    }}
+                                >
+                                    <View style={styles.centeredView}>
+                                        <View style={styles.modalView}>
+                                            <Text style={styles.modalText}>Reduce Stock for {selectedProduct?.product.nombre}</Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                onChangeText={setQuantityToReduce}
+                                                value={quantityToReduce}
+                                                keyboardType="numeric"
+                                                placeholder="Enter quantity to reduce"
+                                            />
+                                            <View style={styles.linksContainer}>
+                                                <Pressable onPress={handleReduceStock}>
+                                                    <Text style={styles.link}>Confirm Reduction</Text>
+                                                </Pressable>
+                                                <Pressable onPress={() => setModalVisible3(false)} >
+                                                    <Text style={styles.link}>Cancel</Text>
+                                                </Pressable>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </Modal>
                             </View>
                         </View>
                     </Modal>
 
                 </View>
                 <Tuple navigation={navigation}/>
-            </ScrollView>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 4,
+        flex: 1,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
     container2: {
-        flex: 4,
-        flexDirection: 'row',
+        flex: 1,
+        flexDirection: 'column',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
     productSquare: {
-        width: 300,
+        width: 150,
         backgroundColor: '#4B5940',
         borderRadius: 10,
-        padding: 20,
-        marginBottom: 10,
+        padding: 10,
         alignItems: 'center',
-        margin: 10,
+        alignSelf: 'center',
+        margin: 5,
+    },
+    productSquareInvisible: {
+        backgroundColor: 'transparent',
     },
     productText: {
         fontSize: 16,
         color: '#fff',
-        marginBottom: 10,
     },
     centeredView: {
         flex: 1,
@@ -170,10 +256,14 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
+        color: 'white',
+        backgroundColor: '#3b0317',
+        borderRadius: 30,
+        borderStyle: undefined,
     },
     link: {
-        marginTop: 15,
-        marginBottom: 10,
+        marginTop: 5,
+        marginBottom: 1,
         color: '#F2EFE9',
         textDecorationLine: 'underline',
         textAlign: 'center',

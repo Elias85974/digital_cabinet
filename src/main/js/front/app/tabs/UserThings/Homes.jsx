@@ -44,7 +44,7 @@ export default function Homes({navigation}) {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={true}>
             <Text style={styles.title}>Digital Cabinet</Text>
             <View style={styles.logInCont}>
                 <Text style={styles.info}>Select a home</Text>

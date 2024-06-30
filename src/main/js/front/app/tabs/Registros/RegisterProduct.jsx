@@ -108,7 +108,7 @@ export default function RegisterProduct({navigation}) {
     const handleKeyPress = (e) => {
         if (e.nativeEvent.key === "Enter") {
             handleCreateCategory(query);
-            setQuery(query); // Establece la categoría recién creada como la categoría seleccionada
+            setQuery(""); // Establece la categoría recién creada como la categoría seleccionada
         }
     };
 

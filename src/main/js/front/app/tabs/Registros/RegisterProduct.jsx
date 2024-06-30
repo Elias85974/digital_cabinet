@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
+import {TextInput, View, Text, Pressable, ScrollView, StyleSheet, TouchableOpacity, FlatList} from "react-native";
 import Picker from 'react-native-picker-select';
+
 
 import {createProduct, getCategories, createCategory} from "../../Api";
 import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";
+import {useIsFocused} from "@react-navigation/native";
 
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
@@ -12,52 +14,109 @@ export default function RegisterProduct({navigation}) {
     let [newCategory, setNewCategory] = useState('');
     let [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
     const quantityTypes = ['Gramos', 'Litros', 'Unidades', 'Kilogramos'];
+    const [key, setKey] = useState(0);
 
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
 
+    const [query, setQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+
+    const handleInputChangeCat = (text) => {
+        setQuery(text);
+
+        if (text === '') {
+            setSuggestions([]);
+        } else {
+            const regex = new RegExp(`${text.trim()}`, 'i');
+            setSuggestions(categories.filter(category => category.nombre.search(regex) >= 0));
+        }
+    };
+
+    const handleSuggestionPress = (suggestion) => {
+        if (suggestion.categoria_ID === 'addNew') {
+            handleCreateCategory(query);
+        } else {
+            setQuery(suggestion.nombre);
+            setSuggestions([]);
+            setNewProduct({...newProduct, categoryId: suggestion.categoria_ID});
+        }
+    };
+
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        fetchCategories();
-    }, []);
+        if (isFocused){
+            fetchCategories();
+        }
+    }, [isFocused]);
+
 
     const fetchCategories = async () => {
         const fetchedCategories = await getCategories();
         setCategories(fetchedCategories);
     };
 
+
     const handleInputChange = (field, value) => {
         console.log(`handleInputChange called with field: ${field} and value: ${value}`);
         setNewProduct({...newProduct, [field]: value});
     };
 
-    const handleCategoryChange = (selectedCategory) => {
-        console.log(`handleCategoryChange called with selectedCategory: ${selectedCategory}`);
+    const handleCategoryChange = async () => {
+        const createdCategory = await createCategory({nombre: newCategory});
+        setCategories([...categories, createdCategory]);
+        setNewProduct({...newProduct, categoryId: createdCategory.id});
+        setShowNewCategoryInput(false);
+        setNewCategory('');
+
+        /*console.log(`handleCategoryChange called with selectedCategory: ${selectedCategory}`);
         if (selectedCategory === 'addNew') {
             setShowNewCategoryInput(true);
         } else {
             setShowNewCategoryInput(false);
             setNewProduct({...newProduct, categoryId: selectedCategory});
-        }
+        }*/
     };
 
     const handleNewCategoryChange = (value) => {
         setNewCategory(value);
     };
 
-    const handleCreateCategory = async () => {
-        const createdCategory = await createCategory({nombre: newCategory});
-        setCategories([...categories, createdCategory]);
-        setNewProduct({...newProduct, categoryId: createdCategory.id});
-        setShowNewCategoryInput(false);
-        setNewCategory('');
+    const handleCreateCategory = async (categoryName) => {
+        // Convierte la primera letra a mayúsculas
+        const formattedCategoryName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
+
+        // Verifica si la categoría ya existe
+        const existingCategory = categories.find(category => category.nombre === formattedCategoryName);
+        if (existingCategory) {
+            // Si la categoría ya existe, no la crees de nuevo, simplemente establece el estado `query` con el nombre de la categoría existente
+            setQuery(existingCategory.nombre, () => {
+                setNewProduct({...newProduct, categoryId: existingCategory.id});
+                setKey(prevKey => prevKey + 1); // Incrementa la clave para forzar un renderizado
+            });
+        } else {
+            // Si la categoría no existe, créala
+            const createdCategory = await createCategory({nombre: formattedCategoryName});
+            setCategories([...categories, createdCategory]);
+            setNewProduct({...newProduct, categoryId: createdCategory.id});
+            setQuery(createdCategory.nombre);
+        }
+        setSuggestions([]);
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.nativeEvent.key === "Enter") {
+            handleCreateCategory(query);
+            setQuery(query); // Establece la categoría recién creada como la categoría seleccionada
+        }
     };
 
     const handleCreateProduct = async() => {
         try {
             if (newProduct.nombre && newProduct.marca && newProduct.tipoDeCantidad && newProduct.categoryId) {
                 createProduct(newProduct).then(r =>
-                    setModalMessage("Product created successfully!"), // Muestra el modal en lugar de un alert
+                        setModalMessage("Product created successfully!"), // Muestra el modal en lugar de un alert
                     setModalVisible(true),
                 );
                 setTimeout(() => {
@@ -76,7 +135,7 @@ export default function RegisterProduct({navigation}) {
 
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container} key = {key}>
             <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
@@ -84,14 +143,14 @@ export default function RegisterProduct({navigation}) {
                     <View style={styles.createprod}>
                         <Text style={styles.info}>Please fill in all fields to create your product</Text>
                         <TextInput style={styles.input}
-                            placeholder="Nombre"
-                            value={newProduct.nombre}
-                            onChangeText={(value) => handleInputChange('nombre', value)}
+                                   placeholder="Nombre"
+                                   value={newProduct.nombre}
+                                   onChangeText={(value) => handleInputChange('nombre', value)}
                         />
                         <TextInput style={styles.input}
-                            placeholder="Marca"
-                            value={newProduct.marca}
-                            onChangeText={(value) => handleInputChange('marca', value)}
+                                   placeholder="Marca"
+                                   value={newProduct.marca}
+                                   onChangeText={(value) => handleInputChange('marca', value)}
                         />
                         <View style={ styles.picker}>
                             <Picker
@@ -105,37 +164,23 @@ export default function RegisterProduct({navigation}) {
                                 placeholder={{label: "Select a quantity type", value: null}}
                             />
                         </View>
-
-                        {showNewCategoryInput ? (
-                            <View>
-                                <TextInput style={styles.input}
-                                    placeholder="New Category"
-                                    value={newCategory}
-                                    onChangeText={handleNewCategoryChange}
-                                />
-                                <View style={styles.linksContainer}>
-                                    <Pressable onPress={handleCreateCategory}>
-                                        <Text style={styles.link}>Create Category</Text>
-                                    </Pressable>
-                                </View>
-                            </View>
-                        ) : (
-                            <View style={ styles.picker}>
-                                <Picker
-                                    onValueChange={(value) => {
-                                        handleCategoryChange(value);
-                                    }}
-                                    items={[
-                                        ...categories.map((category) => ({
-                                            label: category.nombre,
-                                            value: category.categoria_ID,
-                                        })),
-                                        {label: "Add new category", value: "addNew"},
-                                    ]}
-                                    placeholder={{label: "Select a category", value: null}}
-                                />
-                            </View>
-                        )}
+                        <TextInput
+                            style={styles.input}
+                            value={query}
+                            onChangeText={handleInputChangeCat}
+                            onKeyPress={handleKeyPress}
+                            placeholder="Select a category"
+                        />
+                        <FlatList
+                            data={suggestions}
+                            numColumns={6}
+                            keyExtractor={(item) => item.categoria_ID.toString()}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
+                                    <Text style={styles.cat}>{item.nombre}</Text>
+                                </TouchableOpacity>
+                            )}
+                        />
                         <Pressable style={styles.link} onPress={handleCreateProduct}>
                             <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>
                         </Pressable>
@@ -193,6 +238,15 @@ const styles = StyleSheet.create({
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,
+    },
+    cat: {
+        fontSize: 16,
+        fontFamily: 'lucida grande',
+        color: 'white',
+        margin: 5,
+        flex: 1, // Asegura que el elemento ocupe todo el espacio disponible
+        justifyContent: 'center', // Centra el texto verticalmente
+        alignItems: 'center', // Centra el texto horizontalmente
     },
     info: {
         fontSize: 25,

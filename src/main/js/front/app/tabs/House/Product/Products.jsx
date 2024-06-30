@@ -1,15 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    Modal,
-    TextInput,
-    Pressable,
-    ScrollView,
-    FlatList,
-    TouchableOpacity
-} from 'react-native';
+import {    StyleSheet,    Text,    View,    Modal,    TextInput,    Pressable,    FlatList,} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getProductsFromHouseAndCategory, reduceStock} from "../../../Api";
@@ -68,8 +58,6 @@ export default function Product({navigation}) {
     }
 
 
-
-
     const handleInputChange = (text) => {
         setQuery(text);
 
@@ -85,27 +73,14 @@ export default function Product({navigation}) {
         setQuery(suggestion.product.nombre);
         setSuggestions([]);
         setSelectedProduct(suggestion);
+        setModalVisible2(true);
+
     };
 
-        /*return (
-            <View style={styles.productSquare}>
-                <Text style={styles.productText}>Producto: {item.product.nombre}</Text>
-                <Text style={styles.productText}>Marca: {item.product.marca}</Text>
-                <Text style={styles.productText}>Cantidad total: {item.totalQuantity}</Text>
-                <Text style={styles.productText}>Próximo a vencer en: {new Date(item.nearestExpirationDate).toLocaleDateString()}</Text>
-                <View style={styles.linksContainer}>
-                    <Pressable onPress={() => {setSelectedProduct(item); setModalVisible2(true);}}>
-                        <Text style={styles.link}>Reduce Stock</Text>
-                    </Pressable>
-                </View>
-            </View>
-        );*/
-
     const renderItem = ({ item }) => {
-
         return (
             <View style={styles.productSquare}>
-                <Pressable onPress={() => {setSelectedProduct(item); setModalVisible2(true);}}>
+                <Pressable onPress={() => handleSuggestionPress(item)}>
                     <Text style={styles.productText}>{item.product.nombre}</Text>
                 </Pressable>
             </View>

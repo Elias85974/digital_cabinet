@@ -4,6 +4,7 @@ import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getLowOnStockProducts, addStock} from "../../../Api";
 import Tuple from "../../Contents/Tuple";
+import FilterModal from "../../Contents/FilterModal";
 
 export default function LowOnStockProducts({navigation}) {
     const [products, setProducts] = useState([]);
@@ -18,11 +19,59 @@ export default function LowOnStockProducts({navigation}) {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
+    // Asumiendo que tienes un estado para tus filtros
+    const [filters, setFilters] = useState({ minQuantity: null, maxQuantity: null, expiry: null, alphabetical: null, category: null });
+
+    // Función para actualizar los filtros
+    const updateFilters = (newFilters) => {
+        setFilters({...filters, ...newFilters});
+    }
+
+    const applyFilters = (products) => {
+        let filteredProducts = [...products];
+
+        if (filters.minQuantity) {
+            filteredProducts = filteredProducts.filter(product => product.quantity >= filters.minQuantity);
+        }
+
+        if (filters.maxQuantity) {
+            filteredProducts = filteredProducts.filter(product => product.quantity <= filters.maxQuantity);
+        }
+
+        if (filters.expiry) {
+            filteredProducts.sort((a, b) => new Date(a.expiry) - new Date(b.expiry));
+        }
+
+        if (filters.alphabetical) {
+            filteredProducts.sort((a, b) => {
+                if (a.name && b.name) {
+                    console.log(`Comparing ${a.name} and ${b.name} with filter ${filters.alphabetical}`);
+                    return filters.alphabetical === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+                } else {
+                    return 0;
+}
+
+            });
+        }
+
+        if (filters.category) {
+            filteredProducts = filteredProducts.filter(product => product.category === filters.category);
+        }
+
+        return filteredProducts;
+    }
+
+    const displayedProducts = applyFilters(products);
+
     useEffect(() => {
         if (isFocused) {
-            getProducts().then(r => console.log("Products loaded")).catch(e => console.log("Error loading products"));
+            getProducts().then(r => {
+                const filteredProducts = applyFilters(r);
+                setProducts(filteredProducts);
+                console.log("Products loaded");
+            }).catch(e => console.log("Error loading products"));
         }
-    }, [isFocused, refreshKey]);
+    }, [isFocused, refreshKey, filters]);
 
     const getProducts = async () => {
         try {
@@ -76,16 +125,18 @@ export default function LowOnStockProducts({navigation}) {
         <View style={styles.container}>
             <View>
                 <View style={styles.container2}>
-                    <View style={{backgroundColor: '#3b0317', borderRadius: 30}}>
+                    <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 2, alignItems: 'center',
+                        flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
                         <TextInput
                             style={styles.input}
                             onChangeText={handleInputChange}
                             value={query}
                             placeholder="Search product"
                         />
+                        <FilterModal updateFilters={updateFilters}/>
                     </View>
                     <FlatList
-                        data={suggestions}
+                        data={displayedProducts}
                         renderItem={renderItem}
                         keyExtractor={(item, index) => index.toString()}
                         numColumns={2}
@@ -209,6 +260,7 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     input: {
+        flex: 1,
         height: 40,
         width: 200,
         margin: 12,

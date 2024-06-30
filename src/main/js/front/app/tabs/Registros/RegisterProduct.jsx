@@ -48,6 +48,9 @@ export default function RegisterProduct({navigation}) {
     useEffect(() => {
         if (isFocused){
             fetchCategories();
+        } else{
+            setQuery('');
+            setSuggestions(categories);
         }
     }, [isFocused]);
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Dimensions, Pressable, Text, View} from 'react-native';
+import {Dimensions, FlatList, Pressable, Text, TextInput, View} from 'react-native';
 import {getHouseInventory} from "../../Api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet } from 'react-native';
@@ -13,9 +13,16 @@ export default function House({navigation}) {
     const [categories, setCategories] = useState([]);
     const isFocused = useIsFocused();
 
+
+    const [query, setQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+
     useEffect(() => {
         if (isFocused){
             getProducts().then(r => console.log("Products loaded")).catch(e => console.log("Error loading products"));
+        } else {
+            setQuery('');
+            setSuggestions(categories);
         }
     }, [isFocused]);
 
@@ -28,10 +35,39 @@ export default function House({navigation}) {
             console.log('categories are:', categories);
 
             setCategories(categories);
+            setSuggestions(categories);
         } catch (error) {
             console.log("Error getting products:", error);
         }
     }
+
+    const handleInputChange = (text) => {
+        setQuery(text);
+
+        if (text === '') {
+            setSuggestions(categories);
+        } else {
+            const regex = new RegExp(`${text.trim()}`, 'i');
+            setSuggestions(categories.filter(category => category.search(regex) >= 0));
+        }
+    };
+
+    const handleSuggestionPress = async (suggestion) => {
+        setQuery(suggestion);
+        setSuggestions([]);
+        await AsyncStorage.setItem('category', suggestion);
+        navigation.navigate("Product");
+    };
+
+    const renderItem = ({ item }) => {
+        return (
+            <View style={styles.circle}>
+                <Pressable onPress={() => handleSuggestionPress(item)}>
+                    <Text style={styles.circleText}>{item}</Text>
+                </Pressable>
+            </View>
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -39,18 +75,20 @@ export default function House({navigation}) {
             <View style={styles.logInCont}>
                 <Text style={styles.info}>Select a Category</Text>
                 <View style={styles.container2}>
-                    {categories.map((category, index) => (
-                        <View key={index} style={styles.circle}>
-                            <Pressable onPress={async () => {
-                                // Obtener el houseId de AsyncStorage
-                                await AsyncStorage.setItem('category', category.toString());
-                                // Navegar a la página House con el houseId correcto
-                                navigation.navigate("Product");
-                            }}>
-                                <Text style={styles.circleText}>{category}</Text>
-                            </Pressable>
-                        </View>
-                    ))}
+                    <View style={{backgroundColor: '#3b0317', borderRadius: 30}}>
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={handleInputChange}
+                            value={query}
+                            placeholder="Search category"
+                        />
+                    </View>
+                    <FlatList
+                        data={suggestions}
+                        renderItem={renderItem}
+                        keyExtractor={(item, index) => index.toString()}
+                        numColumns={3}
+                    />
                 </View>
             </View>
             <p></p>
@@ -102,7 +140,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#4B5940',
         padding: 20,
         borderRadius: 20,
-        width: 300,
+        width: '90%',
         alignSelf: 'center',
     },
     info: {
@@ -142,10 +180,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     container2: {
-        flex: 2,
-        flexDirection: 'row',
+        flex: 1,
+        flexDirection: 'column',
         flexWrap: 'wrap',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     circle: {
         paddingVertical: 10, // Controla el tamaño vertical del círculo
@@ -154,10 +193,22 @@ const styles = StyleSheet.create({
         backgroundColor: '#BFAC9B',
         justifyContent: 'center',
         alignItems: 'center',
+
         margin: 10,
     },
     circleText: {
         color: 'white',
         fontSize: 25,
+    },
+    input: {
+        height: 40,
+        width: 200,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        color: 'white',
+        backgroundColor: '#3b0317',
+        borderRadius: 30,
+        borderStyle: undefined,
     },
 });

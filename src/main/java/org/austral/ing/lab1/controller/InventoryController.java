@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import org.austral.ing.lab1.model.House;
 import org.austral.ing.lab1.model.Inventory;
 import org.austral.ing.lab1.model.Product;
-import org.austral.ing.lab1.model.Stock;
 import org.austral.ing.lab1.object.ProductInfo;
 import org.austral.ing.lab1.repository.Houses;
 import org.austral.ing.lab1.repository.Inventories;
@@ -28,6 +27,7 @@ public class InventoryController {
     }
 
     public void init() {
+        // Route to get the categories of the inventory of a house
         Spark.get("/houses/:houseId/inventory", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Houses houses = new Houses(entityManager);
@@ -58,10 +58,12 @@ public class InventoryController {
             }
         });
 
+        // Route to add stock of a product to the inventory of a house
         Spark.post("/houses/:houseId/inventory", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Houses houses = new Houses(entityManager);
             Products products = new Products(entityManager);
+            Inventories inventories = new Inventories(entityManager);
             try {
                 final String houseId = req.params("houseId");
                 JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
@@ -88,14 +90,7 @@ public class InventoryController {
                     return "Product not found";
                 }
 
-                final House house = houseOptional.get();
-                Product product = productOptional.get();
-                final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration)
-                        .setLowStockIndicator(lowStockIndicator).build();
-
-                Inventories inventories = new Inventories(entityManager);
-                entityManager.persist(stock);
-                inventories.addStockToHouse(house, stock);
+                inventories.addStockToHouse(houseOptional.get(), productOptional.get(), quantity, expiration, lowStockIndicator);
                 tx.commit();
 
                 resp.status(200);
@@ -109,6 +104,7 @@ public class InventoryController {
             }
         });
 
+        // Route to reduce stock of a product from the inventory of a house
         Spark.post("/houses/:houseId/inventory", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Inventories inventoriesRepo = new Inventories(entityManager);
@@ -134,6 +130,7 @@ public class InventoryController {
             }
         });
 
+        // Route to get the products of a category from the inventory of a house
         Spark.get("/houses/:houseId/products/:category", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Inventories inventoriesRepo = new Inventories(entityManager);
@@ -163,6 +160,7 @@ public class InventoryController {
             }
         });
 
+        // Route to get the products low on stock from the inventory of a house
         Spark.get("/houses/:houseId/lowOnStock", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Inventories inventoriesRepo = new Inventories(entityManager);
@@ -191,6 +189,8 @@ public class InventoryController {
             }
         });
 
+        // Route to add stock of a low on stock product to the inventory of a house
+        // (Adds it to the one with the farthest expiration date)
         Spark.post("/houses/:houseId/addLowStock", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Inventories inventoriesRepo = new Inventories(entityManager);
@@ -202,7 +202,7 @@ public class InventoryController {
 
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
-                inventoriesRepo.addStock(houseId, productId, quantity);
+                inventoriesRepo.quickStockAdding(houseId, productId, quantity);
                 tx.commit();
 
                 resp.status(200);

@@ -23,6 +23,8 @@ public class UserController {
     }
 
     public void init() {
+
+        // Route to create a user
         Spark.post("/users", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);
@@ -30,8 +32,10 @@ public class UserController {
                 users.createUserFromJson(req.body());
                 resp.type("application/json");
                 resp.status(201);
-                System.out.println("User created");
-                return resp.body();
+
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("message", "User created successfully");
+                return jsonResponse.toString();
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());
@@ -41,6 +45,7 @@ public class UserController {
             }
         });
 
+        // Route to handle the login of a user
         Spark.post("/login", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);
@@ -63,7 +68,8 @@ public class UserController {
                     // Crear un objeto JSON con el token, el tipo de usuario y el correo electrónico
                     JsonObject jsonResponse = new JsonObject();
                     //jsonResponse.addProperty("token", token);
-                    jsonResponse.addProperty("userId", foundUser.getUsuario_ID()); // Correo electrónico del usuario
+                    jsonResponse.addProperty("email", foundUser.getMail()); // Correo electrónico del usuario
+                    jsonResponse.addProperty("userId", foundUser.getUsuario_ID()); // ID del usuario
 
                     // Establecer el encabezado Content-Type
                     resp.type("application/json");
@@ -87,6 +93,32 @@ public class UserController {
             }
         });
 
+        // Route to get the id of a user by mail
+        Spark.get("/user/email/:email", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Users users = new Users(entityManager);
+            try {
+                String mail = req.params("email");
+                Optional<User> foundUser = users.findByEmail(mail);
+
+                if (foundUser.isEmpty()) {
+                    resp.status(404);
+                    return "User not found";
+                }
+
+                User user = foundUser.get();
+                resp.type("application/json");
+                return gson.toJson(user.getUsuario_ID());
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the user, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        // Route to list all the users in the database
         Spark.get("/listUsers", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);
@@ -103,6 +135,7 @@ public class UserController {
             }
         });
 
+        // Route to get the inbox of a given user
         Spark.get("/getInbox/:userId", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Inboxes inboxesRepo = new Inboxes(entityManager);
@@ -121,6 +154,7 @@ public class UserController {
             }
         });
 
+        // Route to get the houses of a given user
         Spark.get("/user/:userId/houses", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);

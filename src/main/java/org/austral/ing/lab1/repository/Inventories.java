@@ -2,7 +2,6 @@ package org.austral.ing.lab1.repository;
 
 import org.austral.ing.lab1.model.*;
 import org.austral.ing.lab1.object.ProductInfo;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -67,13 +66,19 @@ public class Inventories {
         return inventory;
     }
 
-    public void addStockToHouse(House house, Stock stock) {
+    public void addStockToHouse(House house, Product product, Long quantity, Date expiration, Long lowStockIndicator) {
         LivesIns livesIns = new LivesIns(entityManager);
+
+        final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration)
+                .setLowStockIndicator(lowStockIndicator).build();
+        entityManager.persist(stock);
 
         // Add the new stock to the house's inventory
         Inventory inventario = house.getInventario();
         inventario.addStock(stock);
         stock.setInventario(inventario);
+
+        // If the Stock entity is still managed, this persist call might not be necessary (to check later jeje)
         entityManager.persist(stock);
         entityManager.persist(inventario);
         entityManager.persist(house);
@@ -187,7 +192,7 @@ public class Inventories {
     }
 
     // Add stock to the last added stock of the product
-    public void addStock(Long houseId, Long productId, Long quantity) {
+    public void quickStockAdding(Long houseId, Long productId, Long quantity) {
         // Get the house
         House house = entityManager.find(House.class, houseId);
 

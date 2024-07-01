@@ -21,6 +21,7 @@ public class ProductController {
     }
 
     public void init() {
+        // Route to get all the products from the database
         Spark.get("/products", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
@@ -41,6 +42,7 @@ public class ProductController {
             }
         });
 
+        // Route to create a product and link it with the needed category
         Spark.post("/products/:categoryId", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
@@ -51,8 +53,11 @@ public class ProductController {
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
                 Optional<Category> categoryOptional = categoriesRepo.findById(categoryId);
-                product.setCategory(categoryOptional.get());
-                productsRepo.persist(product);
+                if (categoryOptional.isEmpty()) {
+                    resp.status(404);
+                    return "Category not found to create your product";
+                }
+                productsRepo.createProduct(product, categoryOptional.get());
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
@@ -66,6 +71,7 @@ public class ProductController {
             }
         });
 
+        // Route to get a product by the name
         Spark.get("/products/:name", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
@@ -92,6 +98,9 @@ public class ProductController {
             }
         });
 
+        /* Our ABM logic of product does not support product modifications so the methods below are not used */
+
+        // Route to change the data of a product
         Spark.put("/products/:name", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
@@ -119,6 +128,7 @@ public class ProductController {
             }
         });
 
+        // Route to delete a product by the name
         Spark.delete("/products/:name", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);

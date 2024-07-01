@@ -76,6 +76,7 @@ public class HouseController {
         // Route to remove a user from a house
         Spark.delete("/houses/:houseId/users/:userId", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
+            // Initialize the users and houses repositories for the search
             usersRepo = new Users(entityManager);
             housesRepo = new Houses(entityManager);
             livesInsRepo = new LivesIns(entityManager);
@@ -116,6 +117,7 @@ public class HouseController {
         // Route to process an invitation
         Spark.post("/processInvitation", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
+            // Initialize the users and houses repositories for the search
             usersRepo = new Users(entityManager);
             housesRepo = new Houses(entityManager);
             inboxesRepo = new Inboxes(entityManager);

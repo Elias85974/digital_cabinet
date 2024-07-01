@@ -1,10 +1,10 @@
 package org.austral.ing.lab1.repository;
 
-import org.austral.ing.lab1.model.Product;
 import org.austral.ing.lab1.model.User;
 import org.austral.ing.lab1.model.WishList;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,5 +79,13 @@ public class Users {
         // Persist the updated user and the new wishlist
         entityManager.persist(wishList);
         entityManager.persist(user);
+    }
+
+    public void createUserFromJson(String body) {
+        EntityTransaction tx = entityManager.getTransaction();
+        tx.begin();
+        User user = User.fromJson(body);
+        entityManager.persist(user);
+        tx.commit();
     }
 }

@@ -1,5 +1,6 @@
 package org.austral.ing.lab1.repository;
 
+import org.austral.ing.lab1.model.Category;
 import org.austral.ing.lab1.model.Product;
 
 import javax.persistence.EntityManager;
@@ -61,7 +62,8 @@ public class Products {
         return product;
     }
 
-    public void addProduct(Product newProduct) {
+    public void createProduct(Product newProduct, Category category) {
+        newProduct.setCategory(category);
         entityManager.persist(newProduct);
     }
 

@@ -526,12 +526,12 @@ export const processInvitations = async (invitations) => {
     // Invitations is an array of objects with the following structure:
     // {"userId": "user_id", "houseId": "house_id", "isAccepted": true_or_false}
     try {
-        const response = await fetch(`${API_URL}/processInvitations`, {
+        const response = await fetch(`${API_URL}/houses/processInvitation`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(invitations),
+            body: JSON.stringify(invitations[0]),
         });
         if (!response.ok) {
             throw new Error('Network response was not ok');

@@ -115,7 +115,7 @@ public class HouseController {
         });
 
         // Route to process an invitation
-        Spark.post("/processInvitation", "application/json", (req, resp) -> {
+        Spark.post("/houses/processInvitation", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             // Initialize the users and houses repositories for the search
             usersRepo = new Users(entityManager);

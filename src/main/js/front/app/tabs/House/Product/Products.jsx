@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {    StyleSheet,    Text,    View,    Modal,    TextInput,    Pressable,    FlatList,} from 'react-native';
+import {StyleSheet, Text, View, Modal, TextInput, Pressable, FlatList, SafeAreaView, ScrollView,} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getProductsFromHouseAndCategory, reduceStock} from "../../../Api";
@@ -36,7 +36,9 @@ export default function Product({navigation}) {
             const products = await getProductsFromHouseAndCategory(houseId, category);
             console.log(products);
             setFilteredProducts(products);
-            setSuggestions(products); // Initialize suggestions with the fetched products
+            if (query === '') {
+                setSuggestions(products); // Initialize suggestions with the fetched products only if query is empty
+            }
         } catch (error) {
             console.log("Error getting products:", error);
         }
@@ -71,7 +73,6 @@ export default function Product({navigation}) {
 
     const handleSuggestionPress = (suggestion) => {
         setQuery(suggestion.product.nombre);
-        setSuggestions([]);
         setSelectedProduct(suggestion);
         setModalVisible2(true);
 
@@ -89,6 +90,8 @@ export default function Product({navigation}) {
 
     return (
         <View style={styles.container}>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <View style={styles.container2}>
@@ -166,6 +169,8 @@ export default function Product({navigation}) {
 
                 </View>
                 <Tuple navigation={navigation}/>
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }

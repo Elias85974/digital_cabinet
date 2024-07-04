@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, TextInput, Pressable, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, TextInput, Pressable, StyleSheet, ScrollView, SafeAreaView} from 'react-native';
 import Picker from 'react-native-picker-select';
 import { getAllProducts, updateHouseInventory } from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -86,7 +86,8 @@ export default function AddProduct({navigation}) {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Add products!</Text>
@@ -126,7 +127,8 @@ export default function AddProduct({navigation}) {
                     <p></p>
                     <Tuple navigation={navigation}/>
                 </View>
-            </ScrollView>
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }

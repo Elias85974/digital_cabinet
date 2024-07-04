@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable} from 'react-native';
+import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable, SafeAreaView} from 'react-native';
 import axios from 'axios';
 import {deleteUserFromHouse, getUserHouses, getUserIdByEmail, getUsersOfAHouse, inviteUser} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -77,7 +77,8 @@ const HouseUsersPageDelete = ({ navigation }) => {
     };
     return (
     <View style={styles.container}>
-        <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+        <SafeAreaView style={StyleSheet.absoluteFill}>
+            <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
             <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
 
             <Text style={styles.title}>Digital Cabinet</Text>
@@ -99,7 +100,8 @@ const HouseUsersPageDelete = ({ navigation }) => {
             </View>
             <p></p>
             <Tuple navigation={navigation}/>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     </View>
     );
 

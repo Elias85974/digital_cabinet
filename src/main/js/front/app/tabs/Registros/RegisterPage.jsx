@@ -1,5 +1,5 @@
 import React, {useState } from 'react';
-import {View, ScrollView, TextInput, Pressable, StyleSheet, Text} from 'react-native';
+import {View, ScrollView, TextInput, Pressable, StyleSheet, Text, SafeAreaView} from 'react-native';
 import {createUser} from '../../Api';
 import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";
@@ -48,7 +48,8 @@ export default function RegisterPage({navigation}) {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Sign Up</Text>
@@ -86,7 +87,8 @@ export default function RegisterPage({navigation}) {
                         </Pressable>
                     </View>
                 </View>
-            </ScrollView>
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }

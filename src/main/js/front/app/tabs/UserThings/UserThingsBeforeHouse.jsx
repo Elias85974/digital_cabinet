@@ -1,11 +1,12 @@
 import React from 'react';
-import {View, Text, Pressable, StyleSheet, ScrollView} from "react-native";
+import {View, Text, Pressable, StyleSheet, ScrollView, SafeAreaView} from "react-native";
 import LogoutButton from "../Contents/LogoutButton";
 
 export default function UserThingsBeforeHouse({navigation}) {
     return (
         <View style={styles.container}>
-            <ScrollView>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+            <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.title}>Digital Cabinet</Text>
                     <View style={styles.logInCont}>
@@ -29,6 +30,7 @@ export default function UserThingsBeforeHouse({navigation}) {
                     <LogoutButton navigation={navigation}/>
                 </View>
             </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }

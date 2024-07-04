@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Dimensions, FlatList, Pressable, Text, TextInput, View} from 'react-native';
+import {Dimensions, FlatList, Pressable, SafeAreaView, ScrollView, Text, TextInput, View} from 'react-native';
 import {getHouseInventory} from "../../Api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet } from 'react-native';
@@ -71,48 +71,54 @@ export default function House({navigation}) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Welcome Home!</Text>
-            <View style={styles.logInCont}>
-                <Text style={styles.info}>Select a Category</Text>
-                <View style={styles.container2}>
-                    <View style={{backgroundColor: '#3b0317', borderRadius: 30}}>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={handleInputChange}
-                            value={query}
-                            placeholder="Search category"
-                        />
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+
+                    <Text style={styles.title}>Welcome Home!</Text>
+                    <View style={styles.logInCont}>
+                        <Text style={styles.info}>Select a Category</Text>
+                        <View style={styles.container2}>
+                            <View style={{backgroundColor: '#3b0317', borderRadius: 30}}>
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={handleInputChange}
+                                    value={query}
+                                    placeholder="Search category"
+                                />
+                            </View>
+                            <FlatList
+                                data={suggestions}
+                                renderItem={renderItem}
+                                keyExtractor={(item, index) => index.toString()}
+                                numColumns={2}
+                            />
+                        </View>
                     </View>
-                    <FlatList
-                        data={suggestions}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => index.toString()}
-                        numColumns={3}
-                    />
-                </View>
-            </View>
-            <p></p>
-            <View style={styles.linksContainer}>
-                    <Pressable onPress={() => navigation.navigate("LowOnStock")}>
-                        <Text style={styles.link}>Low stock</Text>
-                    </Pressable>
-                    <Pressable onPress={() => navigation.navigate("AddStock")}>
-                        <Text style={styles.link}>Add a Product</Text>
-                    </Pressable>
-                    <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
-                        <Text style={styles.link}>Create a Product</Text>
-                    </Pressable>
-                    <Pressable onPress={()=> navigation.navigate("Homes")}>
-                        <Text style={styles.link}>Select another home</Text>
-                    </Pressable>
-                    <Pressable onPress={()=> navigation.navigate("PieChart")}>
-                        <Text style={styles.link}>See expenses</Text>
-                    </Pressable>
-                    <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
-                        <Text style={styles.link}>Manage users</Text>
-                    </Pressable>
-            </View>
-            <Tuple navigation={navigation}/>
+                    <p></p>
+                    <View style={styles.linksContainer}>
+                            <Pressable onPress={() => navigation.navigate("LowOnStock")}>
+                                <Text style={styles.link}>Low stock</Text>
+                            </Pressable>
+                            <Pressable onPress={() => navigation.navigate("AddStock")}>
+                                <Text style={styles.link}>Add a Product</Text>
+                            </Pressable>
+                            <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
+                                <Text style={styles.link}>Create a Product</Text>
+                            </Pressable>
+                            <Pressable onPress={()=> navigation.navigate("Homes")}>
+                                <Text style={styles.link}>Select another home</Text>
+                            </Pressable>
+                            <Pressable onPress={()=> navigation.navigate("PieChart")}>
+                                <Text style={styles.link}>See expenses</Text>
+                            </Pressable>
+                            <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
+                                <Text style={styles.link}>Manage users</Text>
+                            </Pressable>
+                    </View>
+                    <Tuple navigation={navigation}/>
+
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }
@@ -122,6 +128,7 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         width: '100%',
+        flex: 1,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',

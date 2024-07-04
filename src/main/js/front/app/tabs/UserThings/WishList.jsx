@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Pressable, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Pressable, ScrollView, SafeAreaView} from 'react-native';
 import { getWishList, addProductToWishList, deleteProductFromWishList } from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Tuple from "../Contents/Tuple";
@@ -63,7 +63,8 @@ export default function WishList({navigation}) {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.title}>WishList</Text>
                     <View style={styles.contentWishList}>
@@ -90,7 +91,8 @@ export default function WishList({navigation}) {
                     </View>
                     <Tuple navigation={navigation}/>
                 </View>
-            </ScrollView>
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }
@@ -126,8 +128,9 @@ const styles = StyleSheet.create({
         marginRight: 20,
     },
     container: {
-        height: '100%',
-        width: '100%',
+        flex: 1,
+        flexDirection: 'column',
+        flexWrap: 'wrap',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',

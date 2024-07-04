@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
+import {TextInput, View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView} from "react-native";
 import {getUserIdByEmail, loginUser} from "../../Api";
 import {AuthContext} from "../../context/AuthContext";
 import React from "react"
@@ -57,7 +57,8 @@ export default function LoginPage({navigation}) {
     if (!isLoggedIn) {
         return (
             <View style={styles.container}>
-                <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
+                <SafeAreaView style={StyleSheet.absoluteFill}>
+                    <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                     <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
 
                     <View>
@@ -87,6 +88,7 @@ export default function LoginPage({navigation}) {
                         </View>
                     </View>
                 </ScrollView>
+                </SafeAreaView>
             </View>
         );
     }

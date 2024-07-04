@@ -1,5 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {TextInput, View, Text, Pressable, ScrollView, StyleSheet, TouchableOpacity, FlatList} from "react-native";
+import {
+    TextInput,
+    View,
+    Text,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    FlatList,
+    SafeAreaView
+} from "react-native";
 import Picker from 'react-native-picker-select';
 
 
@@ -139,7 +149,8 @@ export default function RegisterProduct({navigation}) {
 
     return (
         <View style={styles.container} key = {key}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Products</Text>
@@ -191,7 +202,8 @@ export default function RegisterProduct({navigation}) {
                     <p></p>
                     <Tuple navigation={navigation}/>
                 </View>
-            </ScrollView>
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }

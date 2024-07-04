@@ -1,5 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Button, Modal, TextInput, Alert, Pressable, FlatList} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    Modal,
+    TextInput,
+    Alert,
+    Pressable,
+    FlatList,
+    SafeAreaView,
+    ScrollView
+} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getLowOnStockProducts, addStock} from "../../../Api";
@@ -123,6 +135,8 @@ export default function LowOnStockProducts({navigation}) {
 
     return (
         <View style={styles.container}>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
             <View>
                 <View style={styles.container2}>
                     <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 2, alignItems: 'center',
@@ -200,6 +214,8 @@ export default function LowOnStockProducts({navigation}) {
 
             </View>
             <Tuple navigation={navigation}/>
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }

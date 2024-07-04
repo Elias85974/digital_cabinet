@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Pressable, StyleSheet, ScrollView} from "react-native";
+import {View, Text, Pressable, StyleSheet, ScrollView, SafeAreaView} from "react-native";
 import {getUserHouses, getUserIdByEmail} from "../../Api";
 import LogoutButton from "../Contents/LogoutButton";
 import {AuthContext} from "../../context/AuthContext";
@@ -44,7 +44,8 @@ export default function Homes({navigation}) {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={true}>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
             <Text style={styles.title}>Digital Cabinet</Text>
             <View style={styles.logInCont}>
                 <Text style={styles.info}>Select a home</Text>
@@ -70,7 +71,8 @@ export default function Homes({navigation}) {
                 </Pressable>
                 <Tuple navigation={navigation}/>
             </View>
-            </ScrollView>
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }

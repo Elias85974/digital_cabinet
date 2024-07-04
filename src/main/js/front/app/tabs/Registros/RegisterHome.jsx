@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TextInput, View, Text, Pressable, ScrollView, StyleSheet} from "react-native";
+import {TextInput, View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView} from "react-native";
 import {createHouse, getUserIdByEmail} from "../../Api";
 import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -53,7 +53,8 @@ export default function RegisterHome({navigation}) {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 10}} showsVerticalScrollIndicator={false}>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Homes</Text>
@@ -81,7 +82,8 @@ export default function RegisterHome({navigation}) {
                     </View>
                     <Tuple navigation={navigation}/>
                 </View>
-            </ScrollView>
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }

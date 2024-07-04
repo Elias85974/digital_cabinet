@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import { View, Text, Button, FlatList, Pressable } from 'react-native';
 import { getUsersInbox, processInvitations } from '../../Api';
 import GoBackButton from "../Contents/GoBackButton";
@@ -52,7 +52,8 @@ export default function Inbox({navigation}) {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{marginTop: 20}} showsVerticalScrollIndicator={false}>
+            <SafeAreaView style={StyleSheet.absoluteFill}>
+                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.title}>Inbox</Text>
                     <View style={styles.contentWishList}>
@@ -107,6 +108,7 @@ export default function Inbox({navigation}) {
                     <Tuple navigation={navigation}/>
                 </View>
             </ScrollView>
+            </SafeAreaView>
         </View>
     );
 }

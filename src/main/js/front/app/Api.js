@@ -330,6 +330,7 @@ export const getAllProducts = async () => {
     }
 }
 
+// Function to add stock to a house
 export const updateHouseInventory = async (houseId, stockData) => {
     try {
         const response = await fetch(`${API_URL}/houses/${houseId}/inventory`, {
@@ -369,14 +370,14 @@ export const addStock = async (houseId, stockData) => {
 }
 
 // Route to reduce stock of a house
-export const reduceStock = async (houseId, stockData) => {
+export const reduceStock = async (houseId, productId, quantity) => {
     try {
-        const response = await fetch(`${API_URL}/houses/${houseId}/inventory/addStock`, {
+        const response = await fetch(`${API_URL}/houses/${houseId}/inventory/reduceStock`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(stockData)
+            body: JSON.stringify({productId: productId, quantity: quantity})
         });
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -522,16 +523,16 @@ export const getUsersInbox = async (userId) => {
 };
 
 // Function to process invitations of the inbox
-export const processInvitations = async (invitations) => {
+export const processInvitations = async (invitation) => {
     // Invitations is an array of objects with the following structure:
     // {"userId": "user_id", "houseId": "house_id", "isAccepted": true_or_false}
     try {
-        const response = await fetch(`${API_URL}/houses/processInvitation`, {
+        const response = await fetch(`${API_URL}/houses/inbox/processInvitation`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(invitations[0]),
+            body: JSON.stringify(invitation),
         });
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -539,6 +540,26 @@ export const processInvitations = async (invitations) => {
         return await response.text(); // This will be the success message
     } catch (error) {
         console.error("Failed to process invitations:", error);
+        throw error;
+    }
+};
+
+// Function to get the total value of the inventory of a house grouped by category
+export const getInventoryValueByCategory = async (houseId) => {
+    // [{category: category, value: totalValue}, {category: category, value: totalValue}, ...]
+    try {
+        const response = await fetch(`${API_URL}/houses/${houseId}/inventory/valueByCategory`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json(); // This will be a map with category names as keys and total values as values
+    } catch (error) {
+        console.error("Failed to get inventory value by category:", error);
         throw error;
     }
 };

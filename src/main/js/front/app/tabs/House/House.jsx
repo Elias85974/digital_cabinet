@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     },
     linksContainer: {
         marginTop: 20,
-        width: '80%',
+        width: '95%',
         alignSelf: 'center',
         flex: 3,
         flexWrap: 'wrap',

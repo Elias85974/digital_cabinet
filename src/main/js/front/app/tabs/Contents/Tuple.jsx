@@ -7,8 +7,9 @@ const Tuple = ({navigation}) => {
 
     return (
         <View style={{flexDirection: 'row', flexWrap: 'wrap',justifyContent: 'space-around'}}>
-            <LogoutButton navigation={navigation} />
             <GoBackButton navigation={navigation}/>
+            <LogoutButton navigation={navigation} />
+
         </View>
     );
 }

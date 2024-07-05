@@ -18,17 +18,14 @@ const GoBackButton = ({navigation}) => {
 
 const styles = StyleSheet.create({
     logoutButton: {
-        marginTop: 15,
-        marginBottom: 10,
-        marginRight: 10,
-        marginLeft: 10,
+        margin: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 3, // Add border
         borderColor: '#717336', // Set border color
         padding: 10, // Add some padding so the text isn't right up against the border
         backgroundColor: '#717336', // Set background color
-        width: 200, // Set width
+        width: 150, // Set width
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,

@@ -1,9 +1,12 @@
 package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
+import org.austral.ing.lab1.model.chat.Chat;
+import org.austral.ing.lab1.object.SpecialSet;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "HOUSE")
@@ -22,6 +25,9 @@ public class House {
 
     @Column(name = "DIRECCION", nullable = false, unique = true)
     private String direccion;
+
+    @OneToOne(mappedBy = "house", cascade = CascadeType.ALL)
+    private Chat chat;
 
     public House() { }
 

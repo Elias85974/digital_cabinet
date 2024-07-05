@@ -8,12 +8,14 @@ public class ProductInfo {
     private Product product;
     private Long totalQuantity;
     private Date nearestExpirationDate;
+    private double price;
 
     // constructor, getters and setters
-    public ProductInfo(Product product, Long totalQuantity, Date nearestExpirationDate) {
+    public ProductInfo(Product product, Long totalQuantity, Date nearestExpirationDate, double price) {
         this.product = product;
         this.totalQuantity = totalQuantity;
         this.nearestExpirationDate = nearestExpirationDate;
+        this.price = price;
     }
 
     public Product getProduct() {
@@ -38,6 +40,14 @@ public class ProductInfo {
 
     public void setNearestExpirationDate(Date nearestExpirationDate) {
         this.nearestExpirationDate = nearestExpirationDate;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }
 

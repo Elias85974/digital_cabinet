@@ -12,7 +12,7 @@ export default function AddProduct({navigation}) {
     const [quantity, setQuantity] = useState('');
     const [expiration, setExpiration] = useState('');
     const [lowStockIndicator, setLowStockIndicator] = useState('');
-
+    const [price, setPrice] = useState('');
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
 
@@ -46,6 +46,9 @@ export default function AddProduct({navigation}) {
         else if (type === 'lowStockIndicator') {
             setLowStockIndicator(value);
         }
+        else if (type === 'price') {
+            setPrice(value);
+        }
     }
 
     const handleSubmit = async () => {
@@ -69,7 +72,7 @@ export default function AddProduct({navigation}) {
                 setModalVisible(true);
             } else {
                 const stockUpdate = {productId: selectedProduct,
-                    quantity: quantity, expiration: expiration, lowStockIndicator: lowStockIndicator};
+                    quantity: quantity, expiration: expiration, lowStockIndicator: lowStockIndicator, price: price};
                 console.log('stockUpdate:', stockUpdate);
                 await updateHouseInventory(houseId, stockUpdate);
                 setModalMessage("Inventory updated successfully!"); // Muestra el modal en lugar de un alert
@@ -115,6 +118,12 @@ export default function AddProduct({navigation}) {
                                    placeholder={"Low stock indicator"}
                                    value={lowStockIndicator}
                                    onChangeText={(value) => handleChanges(value, 'lowStockIndicator')}
+                                   inputMode="numeric"
+                        />
+                        <TextInput style={styles.input}
+                                   placeholder={"Add the total price of the products"}
+                                   value={price}
+                                   onChangeText={(value) => handleChanges(value, 'price')}
                                    inputMode="numeric"
                         />
                         <View style={styles.linksContainer}>

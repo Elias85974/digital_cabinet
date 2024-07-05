@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.austral.ing.lab1.model.User;
-import org.austral.ing.lab1.repository.Inboxes;
+import org.austral.ing.lab1.repository.HouseInvitations;
 import org.austral.ing.lab1.repository.Users;
 import spark.Spark;
 
@@ -138,10 +138,10 @@ public class UserController {
         // Route to get the inbox of a given user
         Spark.get("/getInbox/:userId", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Inboxes inboxesRepo = new Inboxes(entityManager);
+            HouseInvitations houseInvitations = new HouseInvitations(entityManager);
             try {
                 Long userId = Long.parseLong(req.params("userId"));
-                List<Map<String, Object>> inboxMessage = inboxesRepo.getHousesByUserId(userId);
+                List<Map<String, Object>> inboxMessage = houseInvitations.getHousesByUserId(userId);
                 resp.status(200);
                 resp.type("application/json");
                 return new Gson().toJson(inboxMessage);

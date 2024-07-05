@@ -3,9 +3,9 @@ package org.austral.ing.lab1.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.austral.ing.lab1.model.House;
-import org.austral.ing.lab1.model.Inbox;
 import org.austral.ing.lab1.model.User;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
+import org.austral.ing.lab1.model.notification.HouseInvitation;
 import org.austral.ing.lab1.repository.*;
 import org.jetbrains.annotations.NotNull;
 import spark.Response;
@@ -22,7 +22,6 @@ public class HouseController {
     private final EntityManagerFactory entityManagerFactory;
     private Houses housesRepo;
     private Users usersRepo;
-    private Inboxes inboxesRepo;
     private LivesIns livesInsRepo;
 
     public HouseController(EntityManagerFactory entityManagerFactory) {
@@ -115,12 +114,12 @@ public class HouseController {
         });
 
         // Route to process an invitation
-        Spark.post("/houses/processInvitation", "application/json", (req, resp) -> {
+        Spark.post("/houses/inbox/processInvitation", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             // Initialize the users and houses repositories for the search
             usersRepo = new Users(entityManager);
             housesRepo = new Houses(entityManager);
-            inboxesRepo = new Inboxes(entityManager);
+            HouseInvitations houseInvitationsRepo = new HouseInvitations(entityManager);
             try {
                 JsonObject invitationJson = new Gson().fromJson(req.body(), JsonObject.class);
 
@@ -137,8 +136,8 @@ public class HouseController {
                 }
 
                 HouseUserPair houseUserPair = result.get();
-                Inbox inbox = inboxesRepo.findByUserAndHouse(houseUserPair.user, houseUserPair.house);
-                inboxesRepo.delete(inbox);
+                HouseInvitation houseInvitation = houseInvitationsRepo.findByUserAndHouse(houseUserPair.user, houseUserPair.house);
+                houseInvitationsRepo.delete(houseInvitation);
 
                 if (isAccepted) {
                     housesRepo.makeUserLiveInHouse(houseUserPair.user, houseUserPair.house, false);

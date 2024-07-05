@@ -31,65 +31,28 @@ export default function LowOnStockProducts({navigation}) {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
-    // Asumiendo que tienes un estado para tus filtros
-    const [filters, setFilters] = useState({ minQuantity: null, maxQuantity: null, expiry: null, alphabetical: null, category: null });
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
-    // Función para actualizar los filtros
-    const updateFilters = (newFilters) => {
-        setFilters({...filters, ...newFilters});
-    }
-
-    const applyFilters = (products) => {
-        let filteredProducts = [...products];
-
-        if (filters.minQuantity) {
-            filteredProducts = filteredProducts.filter(product => product.quantity >= filters.minQuantity);
-        }
-
-        if (filters.maxQuantity) {
-            filteredProducts = filteredProducts.filter(product => product.quantity <= filters.maxQuantity);
-        }
-
-        if (filters.expiry) {
-            filteredProducts.sort((a, b) => new Date(a.expiry) - new Date(b.expiry));
-        }
-
-        if (filters.alphabetical) {
-            filteredProducts.sort((a, b) => {
-                if (a.name && b.name) {
-                    console.log(`Comparing ${a.name} and ${b.name} with filter ${filters.alphabetical}`);
-                    return filters.alphabetical === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-                } else {
-                    return 0;
-}
-
-            });
-        }
-
-        if (filters.category) {
-            filteredProducts = filteredProducts.filter(product => product.category === filters.category);
-        }
-
-        return filteredProducts;
-    }
-
-    const displayedProducts = applyFilters(products);
+    //const displayedProducts = applyFilters(products);
 
     useEffect(() => {
         if (isFocused) {
             getProducts().then(r => {
-                const filteredProducts = applyFilters(r);
-                setProducts(filteredProducts);
-                console.log("Products loaded");
+                //const filteredProducts = applyFilters(r);
+                console.log("Products loaded at first is 0", products);
+                //setProducts(filteredProducts);
+                handleFilteredProducts(products);
+                console.log("Filtered products loaded", filteredProducts);
+
             }).catch(e => console.log("Error loading products"));
         }
-    }, [isFocused, refreshKey, filters]);
+    }, [isFocused, refreshKey]);
 
     const getProducts = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
             const stock = await getLowOnStockProducts(houseId);
-            console.log(stock);
+            console.log("getProducts?",stock);
             setProducts(stock);
             setSuggestions(stock)
         } catch (error) {
@@ -123,6 +86,11 @@ export default function LowOnStockProducts({navigation}) {
         setRefreshKey(oldKey => oldKey + 1);
     }
 
+    const handleFilteredProducts = (filteredProducts) => {
+        console.log("Filtered products in lowstock:", filteredProducts);
+        setFilteredProducts(filteredProducts);
+    }
+
     const renderItem = ({ item }) => {
         return (
             <View style={styles.productSquare}>
@@ -147,10 +115,10 @@ export default function LowOnStockProducts({navigation}) {
                             value={query}
                             placeholder="Search product"
                         />
-                        <FilterModal updateFilters={updateFilters}/>
+                        <FilterModal products={products} onFilter={handleFilteredProducts} />
                     </View>
                     <FlatList
-                        data={displayedProducts}
+                        data={filteredProducts.length > 0 ? filteredProducts : products}
                         renderItem={renderItem}
                         keyExtractor={(item, index) => index.toString()}
                         numColumns={2}
@@ -223,7 +191,7 @@ export default function LowOnStockProducts({navigation}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#BFAC9B',
+        backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'space-between',
     },

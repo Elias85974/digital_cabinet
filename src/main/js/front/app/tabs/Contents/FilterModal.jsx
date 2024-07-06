@@ -7,7 +7,7 @@ export default function FilterModal(props) {
     const [filteredProducts, setFilteredProducts] = useState([...props.products]);
 
     // Asumiendo que tienes un estado para tus filtros
-    const [filters, setFilters] = useState({quantity: null, expiry: null, alphabetical: null, category: null });
+    const [filters, setFilters] = useState({totalQuantity: null, expiry: null, alphabetical: null, category: null });
 
     const bubbleSort = (arr, comparator) => {
         let len = arr.length;
@@ -26,6 +26,8 @@ export default function FilterModal(props) {
     const handleClose = () => {
         props.onFilter(filteredProducts);
         console.log('filteredProducts en filterModal', filteredProducts)
+        const filters = {totalQuantity: null, expiry: null, alphabetical: null, category: null };
+        setFilters(filters);
         setModalVisible(false);
     }
 
@@ -39,16 +41,15 @@ export default function FilterModal(props) {
         });
     }
 
-    const sortByQuantity = (products, order) => {
-        if (order) {
-            return bubbleSort(products, (a, b) => {
-                const aQuantity = a.product && a.product.totalQuantity ? a.product.totalQuantity : 0;
-                const bQuantity = b.product && b.product.totalQuantity ? b.product.totalQuantity : 0;
+    function compareNumbers(a, b) {
+        return a.totalQuantity - b.totalQuantity;
+    }
 
-                return order === 'min' ? aQuantity - bQuantity : bQuantity - aQuantity;
-            });
+    const sortByQuantity = (products, order) => {
+        if (order === 'min') {
+            return products.sort(compareNumbers);
         }
-        return products;
+        return products.sort(compareNumbers).reverse();
     }
 
     const sortByExpiry = (products, expiry) => {
@@ -79,7 +80,7 @@ export default function FilterModal(props) {
     const applyFilters = (filtersToApply) => {
         let newFilteredProducts = [...props.products];
 
-        newFilteredProducts = sortByQuantity(newFilteredProducts, filtersToApply.quantity);
+        newFilteredProducts = sortByQuantity(newFilteredProducts, filtersToApply.totalQuantity);
         newFilteredProducts = sortByExpiry(newFilteredProducts, filtersToApply.expiry);
         newFilteredProducts = sortByAlphabetical(newFilteredProducts, filtersToApply.alphabetical);
         newFilteredProducts = filterByCategory(newFilteredProducts, filtersToApply.category);
@@ -111,10 +112,10 @@ export default function FilterModal(props) {
                         </Pressable>
 
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Pressable style={styles.button} onPress={() => handleFilterButtonPress({quantity: 'min'})}>
+                            <Pressable style={styles.button} onPress={() => handleFilterButtonPress({totalQuantity: 'min'})}>
                                 <Text style={styles.buttonText}>Menor cantidad</Text>
                             </Pressable>
-                            <Pressable style={styles.button} onPress={() => handleFilterButtonPress({quantity: 'max'})}>
+                            <Pressable style={styles.button} onPress={() => handleFilterButtonPress({totalQuantity: 'max'})}>
                                 <Text style={styles.buttonText}>Mayor cantidad</Text>
                             </Pressable>
                         </View>

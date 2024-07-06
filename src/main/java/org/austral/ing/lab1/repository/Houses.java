@@ -1,10 +1,10 @@
 package org.austral.ing.lab1.repository;
 
 import org.austral.ing.lab1.model.House;
-import org.austral.ing.lab1.model.Inbox;
 import org.austral.ing.lab1.model.Inventory;
 import org.austral.ing.lab1.model.User;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
+import org.austral.ing.lab1.model.notification.HouseInvitation;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.EntityManager;
@@ -79,7 +79,7 @@ public class Houses {
             throw new IllegalArgumentException("Something went wrong when trying to invite the user to the house.");
         }
 
-        Inbox inbox = getInbox(invitingUserOptional.get(), invitedUserOptional.get(), houseOptional.get());
+        HouseInvitation inbox = createInboxInvitation(invitingUserOptional.get(), invitedUserOptional.get(), houseOptional.get());
 
         entityManager.persist(inbox);
 
@@ -91,11 +91,10 @@ public class Houses {
         entityManager.persist(livesIn);
     }
 
-    private @NotNull Inbox getInbox(User inviterUser, User invitedUser, House house) {
-        Inbox inbox = new Inbox();
-        inbox.setInviterUsername(inviterUser.getNombre());
-        inbox.setInvitedUser(invitedUser);
-        inbox.setHouse(house);
-        return inbox;
+    private @NotNull HouseInvitation createInboxInvitation(User inviterUser, User invitedUser, House house) {
+        HouseInvitation houseInvitation = new HouseInvitation(house, inviterUser);
+        houseInvitation.setInbox_user(invitedUser);
+        invitedUser.addNotification(houseInvitation);
+        return houseInvitation;
     }
 }

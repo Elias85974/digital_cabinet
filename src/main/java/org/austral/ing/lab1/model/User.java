@@ -1,8 +1,11 @@
 package org.austral.ing.lab1.model;
 
 import com.google.gson.Gson;
+import org.austral.ing.lab1.model.chat.Message;
 import org.austral.ing.lab1.model.livesIn.LivesIn;
 //import org.austral.ing.lab1.TokenResponse;
+import org.austral.ing.lab1.model.notification.HouseInvitation;
+import org.austral.ing.lab1.model.notification.Notification;
 import org.austral.ing.lab1.object.SpecialSet;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -46,6 +49,12 @@ public class User {
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
     private Set<WishList> wishLists = new HashSet<>();
+
+    @OneToMany(mappedBy = "inbox_user")
+    private List<Notification> notifications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender")
+    private List<Message> messages = new ArrayList<>();
 
     public User() { }
 
@@ -178,6 +187,14 @@ public class User {
             houses.add(livesIn.getCasa());
         }
         return houses;
+    }
+
+    public List<Notification> getInbox() {
+        return notifications;
+    }
+
+    public void addNotification(HouseInvitation houseInvitation) {
+        notifications.add(houseInvitation);
     }
 
     /*

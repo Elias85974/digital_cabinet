@@ -31,6 +31,9 @@ public class Stock {
     @Column(name = "LowStockIndicator")
     private Long lowStockIndicator;
 
+    @Column(name = "PRICE")
+    private double price;
+
     public Stock() {}
 
     private Stock(StockBuilder stockBuilder) {
@@ -38,6 +41,7 @@ public class Stock {
         this.product = stockBuilder.product;
         this.vencimiento = stockBuilder.vencimiento;
         this.lowStockIndicator = stockBuilder.lowStockIndicator;
+        this.price = stockBuilder.price;
     }
 
     public static StockBuilder create(long cantidad) {
@@ -80,6 +84,14 @@ public class Stock {
         }
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     // Not being used for now
     public String asJson() {
         Gson gson = new Gson();
@@ -91,6 +103,7 @@ public class Stock {
         private Product product;
         private Date vencimiento;
         private Long lowStockIndicator;
+        private double price;
         public StockBuilder(long cantidad) {
             this.cantidad = cantidad;
         }
@@ -112,6 +125,11 @@ public class Stock {
 
         public Stock build() {
             return new Stock(this);
+        }
+
+        public StockBuilder setPrice(double price) {
+            this.price = price;
+            return this;
         }
     }
 }

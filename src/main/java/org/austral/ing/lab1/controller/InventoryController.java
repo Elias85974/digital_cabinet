@@ -17,6 +17,7 @@ import javax.persistence.EntityTransaction;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class InventoryController {
@@ -71,6 +72,7 @@ public class InventoryController {
                 final long quantity = jsonObject.get("quantity").getAsLong();
                 final String expirationString = jsonObject.get("expiration").getAsString();
                 final long lowStockIndicator = jsonObject.get("lowStockIndicator").getAsLong();
+                final double price = jsonObject.get("price").getAsDouble();
 
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                 Date expiration = formatter.parse(expirationString);
@@ -90,7 +92,7 @@ public class InventoryController {
                     return "Product not found";
                 }
 
-                inventories.addStockToHouse(houseOptional.get(), productOptional.get(), quantity, expiration, lowStockIndicator);
+                inventories.addStockToHouse(houseOptional.get(), productOptional.get(), quantity, expiration, lowStockIndicator, price);
                 tx.commit();
 
                 resp.status(200);
@@ -105,7 +107,7 @@ public class InventoryController {
         });
 
         // Route to reduce stock of a product from the inventory of a house
-        Spark.post("/houses/:houseId/inventory", "application/json", (req, resp) -> {
+        Spark.post("/houses/:houseId/inventory/reduceStock", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Inventories inventoriesRepo = new Inventories(entityManager);
             try {
@@ -114,10 +116,7 @@ public class InventoryController {
                 Long productId = jsonObject.get("productId").getAsLong();
                 Long quantity = jsonObject.get("quantity").getAsLong();
 
-                EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
                 inventoriesRepo.reduceStock(houseId, productId, quantity);
-                tx.commit();
 
                 resp.status(200);
                 return "Stock reduced successfully";
@@ -211,6 +210,41 @@ public class InventoryController {
                 resp.status(500);
                 System.out.println(e.getMessage());
                 return "An error occurred while adding the stock, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        // Route to get the total value of the inventory of a house grouped by category
+        Spark.get("/houses/:houseId/inventory/valueByCategory", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Houses houses = new Houses(entityManager);
+            Inventories inventories = new Inventories(entityManager);
+            try {
+                final String houseId = req.params("houseId");
+
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
+                tx.commit();
+
+                if (houseOptional.isEmpty()) {
+                    resp.status(404);
+                    return "House not exists";
+                }
+
+                final House house = houseOptional.get();
+                final Inventory inventory = house.getInventario();
+
+                // Get the total value of the inventory of a house grouped by category
+                Map<String, Double> valueByCategory = inventories.getValueByCategory(inventory);
+
+                resp.type("application/json");
+                return new Gson().toJson(valueByCategory);
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the inventory value by category, please try again";
             } finally {
                 entityManager.close();
             }

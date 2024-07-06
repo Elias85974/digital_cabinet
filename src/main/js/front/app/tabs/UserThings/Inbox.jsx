@@ -12,8 +12,6 @@ import Tuple from "../Contents/Tuple";
 
 export default function Inbox({navigation}) {
     const [inbox, setInbox] = useState([]);
-    const [selectedInboxes, setSelectedInboxes] = useState([]);
-    const [lastPressed, setLastPressed] = useState({});
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -31,23 +29,24 @@ export default function Inbox({navigation}) {
 
     const handleAccept = async (houseId) => {
         const userId = await AsyncStorage.getItem('userId');
-        setSelectedInboxes(prevInboxes => prevInboxes.filter(invite => invite.houseId !== houseId));
-        setSelectedInboxes(prevInboxes => [...prevInboxes, {userId: userId, houseId: houseId.toString(), isAccepted: true}]);
-        setLastPressed(prevState => ({...prevState, [houseId]: 'accept'}));
+        const invitation = {userId: userId, houseId: houseId.toString(), isAccepted: true};
+        try {
+            await processInvitations(invitation);
+            await loadInbox();
+        } catch (error) {
+            console.error('Failed to process invitation:', error);
+        }
     }
 
     const handleReject = async (houseId) => {
         const userId = await AsyncStorage.getItem('userId');
-        setSelectedInboxes(prevInboxes => prevInboxes.filter(invite => invite.houseId !== houseId));
-        setSelectedInboxes(prevInboxes => [...prevInboxes, {userId: userId, houseId: houseId.toString(), isAccepted: false}]);
-        setLastPressed(prevState => ({...prevState, [houseId]: 'reject'}));
-    }
-
-    const sendUpdates = async () => {
-        console.log(selectedInboxes);
-        await processInvitations(selectedInboxes);
-        await loadInbox();
-        setSelectedInboxes([]);
+        const invitation = {userId: userId, houseId: houseId.toString(), isAccepted: false};
+        try {
+            await processInvitations(invitation);
+            await loadInbox();
+        } catch (error) {
+            console.error('Failed to process invitation:', error);
+        }
     }
 
     return (
@@ -75,13 +74,13 @@ export default function Inbox({navigation}) {
                                                 </View>
                                                 <View style={styles.buttonWrap}>
                                                     <TouchableOpacity
-                                                        style={[styles.primaryCta, {backgroundColor: lastPressed[item.houseId] === 'accept' ? 'darkgreen' : 'green'}]}
+                                                        style={[styles.primaryCta, {backgroundColor: "green"}]}
                                                         onPress={() => handleAccept(item.houseId)}
                                                     >
                                                         <Text style={styles.buttonText}>Accept</Text>
                                                     </TouchableOpacity>
                                                     <TouchableOpacity
-                                                        style={[styles.secondaryCta, {backgroundColor: lastPressed[item.houseId] === 'reject' ? 'darkred' : 'red'}]}
+                                                        style={[styles.secondaryCta, {backgroundColor: "red"}]}
                                                         onPress={() => handleReject(item.houseId)}
                                                     >
                                                         <Text style={styles.buttonText}>Reject</Text>
@@ -96,13 +95,6 @@ export default function Inbox({navigation}) {
                                     <Text style={{alignSelf: 'center'}}>You have no recent invitations</Text>
                                 </View>
                             )}
-                            {inbox.length > 0 &&
-                                <View style={styles.linksContainer}>
-                                    <Pressable onPress={sendUpdates}>
-                                        <Text style={styles.link}>Send Updates</Text>
-                                    </Pressable>
-                                </View>
-                            }
                         </View>
                     </View>
                     <Tuple navigation={navigation}/>

@@ -1,8 +1,11 @@
 package org.austral.ing.lab1.model;
 
+import org.austral.ing.lab1.model.notification.Notification;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "INBOX")
@@ -12,16 +15,12 @@ public class Inbox {
   @GenericGenerator(name = "increment", strategy = "increment")
   private Long inbox_Id;
 
-  @Column(name = "inviter_username")
-  private String inviterUsername;
+  @OneToMany(mappedBy = "inbox_user")
+  private List<Notification> notifications = new ArrayList<>();
 
-  @ManyToOne
-  @JoinColumn(name = "invited_user_id")
-  private User invitedUser;
-
-  @ManyToOne
-  @JoinColumn(name = "CASA_ID")
-  private House house;
+  @OneToOne
+  @JoinColumn(name = "USUARIO_ID")
+  private User user;
 
   public Inbox() {
   }
@@ -31,27 +30,16 @@ public class Inbox {
     return inbox_Id;
   }
 
-  public String getInviterUsername() {
-    return inviterUsername;
+  public void setId(Long id) {
+      this.inbox_Id = id;
   }
 
-  public void setInviterUsername(String inviterUsername) {
-    this.inviterUsername = inviterUsername;
+  public List<Notification> getNotifications() {
+      return notifications;
   }
 
-  public User getInvitedUser() {
-    return invitedUser;
+  public void addNotification(Notification notification) {
+      this.notifications.add(notification);
   }
 
-  public void setInvitedUser(User invitedUser) {
-    this.invitedUser = invitedUser;
-  }
-
-  public House getHouse() {
-    return house;
-  }
-
-  public void setHouse(House house) {
-    this.house = house;
-  }
 }

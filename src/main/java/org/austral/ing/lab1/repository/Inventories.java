@@ -21,44 +21,47 @@ public class Inventories {
 
     public List<ProductInfo> getProductsByCategory(Long inventoryId, String category) {
     Inventory inventory = entityManager.find(Inventory.class, inventoryId);
-    if (inventory != null) {
-        // Group the stocks by product
-        Map<Product, List<Stock>> productStocksMap = inventory.getStocks().stream()
-                .filter(stock -> stock.getProduct().getCategory().getNombre().equals(category))
-                .filter(stock -> stock.getCantidadVencimiento() != 0) // Ignore stocks with a quantity of 0
-                .collect(Collectors.groupingBy(Stock::getProduct));
+        if (inventory != null) {
+            // Group the stocks by product
+            Map<Product, List<Stock>> productStocksMap = inventory.getStocks().stream()
+                    .filter(stock -> stock.getProduct().getCategory().getNombre().equals(category))
+                    .filter(stock -> stock.getCantidadVencimiento() != 0) // Ignore stocks with a quantity of 0
+                    .collect(Collectors.groupingBy(Stock::getProduct));
 
-        List<ProductInfo> products = new ArrayList<>();
-        for (Map.Entry<Product, List<Stock>> entry : productStocksMap.entrySet()) {
-            ProductInfo productInfo = getProductInfo(entry);
-            products.add(productInfo);
+            List<ProductInfo> products = new ArrayList<>();
+            for (Map.Entry<Product, List<Stock>> entry : productStocksMap.entrySet()) {
+                ProductInfo productInfo = getProductInfo(entry);
+                products.add(productInfo);
+            }
+
+            // Sort the products by total quantity in descending order
+            products.sort((p1, p2) -> Long.compare(p2.getTotalQuantity(), p1.getTotalQuantity()));
+
+            return products;
+        } else {
+            return null;
         }
-
-        // Sort the products by total quantity in descending order
-        products.sort((p1, p2) -> Long.compare(p2.getTotalQuantity(), p1.getTotalQuantity()));
-
-        return products;
-    } else {
-        return null;
     }
-}
 
-        private ProductInfo getProductInfo(Map.Entry<Product, List<Stock>> entry) {
+    private ProductInfo getProductInfo(Map.Entry<Product, List<Stock>> entry) {
         Product product = entry.getKey();
         List<Stock> sameProductStocks = entry.getValue();
 
-        // Calculate the total quantity and find the nearest expiration date
+        // Calculate the total quantity, find the nearest expiration date, and calculate the average price
         Long totalQuantity = 0L;
         Date nearestExpirationDate = null;
+        double totalValue = 0.0;
         for (Stock s : sameProductStocks) {
             totalQuantity += s.getCantidadVencimiento();
+            totalValue += s.getPrice() * s.getCantidadVencimiento();
             if (nearestExpirationDate == null || s.getExpirationDate().before(nearestExpirationDate)) {
                 nearestExpirationDate = s.getExpirationDate();
             }
         }
+        double averagePrice = totalQuantity > 0 ? totalValue / totalQuantity : 0;
 
         // Create a new ProductInfo object with the calculated values
-        return new ProductInfo(product, totalQuantity, nearestExpirationDate);
+        return new ProductInfo(product, totalQuantity, nearestExpirationDate, averagePrice);
     }
 
     public Inventory persist(Inventory inventory) {
@@ -66,11 +69,11 @@ public class Inventories {
         return inventory;
     }
 
-    public void addStockToHouse(House house, Product product, Long quantity, Date expiration, Long lowStockIndicator) {
+    public void addStockToHouse(House house, Product product, Long quantity, Date expiration, Long lowStockIndicator, double price) {
         LivesIns livesIns = new LivesIns(entityManager);
 
         final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration)
-                .setLowStockIndicator(lowStockIndicator).build();
+                .setLowStockIndicator(lowStockIndicator).setPrice(price).build();
         entityManager.persist(stock);
 
         // Add the new stock to the house's inventory
@@ -94,50 +97,50 @@ public class Inventories {
     }
 
     public void reduceStock(Long houseId, Long productId, Long quantity) {
-    // Fetch the house from the database
-    House house = entityManager.find(House.class, houseId);
-    if (house != null) {
-        // Fetch the stocks of the product in the house
-        List<Stock> stocks = house.getInventario().getStocks().stream()
-                .filter(stock -> stock.getProduct().getProducto_ID().equals(productId))
-                .sorted(Comparator.comparing(Stock::getExpirationDate))
-                .collect(Collectors.toList());
+        // Fetch the house from the database
+        House house = entityManager.find(House.class, houseId);
+        if (house != null) {
+            // Fetch the stocks of the product in the house
+            List<Stock> stocks = house.getInventario().getStocks().stream()
+                    .filter(stock -> stock.getProduct().getProducto_ID().equals(productId))
+                    .sorted(Comparator.comparing(Stock::getExpirationDate))
+                    .collect(Collectors.toList());
 
-        // Start the transaction
-        EntityTransaction tx = entityManager.getTransaction();
-        tx.begin();
+            // Start the transaction
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
 
-        // Iterate over the stocks and reduce the quantity
-        for (Stock stock : stocks) {
-            if (quantity <= 0) {
-                break;
-            }
-            if (stock.getCantidadVencimiento() <= quantity) {
-                quantity -= stock.getCantidadVencimiento();
-                // Set the stock quantity to 0
-                stock.setCantidadVencimiento(0L);
-            } else {
-                stock.setCantidadVencimiento(stock.getCantidadVencimiento() - quantity);
-                quantity = 0L;
-            }
-            // Merge the stock entity to persist the changes
-            entityManager.merge(stock);
-        }
-
-        // Remove all stocks with a quantity of 0
-        stocks.stream()
-            .filter(stock -> stock.getCantidadVencimiento() == 0)
-            .forEach(stock -> {
-                Stock managedStock = entityManager.find(Stock.class, stock.getId());
-                if (managedStock != null) {
-                    entityManager.remove(managedStock);
+            // Iterate over the stocks and reduce the quantity
+            for (Stock stock : stocks) {
+                if (quantity <= 0) {
+                    break;
                 }
-            });
+                if (stock.getCantidadVencimiento() <= quantity) {
+                    quantity -= stock.getCantidadVencimiento();
+                    // Set the stock quantity to 0
+                    stock.setCantidadVencimiento(0L);
+                } else {
+                    stock.setCantidadVencimiento(stock.getCantidadVencimiento() - quantity);
+                    quantity = 0L;
+                }
+                // Merge the stock entity to persist the changes
+                entityManager.merge(stock);
+            }
 
-        // Commit the transaction
-        tx.commit();
-    }
-}
+            // Remove all stocks with a quantity of 0
+            stocks.stream()
+                .filter(stock -> stock.getCantidadVencimiento() == 0)
+                .forEach(stock -> {
+                    Stock managedStock = entityManager.find(Stock.class, stock.getId());
+                    if (managedStock != null) {
+                        entityManager.remove(managedStock);
+                    }
+                });
+
+            // Commit the transaction
+            tx.commit();
+        }
+        }
 
     public List<ProductInfo> getLowOnStockProducts(Long houseId) {
         // Get the house
@@ -158,6 +161,9 @@ public class Inventories {
         // Create a map to store the low stock limit of each product
         Map<Product, Long> productLowStockLimits = new HashMap<>();
 
+        // Create a map to store the total value of each product
+        Map<Product, Double> productTotalValues = new HashMap<>();
+
         // Iterate over the stocks
         for (Stock stock : stocks) {
             Product product = stock.getProduct();
@@ -174,6 +180,9 @@ public class Inventories {
 
             // Update the low stock limit of the product
             productLowStockLimits.put(product, stock.getLowStockIndicator());
+
+            // Update the total value of the product
+            productTotalValues.put(product, productTotalValues.getOrDefault(product, 0.0) + stock.getPrice() * quantity);
         }
 
         // Create a list to store the products that are low on stock
@@ -183,8 +192,11 @@ public class Inventories {
         for (Product product : productQuantities.keySet()) {
             // Check if the total quantity of the product is lower than the low stock limit
             if (productQuantities.get(product) < productLowStockLimits.get(product)) {
+                // Calculate the average price of the product
+                double averagePrice = productQuantities.get(product) > 0 ? productTotalValues.get(product) / productQuantities.get(product) : 0;
+
                 // Add the product to the list of low on stock products
-                lowOnStockProducts.add(new ProductInfo(product, productQuantities.get(product), productExpirationDates.get(product)));
+                lowOnStockProducts.add(new ProductInfo(product, productQuantities.get(product), productExpirationDates.get(product), averagePrice));
             }
         }
 
@@ -216,7 +228,30 @@ public class Inventories {
         // Add the quantity to the last stock inserted
         lastStockInserted.setCantidadVencimiento(lastStockInserted.getCantidadVencimiento() + quantity);
 
+        // Set the price of the new stock to the last inserted stock's price
+        lastStockInserted.setPrice(lastStockInserted.getPrice());
+
         // Persist the updated stock
         entityManager.persist(lastStockInserted);
+    }
+
+    public Map<String, Double> getValueByCategory(Inventory inventory) {
+        // Get the stocks of the inventory
+        List<Stock> stocks = inventory.getStocks();
+
+        // Create a map to store the total value of each category
+        Map<String, Double> valueByCategory = new HashMap<>();
+
+        // Iterate over the stocks
+        for (Stock stock : stocks) {
+            Product product = stock.getProduct();
+            String category = product.getCategory().getNombre();
+            double value = stock.getPrice() * stock.getCantidadVencimiento();
+
+            // Update the total value of the category
+            valueByCategory.put(category, valueByCategory.getOrDefault(category, 0.0) + value);
+        }
+
+        return valueByCategory;
     }
 }

@@ -6,6 +6,7 @@ import { StyleSheet } from 'react-native';
 import {AuthContext} from "../../context/AuthContext";
 import {useIsFocused} from "@react-navigation/native";
 import Tuple from "../Contents/Tuple";
+import NavBar from "../NavBar/NavBar";
 
 
 export default function House({navigation}) {
@@ -72,7 +73,7 @@ export default function House({navigation}) {
     return (
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
 
                     <Text style={styles.title}>Welcome Home!</Text>
                     <View style={styles.logInCont}>
@@ -125,6 +126,7 @@ export default function House({navigation}) {
 
                 </ScrollView>
             </SafeAreaView>
+            <NavBar navigation={navigation}/>
         </View>
     );
 }

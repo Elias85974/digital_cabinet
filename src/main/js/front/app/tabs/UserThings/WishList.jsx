@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet, Pressable, ScrollView, SafeAre
 import { getWishList, addProductToWishList, deleteProductFromWishList } from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Tuple from "../Contents/Tuple";
+import NavBar from "../NavBar/NavBar";
 
 export default function WishList({navigation}) {
     const [wishList, setWishList] = useState([]);
@@ -64,7 +65,7 @@ export default function WishList({navigation}) {
     return (
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.title}>WishList</Text>
                     <View style={styles.contentWishList}>
@@ -93,6 +94,7 @@ export default function WishList({navigation}) {
                 </View>
                 </ScrollView>
             </SafeAreaView>
+            <NavBar navigation={navigation}/>
         </View>
     );
 }

@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Pressable, StyleSheet, ScrollView, SafeAreaView} from "react-native";
 import {getUserHouses, getUserIdByEmail} from "../../Api";
-import LogoutButton from "../Contents/LogoutButton";
+import LogoutButton from "../NavBar/LogoutButton";
 import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
-import GoBackButton from "../Contents/GoBackButton";
+import GoBackButton from "../NavBar/GoBackButton";
 import Tuple from "../Contents/Tuple";
+import NavBar from "../NavBar/NavBar";
 
 export default function Homes({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
@@ -45,34 +46,35 @@ export default function Homes({navigation}) {
     return (
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
-            <Text style={styles.title}>Digital Cabinet</Text>
-            <View style={styles.logInCont}>
-                <Text style={styles.info}>Select a home</Text>
-                <View style={styles.container2}>
-                    {houses.map((house, index) => (
-                        <View key={index} style={styles.circle}>
-                            <Pressable onPress={async () => {
-                                // Obtener el houseId de AsyncStorage
-                                await AsyncStorage.setItem('houseId', house.houseId.toString());
-                                // Navegar a la página House con el houseId correcto
-                                navigation.navigate("House");
-                            }}>
-                                <Text style={styles.circleText}>{house.name}</Text>
-                            </Pressable>
+                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
+                    <Text style={styles.title}>Digital Cabinet</Text>
+                    <View style={styles.logInCont}>
+                        <Text style={styles.info}>Select a home</Text>
+                        <View style={styles.container2}>
+                            {houses.map((house, index) => (
+                                <View key={index} style={styles.circle}>
+                                    <Pressable onPress={async () => {
+                                        // Obtener el houseId de AsyncStorage
+                                        await AsyncStorage.setItem('houseId', house.houseId.toString());
+                                        // Navegar a la página House con el houseId correcto
+                                        navigation.navigate("House");
+                                    }}>
+                                        <Text style={styles.circleText}>{house.name}</Text>
+                                    </Pressable>
+                                </View>
+                            ))}
                         </View>
-                    ))}
-                </View>
-            </View>
-            <p></p>
-            <View style={styles.linksContainer}>
-                <Pressable onPress={() => navigation.navigate("RegisterHome")}>
-                    <Text style={styles.link}>Create a Home</Text>
-                </Pressable>
-                <Tuple navigation={navigation}/>
-            </View>
+                    </View>
+                    <p></p>
+                    <View style={styles.linksContainer}>
+                        <Pressable onPress={() => navigation.navigate("RegisterHome")}>
+                            <Text style={styles.link}>Create a Home</Text>
+                        </Pressable>
+                        <Tuple navigation={navigation}/>
+                    </View>
                 </ScrollView>
             </SafeAreaView>
+            <NavBar navigation={navigation}/>
         </View>
     );
 }

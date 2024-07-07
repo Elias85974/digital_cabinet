@@ -5,10 +5,11 @@ import {getUserHouses, getUserIdByEmail, inviteUser} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
-import LogoutButton from "../Contents/LogoutButton";
-import GoBackButton from "../Contents/GoBackButton";
+import LogoutButton from "../NavBar/LogoutButton";
+import GoBackButton from "../NavBar/GoBackButton";
 import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";
+import NavBar from "../NavBar/NavBar";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -73,7 +74,7 @@ const HouseUsersPage = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)}/>
                 <Text style={styles.title}>Digital Cabinet</Text>
                 <View style={styles.addUser}>
@@ -96,6 +97,8 @@ const HouseUsersPage = ({ navigation }) => {
                 <Tuple navigation={navigation}/>
                 </ScrollView>
             </SafeAreaView>
+            <NavBar navigation={navigation}/>
+
         </View>
     );
 

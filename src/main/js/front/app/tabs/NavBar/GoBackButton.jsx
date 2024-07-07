@@ -1,5 +1,6 @@
 import React from 'react';
-import { Pressable, Text, Alert, StyleSheet } from 'react-native';
+import {Pressable, Text, Alert, StyleSheet, TouchableOpacity} from 'react-native';
+import {Ionicons} from "@expo/vector-icons";
 
 
 const GoBackButton = ({navigation}) => {
@@ -9,9 +10,10 @@ const GoBackButton = ({navigation}) => {
     }
 
     return (
-        <><Pressable onPress={handleGoBack}  style={styles.logoutButton}>
-            <Text style={styles.logoutText}>Go Back</Text>
-        </Pressable>
+        <><TouchableOpacity onPress={handleGoBack}  style={styles.logoutButton}>
+            <Ionicons name="arrow-back-outline" size={24} color="white" />
+            {/*<Text style={styles.logoutText}>Go Back</Text>*/}
+        </TouchableOpacity>
         </>
     );
 }
@@ -25,7 +27,6 @@ const styles = StyleSheet.create({
         borderColor: '#717336', // Set border color
         padding: 10, // Add some padding so the text isn't right up against the border
         backgroundColor: '#717336', // Set background color
-        width: 150, // Set width
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,

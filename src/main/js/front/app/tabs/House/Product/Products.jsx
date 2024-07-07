@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getLowOnStockProducts, getProductsFromHouseAndCategory, reduceStock} from "../../../Api";
 import Tuple from "../../Contents/Tuple";
 import ModalAlert from "../../Contents/ModalAlert";
+import NavBar from "../../NavBar/NavBar";
 
 
 export default function Product({navigation}) {
@@ -115,7 +116,7 @@ export default function Product({navigation}) {
     return (
         <View style={styles.container} key={refreshKey}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <View>
                     <View style={styles.container2}>
                         <View style={{backgroundColor: '#3b0317', borderRadius: 30}}>
@@ -195,6 +196,8 @@ export default function Product({navigation}) {
                 <Tuple navigation={navigation}/>
                 </ScrollView>
             </SafeAreaView>
+            <NavBar navigation={navigation}/>
+
         </View>
     );
 }

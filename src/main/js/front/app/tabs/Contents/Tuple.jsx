@@ -1,7 +1,7 @@
 import {View} from "react-native";
 import React from "react";
-import LogoutButton from "./LogoutButton";
-import GoBackButton from "./GoBackButton";
+import LogoutButton from "../NavBar/LogoutButton";
+import GoBackButton from "../NavBar/GoBackButton";
 
 const Tuple = ({navigation}) => {
 

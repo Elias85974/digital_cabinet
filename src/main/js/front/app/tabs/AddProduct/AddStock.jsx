@@ -5,6 +5,7 @@ import { getAllProducts, updateHouseInventory } from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";
+import NavBar from "../NavBar/NavBar";
 
 export default function AddProduct({navigation}) {
     const [products, setProducts] = useState([]);
@@ -90,7 +91,7 @@ export default function AddProduct({navigation}) {
     return (
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Add products!</Text>
@@ -138,6 +139,8 @@ export default function AddProduct({navigation}) {
                 </View>
                 </ScrollView>
             </SafeAreaView>
+            <NavBar navigation={navigation}/>
+
         </View>
     );
 }

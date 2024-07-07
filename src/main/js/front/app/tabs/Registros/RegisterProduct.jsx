@@ -17,6 +17,7 @@ import {createProduct, getCategories, createCategory} from "../../Api";
 import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";
 import {useIsFocused} from "@react-navigation/native";
+import NavBar from "../NavBar/NavBar";
 
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
@@ -150,7 +151,7 @@ export default function RegisterProduct({navigation}) {
     return (
         <View style={styles.container} key = {key}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <Text style={styles.title}>Products</Text>
@@ -204,6 +205,7 @@ export default function RegisterProduct({navigation}) {
                 </View>
                 </ScrollView>
             </SafeAreaView>
+            <NavBar navigation={navigation}/>
         </View>
     );
 }

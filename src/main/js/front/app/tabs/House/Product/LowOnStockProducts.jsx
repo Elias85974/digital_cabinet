@@ -18,6 +18,7 @@ import {getLowOnStockProducts, addStock} from "../../../Api";
 import Tuple from "../../Contents/Tuple";
 import FilterModal from "../../Contents/FilterModal";
 import {useFocusEffect} from "expo-router";
+import NavBar from "../../NavBar/NavBar";
 
 export default function LowOnStockProducts({navigation}) {
     const [products, setProducts] = useState([]);
@@ -122,86 +123,88 @@ navigation.navigate('LowOnStock', {key: refreshKey});
     return (
         <View style={styles.container} key={refreshKey}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
-            <View>
-                <View style={styles.container2}>
-                    <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 2, alignItems: 'center',
-                        flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={handleInputChange}
-                            value={query}
-                            placeholder="Search product"
-                        />
-                        <FilterModal products={products} onFilter={handleFilteredProducts} />
-                    </View>
-                    <FlatList
-                        data={filteredProducts.length > 0 ? filteredProducts : products}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => index.toString()}
-                        numColumns={2}
-                    />
-                </View>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible2}
-                    onRequestClose={() => {
-                        setModalVisible2(!modalVisible2);
-                    }}
-                >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.modalText}>Producto: {selectedProduct?.product.nombre}</Text>
-                            <Text style={styles.modalText}>Marca: {selectedProduct?.product.marca}</Text>
-                            <Text style={styles.modalText}>Cantidad total: {selectedProduct?.totalQuantity}</Text>
-                            <Text style={styles.modalText}>Próximo a vencer en: {new Date(selectedProduct?.nearestExpirationDate).toLocaleDateString()}</Text>
-                            <View style={styles.linksContainer}>
-                                <Pressable onPress={() => setModalVisible3(true)}>
-                                    <Text style={styles.link}>Add Stock</Text>
-                                </Pressable>
-                                <Pressable onPress={() => setModalVisible2(false)} >
-                                    <Text style={styles.link}>Cerrar</Text>
-                                </Pressable>
+                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
+                    <View>
+                        <View style={styles.container2}>
+                            <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 2, alignItems: 'center',
+                                flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={handleInputChange}
+                                    value={query}
+                                    placeholder="Search product"
+                                />
+                                <FilterModal products={products} onFilter={handleFilteredProducts} />
                             </View>
-
-                            <Modal
-                                animationType="fade"
-                                transparent={true}
-                                visible={modalVisible3}
-                                onRequestClose={() => {
-                                    setModalVisible3(!modalVisible3);
-                                }}
-                            >
-                                <View style={styles.centeredView}>
-                                    <View style={styles.modalView}>
-                                        <Text style={styles.modalText}>Add Stock for {selectedProduct?.product.nombre}</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            onChangeText={setQuantityToAdd}
-                                            value={quantityToAdd}
-                                            keyboardType="numeric"
-                                            placeholder="Enter quantity to add"
-                                        />
-                                        <View style={styles.linksContainer}>
-                                            <Pressable onPress={handleAddStock}>
-                                                <Text style={styles.link}>Confirm Addition</Text>
-                                            </Pressable>
-                                            <Pressable onPress={() => setModalVisible3(false)} >
-                                                <Text style={styles.link}>Cancel</Text>
-                                            </Pressable>
-                                        </View>
-                                    </View>
-                                </View>
-                            </Modal>
+                            <FlatList
+                                data={filteredProducts.length > 0 ? filteredProducts : products}
+                                renderItem={renderItem}
+                                keyExtractor={(item, index) => index.toString()}
+                                numColumns={2}
+                            />
                         </View>
-                    </View>
-                </Modal>
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible2}
+                            onRequestClose={() => {
+                                setModalVisible2(!modalVisible2);
+                            }}
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style={styles.modalText}>Producto: {selectedProduct?.product.nombre}</Text>
+                                    <Text style={styles.modalText}>Marca: {selectedProduct?.product.marca}</Text>
+                                    <Text style={styles.modalText}>Cantidad total: {selectedProduct?.totalQuantity}</Text>
+                                    <Text style={styles.modalText}>Próximo a vencer en: {new Date(selectedProduct?.nearestExpirationDate).toLocaleDateString()}</Text>
+                                    <View style={styles.linksContainer}>
+                                        <Pressable onPress={() => setModalVisible3(true)}>
+                                            <Text style={styles.link}>Add Stock</Text>
+                                        </Pressable>
+                                        <Pressable onPress={() => setModalVisible2(false)} >
+                                            <Text style={styles.link}>Cerrar</Text>
+                                        </Pressable>
+                                    </View>
 
-            </View>
-            <Tuple navigation={navigation}/>
+                                    <Modal
+                                        animationType="fade"
+                                        transparent={true}
+                                        visible={modalVisible3}
+                                        onRequestClose={() => {
+                                            setModalVisible3(!modalVisible3);
+                                        }}
+                                    >
+                                        <View style={styles.centeredView}>
+                                            <View style={styles.modalView}>
+                                                <Text style={styles.modalText}>Add Stock for {selectedProduct?.product.nombre}</Text>
+                                                <TextInput
+                                                    style={styles.input}
+                                                    onChangeText={setQuantityToAdd}
+                                                    value={quantityToAdd}
+                                                    keyboardType="numeric"
+                                                    placeholder="Enter quantity to add"
+                                                />
+                                                <View style={styles.linksContainer}>
+                                                    <Pressable onPress={handleAddStock}>
+                                                        <Text style={styles.link}>Confirm Addition</Text>
+                                                    </Pressable>
+                                                    <Pressable onPress={() => setModalVisible3(false)} >
+                                                        <Text style={styles.link}>Cancel</Text>
+                                                    </Pressable>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </Modal>
+                                </View>
+                            </View>
+                        </Modal>
+
+                    </View>
+                    <Tuple navigation={navigation}/>
                 </ScrollView>
             </SafeAreaView>
+            <NavBar navigation={navigation}/>
+
         </View>
     );
 }

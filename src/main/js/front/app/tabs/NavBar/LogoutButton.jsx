@@ -1,6 +1,7 @@
 import React from 'react';
-import { Pressable, Text, Alert, StyleSheet } from 'react-native';
+import {Pressable, Text, Alert, StyleSheet, TouchableOpacity} from 'react-native';
 import {AuthContext} from "../../context/AuthContext";
+import {Ionicons} from "@expo/vector-icons";
 
 const LogoutButton = ({navigation}) => {
     const {signOut} = React.useContext(AuthContext);
@@ -11,9 +12,10 @@ const LogoutButton = ({navigation}) => {
     }
 
     return (
-        <><Pressable onPress={handleSignOut}  style={styles.logoutButton}>
-            <Text style={styles.logoutText}>Logout</Text>
-        </Pressable>
+        <><TouchableOpacity onPress={handleSignOut}  style={styles.logoutButton}>
+            <Ionicons name="log-out-outline" size={24} color="white" />
+            {/*<Text style={styles.logoutText}>Logout</Text>*/}
+        </TouchableOpacity>
         </>
     );
 }
@@ -27,7 +29,6 @@ const styles = StyleSheet.create({
         borderColor: '#717336', // Set border color
         padding: 10, // Add some padding so the text isn't right up against the border
         backgroundColor: '#717336', // Set background color
-        width: 150, // Set width
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,

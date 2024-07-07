@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import { View, Text, Button, FlatList, Pressable } from 'react-native';
 import { getUsersInbox, processInvitations } from '../../Api';
-import GoBackButton from "../Contents/GoBackButton";
-import LogoutButton from "../Contents/LogoutButton";
+import GoBackButton from "../NavBar/GoBackButton";
+import LogoutButton from "../NavBar/LogoutButton";
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ScrollViewWithEventThrottle
     from "react-native-web/dist/vendor/react-native/Animated/components/AnimatedScrollView";
 import Tuple from "../Contents/Tuple";
+import NavBar from "../NavBar/NavBar";
 
 export default function Inbox({navigation}) {
     const [inbox, setInbox] = useState([]);
@@ -52,7 +53,7 @@ export default function Inbox({navigation}) {
     return (
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.title}>Inbox</Text>
                     <View style={styles.contentWishList}>
@@ -101,6 +102,8 @@ export default function Inbox({navigation}) {
                 </View>
             </ScrollView>
             </SafeAreaView>
+            <NavBar navigation={navigation}/>
+
         </View>
     );
 }

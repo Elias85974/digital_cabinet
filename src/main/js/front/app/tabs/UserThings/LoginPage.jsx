@@ -27,12 +27,8 @@ export default function LoginPage({navigation}) {
                     signIn("", response.email);
                     setIsLoggedIn(true);
 
-                    // Use getUserIdByEmail to get the user ID
-                    const userId = await UsersApi.getUserIdByEmail(userToken, response.email);
-                    console.log("User ID:", userId); // Log the user ID to check if it's correct
-
                     // Save user ID to AsyncStorage
-                    await AsyncStorage.setItem('userId', userId.toString());
+                    await AsyncStorage.setItem('userId', response.userId);
 
                     navigation.navigate("Homes");
                 }

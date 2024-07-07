@@ -1,8 +1,6 @@
 package org.austral.ing.lab1.model.chat;
 
-import org.austral.ing.lab1.model.House;
-import org.austral.ing.lab1.model.User;
-import org.austral.ing.lab1.object.SpecialSet;
+import org.austral.ing.lab1.model.house.House;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

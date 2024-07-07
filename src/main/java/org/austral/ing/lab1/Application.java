@@ -20,6 +20,7 @@ public class Application {
         new InventoryController(entityManagerFactory).init();
         new TokenController();
         new WishListController(entityManagerFactory).init();
+        new InboxController(entityManagerFactory).init();
         new ProductController(entityManagerFactory).init();
         new CategoryController(entityManagerFactory).init();
 

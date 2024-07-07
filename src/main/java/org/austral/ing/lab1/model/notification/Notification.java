@@ -1,10 +1,8 @@
 package org.austral.ing.lab1.model.notification;
 
-import org.austral.ing.lab1.model.User;
+import org.austral.ing.lab1.model.user.User;
 
 import javax.persistence.*;
-
-import java.time.LocalDateTime;
 
 import static javax.persistence.InheritanceType.*;
 

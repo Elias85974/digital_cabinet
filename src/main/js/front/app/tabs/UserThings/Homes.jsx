@@ -19,7 +19,7 @@ export default function Homes({navigation}) {
 
     const getHouses = async () => {
         try {
-            const userId = await UsersApi.getUserIdByEmail(userToken, email);
+            const userId = await AsyncStorage.getItem('userId');
             const userHouses = await HousesApi.getUserHouses(userId);
 
             /*

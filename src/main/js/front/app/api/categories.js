@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
+import { API_URL } from '../constants';
 
 export const getCategories = async () => {
     try {
@@ -9,7 +9,8 @@ export const getCategories = async () => {
             },
         });
         if (!response.ok) {
-            throw new Error('Network response was not lol');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
@@ -28,7 +29,8 @@ export const createCategory = async (categoryData) => {
             body: JSON.stringify(categoryData)
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
@@ -36,6 +38,3 @@ export const createCategory = async (categoryData) => {
         throw error;
     }
 }
-
-
-

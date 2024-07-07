@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from 'react';
 import {View, Text, Button, TextInput, StyleSheet, ScrollView, Pressable, SafeAreaView} from 'react-native';
-import {InboxApi} from "../../Api";
+import {HousesApi} from "../../Api";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
 
@@ -43,7 +43,7 @@ const HouseUsersPage = ({ navigation }) => {
             // If the email is valid, check if the user exists
             try {
                 // If the user exists, call the inviteUser function
-                await InboxApi.inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
+                await HousesApi.inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
                 setModalMessage("The invitation was sent"); // Muestra el modal en lugar de un alert
                 setModalVisible(true);
 

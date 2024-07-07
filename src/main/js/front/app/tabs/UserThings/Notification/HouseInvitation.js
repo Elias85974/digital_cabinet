@@ -1,10 +1,9 @@
 import {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { inboxStyles } from './InboxStyles';
-import {processInvitations} from "../../../controller/HouseController";
-import {getUsersHouseInvitations} from "../../../controller/InboxController";
 import {useIsFocused} from "@react-navigation/native";
 import {FlatList, TouchableOpacity, View, Text} from "react-native";
+import {HousesApi, InboxApi} from "../../../Api";
 
 export function HouseInvitation({ }) {
     const [invitations, setInvitations] = useState([]);
@@ -18,7 +17,7 @@ export function HouseInvitation({ }) {
 
     const loadInvitations = async () => {
         const userId = await AsyncStorage.getItem('userId');
-        const houseInvitations = await getUsersHouseInvitations(userId);
+        const houseInvitations = await InboxApi.getUsersHouseInvitations(userId);
         console.log(houseInvitations);
         setInvitations(houseInvitations);
     }
@@ -27,7 +26,7 @@ export function HouseInvitation({ }) {
         const userId = await AsyncStorage.getItem('userId');
         const invitation = {userId: userId, houseId: houseId.toString(), isAccepted: true};
         try {
-            await processInvitations(invitation);
+            await HousesApi.processInvitations(invitation);
             await loadInvitations();
         } catch (error) {
             console.error('Failed to process invitation:', error);
@@ -38,7 +37,7 @@ export function HouseInvitation({ }) {
         const userId = await AsyncStorage.getItem('userId');
         const invitation = {userId: userId, houseId: houseId.toString(), isAccepted: false};
         try {
-            await processInvitations(invitation);
+            await HousesApi.processInvitations(invitation);
             await loadInvitations();
         } catch (error) {
             console.error('Failed to process invitation:', error);

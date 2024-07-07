@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Pressable, SafeAreaView, ScrollView, Text, TextInput, View} from 'react-native';
-import {HousesApi} from "../../Api";
+import {InventoryApi} from "../../Api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet } from 'react-native';
 import {AuthContext} from "../../context/AuthContext";
@@ -31,7 +31,7 @@ export default function House({navigation}) {
             const houseId = await AsyncStorage.getItem('houseId');
 
             console.log('house id is:', houseId);
-            const categories = await HousesApi.getHouseInventory(houseId);
+            const categories = await InventoryApi.getHouseInventory(houseId);
             console.log('categories are:', categories);
 
             setCategories(categories);

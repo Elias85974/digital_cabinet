@@ -5,9 +5,10 @@ import { HouseInvitation } from './Notification/HouseInvitation';
 import { ExpirationNotification } from "./Notification/ExpirationNotification";
 import {inboxStyles} from "./Notification/InboxStyles";
 import Tuple from "../Contents/Tuple";
-import {getInboxSize} from "../../controller/InboxController";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
+import {InboxApi} from "../../Api";
+import NavBar from "../NavBar/NavBar";
 
 export default function Inbox({navigation}) {
     const [isHouseInvitationCollapsed, setHouseInvitationCollapsed] = useState(true);
@@ -24,7 +25,7 @@ export default function Inbox({navigation}) {
 
     const loadInboxSize = async () => {
         const userId = await AsyncStorage.getItem('userId');
-        const inboxSize = await getInboxSize(userId);
+        const inboxSize = await InboxApi.getInboxSize(userId);
         setInboxSize(inboxSize);
         console.log(inboxSize);
     }
@@ -33,59 +34,47 @@ export default function Inbox({navigation}) {
         return sizes.totalSize === 0;
     }
 
-    if (isEmpty(inboxSize)) {
-        return (
-            <View style={inboxStyles.container}>
-                <SafeAreaView style={StyleSheet.absoluteFill}>
-                    <ScrollView style={inboxStyles.contentContainer} showsVerticalScrollIndicator={false}>
-                        <Text style={inboxStyles.title}>Inbox</Text>
-                        <View style={inboxStyles.contentWishList}>
-                            <View style={inboxStyles.emptyInbox}>
-                                <Text style={{alignSelf: 'center'}}>No notifications left to read</Text>
-                            </View>
-                            <Tuple navigation={navigation}/>
-                        </View>
-                    </ScrollView>
-                </SafeAreaView>
-            </View>
-        );
-    }
-
     return (
-        <View style={inboxStyles.container}>
-            <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={inboxStyles.contentContainer} showsVerticalScrollIndicator={false}>
-                    <View>
-                        <Text style={inboxStyles.title}>Inbox</Text>
-                        <View style={inboxStyles.contentWishList}>
-                            <View>
-                                {inboxSize.houseInvitationSize > 0 && (
-                                    <>
-                                        <TouchableOpacity onPress={() => setHouseInvitationCollapsed(!isHouseInvitationCollapsed)}>
-                                            <Text>House Invitations</Text>
-                                        </TouchableOpacity>
-                                        <Collapsible collapsed={isHouseInvitationCollapsed}>
-                                            <HouseInvitation/>
-                                        </Collapsible>
-                                    </>
-                                )}
-                                {inboxSize.expirationNotificationSize > 0 && (
-                                    <>
-                                        <TouchableOpacity onPress={() => setExpirationNotificationCollapsed(!isExpirationNotificationCollapsed)}>
-                                            <Text>Expiration Notifications</Text>
-                                        </TouchableOpacity>
-                                        <Collapsible collapsed={isExpirationNotificationCollapsed}>
-                                            <ExpirationNotification navigation={navigation}/>
-                                        </Collapsible>
-                                    </>
-                                )}
-                                {/*<ChatNotification navigation={navigation}/> Add this view next */}
-                            </View>
+    <View style={inboxStyles.container}>
+        <SafeAreaView style={StyleSheet.absoluteFill}>
+            <ScrollView style={inboxStyles.contentContainer} showsVerticalScrollIndicator={false}>
+                <Text style={inboxStyles.title}>Inbox</Text>
+                {isEmpty(inboxSize) ? (
+                    <View style={inboxStyles.contentWishList}>
+                        <View style={inboxStyles.emptyInbox}>
+                            <Text style={{alignSelf: 'center'}}>No notifications left to read</Text>
                         </View>
-                        <NavBar navigation={navigation}/>
                     </View>
-                </ScrollView>
-            </SafeAreaView>
-        </View>
+                ) : (
+                    <View style={inboxStyles.contentWishList}>
+                        <View>
+                            {inboxSize.houseInvitationSize > 0 && (
+                                <>
+                                    <TouchableOpacity onPress={() => setHouseInvitationCollapsed(!isHouseInvitationCollapsed)}>
+                                        <Text>House Invitations</Text>
+                                    </TouchableOpacity>
+                                    <Collapsible collapsed={isHouseInvitationCollapsed}>
+                                        <HouseInvitation/>
+                                    </Collapsible>
+                                </>
+                            )}
+                            {inboxSize.expirationNotificationSize > 0 && (
+                                <>
+                                    <TouchableOpacity onPress={() => setExpirationNotificationCollapsed(!isExpirationNotificationCollapsed)}>
+                                        <Text>Expiration Notifications</Text>
+                                    </TouchableOpacity>
+                                    <Collapsible collapsed={isExpirationNotificationCollapsed}>
+                                        <ExpirationNotification navigation={navigation}/>
+                                    </Collapsible>
+                                </>
+                            )}
+                            {/*<ChatNotification navigation={navigation}/> Add this view next */}
+                        </View>
+                    </View>
+                )}
+                <Tuple navigation={navigation}/>
+            </ScrollView>
+        </SafeAreaView>
+    </View>
     );
 }

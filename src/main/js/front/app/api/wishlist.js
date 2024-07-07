@@ -1,6 +1,5 @@
-const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
+import { API_URL } from '../constants';
 
-//WishList logic here
 export const getWishList = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/wishList/${userId}`, {
@@ -10,7 +9,8 @@ export const getWishList = async (userId) => {
             },
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
@@ -28,7 +28,8 @@ export const addProductToWishList = async (product, userId) => {
             },
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.text();
     } catch (error) {
@@ -47,7 +48,8 @@ export const deleteProductFromWishList = async (products, userId) => {
             body: products
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
@@ -66,7 +68,8 @@ export const updateProductInWishList = async (product) => {
             body: JSON.stringify(product),
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {

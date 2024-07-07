@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Pressable, StyleSheet, ScrollView, SafeAreaView} from "react-native";
-import {UsersApi, HousesApi} from "../../Api";
+import {UsersApi} from "../../Api";
 import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
@@ -20,7 +20,7 @@ export default function Homes({navigation}) {
     const getHouses = async () => {
         try {
             const userId = await AsyncStorage.getItem('userId');
-            const userHouses = await HousesApi.getUserHouses(userId);
+            const userHouses = await UsersApi.getUserHouses(userId);
 
             /*
             // Iterar sobre userHouses y guardar cada houseId en AsyncStorage

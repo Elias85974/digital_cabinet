@@ -2,8 +2,8 @@ import {useEffect, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import { inboxStyles } from './InboxStyles';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getNearExpirationStocks} from "../../../controller/InboxController";
 import {FlatList, Pressable, Text, View} from "react-native";
+import {InboxApi} from "../../../Api";
 
 export function ExpirationNotification({ navigation }) {
     const [stocks, setStocks] = useState([]);
@@ -17,7 +17,7 @@ export function ExpirationNotification({ navigation }) {
 
     const loadStocks = async () => {
         const userId = await AsyncStorage.getItem('userId');
-        const nearExpirationStocks = await getNearExpirationStocks(userId);
+        const nearExpirationStocks = await InboxApi.getNearExpirationStocks(userId);
         console.log(nearExpirationStocks);
         setStocks(nearExpirationStocks);
     }

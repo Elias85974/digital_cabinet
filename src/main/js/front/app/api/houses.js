@@ -1,5 +1,4 @@
-const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
-
+import { API_URL } from '../constants';
 
 // function to create a house
 export const createHouse = async (houseData, userId) => {
@@ -17,7 +16,8 @@ export const createHouse = async (houseData, userId) => {
 
         console.log(response);
         if (!response.ok) {
-            throw new Error('Network response was not okeyyyyyy girl');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
 
         return null; //await response.json();
@@ -27,36 +27,18 @@ export const createHouse = async (houseData, userId) => {
     }
 };
 
-
-export const getUserHouses = async (userId) => {
-    try {
-        const response = await fetch(`${API_URL}/user/${userId}/houses`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not oooooooook');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to get user houses:", error);
-        throw error;
-    }
-}
-
 // Function to get the list of users of a house
-export const getUsersOfAHouse = async (houseId) => {
+export const getUsersOfAHouse = async (houseId, userId) => {
     try {
-        const response = await fetch(`${API_URL}/houses/${houseId}/users`, {
+        const response = await fetch(`${API_URL}/houses/${houseId}/users/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
@@ -65,40 +47,64 @@ export const getUsersOfAHouse = async (houseId) => {
     }
 }
 
-// function that get the list of stocks of a house
-export const getHouseInventory = async (houseId) => {
+// Function to invite a user to a house
+export const inviteUser = async (data) => {
     try {
-        const response = await fetch(`${API_URL}/houses/${houseId}/inventory`, {
-            method: 'GET',
+        const response = await fetch(`${API_URL}/inviteUser`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify(data)
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            // Throw an error with the message from the backend
+            throw new Error(errorMessage);
         }
-        return await response.json();
+        return await response.text(); // This will be the success message
     } catch (error) {
-        console.error("Failed to get house inventory:", error);
+        console.error("Failed to invite user:", error);
         throw error;
     }
-}
+};
 
-// Function that gets the list of products of a house and a category
-export const getProductsFromHouseAndCategory = async (houseId, category) => {
+// Function to delete a user from a house
+export const deleteUserFromHouse = async (houseId, userId) => {
     try {
-        const response = await fetch(`${API_URL}/houses/${houseId}/products/${category}`, {
-            method: 'GET',
+        const response = await fetch(`${API_URL}/houses/${houseId}/users/${userId}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+        return await response.text(); // This will be the success message
+    } catch (error) {
+        console.error("Failed to delete user from house:", error);
+        throw error;
+    }
+};
+
+// Function to process invitations of the inbox
+export const processInvitations = async (invitation) => {
+    // Invitations is an array of objects with the following structure:
+    // {"userId": "user_id", "houseId": "house_id", "isAccepted": true_or_false}
+    try {
+        const response = await fetch(`${API_URL}/houses/inbox/processInvitation`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify(invitation),
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
-        return await response.json();
+        return await response.text(); // This will be the success message
     } catch (error) {
-        console.error("Failed to get products:", error);
+        console.error("Failed to process invitations:", error);
         throw error;
     }
-}
+};

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {InventoryApi, ProductsApi} from "../../../Api";
+import {InventoryApi } from "../../../Api";
 import FilterModal from "../../Contents/FilterModal";
 import NavBar from "../../NavBar/NavBar";
 
@@ -53,7 +53,7 @@ export default function LowOnStockProducts({navigation}) {
      const getProducts = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
-            const stock = await ProductsApi.getLowOnStockProducts(houseId);
+            const stock = await InventoryApi.getLowOnStockProducts(houseId);
             console.log("getProducts?",stock);
             setProducts(stock);
             setSuggestions(stock)
@@ -70,7 +70,7 @@ export default function LowOnStockProducts({navigation}) {
         setQuantityToAdd('');
         setRefreshKey(oldKey => oldKey + 1);
 
-        const stock = await ProductsApi.getLowOnStockProducts(houseId);
+        const stock = await InventoryApi.getLowOnStockProducts(houseId);
         setProducts(stock)
         setSuggestions(stock)
         setFilteredProducts(stock)

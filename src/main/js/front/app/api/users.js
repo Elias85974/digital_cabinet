@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
+import { API_URL } from '../constants';
 
 // Function to create a user
 export const createUser = async (userData) => {
@@ -11,7 +11,8 @@ export const createUser = async (userData) => {
             body: JSON.stringify(userData),
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
@@ -33,7 +34,8 @@ export const editUser = async (userId, userData) => {
             body: JSON.stringify(userData),
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
@@ -49,7 +51,8 @@ export const deleteUser = async (userId) => {
             method: 'DELETE',
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
@@ -70,7 +73,8 @@ export const loginUser = async (credentials) => {
             body: JSON.stringify(credentials),
         });
         if (!response.ok) {
-            throw new Error('Login failed');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         const responseData = await response.json();
 
@@ -116,20 +120,21 @@ export const loginUser = async (credentials) => {
     }
 }*/
 
-export const getUserIdByEmail = async (token, email) => {
+export const getUserHouses = async (userId) => {
     try {
-        const response = await fetch(`${API_URL}/user/email/${email}`, {
+        const response = await fetch(`${API_URL}/user/${userId}/houses`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
         if (!response.ok) {
-            throw new Error('Network response was not nais');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
-        return await response.text(); // Devuelve el ID del usuario como una cadena
+        return await response.json();
     } catch (error) {
-        console.error("Failed to get user ID:", error);
+        console.error("Failed to get user houses:", error);
         throw error;
     }
 }

@@ -4,6 +4,7 @@ import {HousesApi, UsersApi} from "../../Api";
 import {AuthContext} from "../../context/AuthContext";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RegisterHome({navigation}) {
     let [newHouse, setNewHouse] = useState({nombre: '', direccion: ''});
@@ -28,7 +29,7 @@ export default function RegisterHome({navigation}) {
                     setModalMessage("Incorrect house format. Please try again."); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
                 } else {
-                    const userId = await UsersApi.getUserIdByEmail(userToken,email);
+                    const userId = await AsyncStorage.getItem('userId');
                     await HousesApi.createHouse(newHouse, userId);
                     setModalMessage("House created successfully!"); // Muestra el modal en lugar de un alert
                     setModalVisible(true);

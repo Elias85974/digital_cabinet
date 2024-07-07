@@ -81,6 +81,7 @@ export default function AddProduct({navigation}) {
             setExpiration('');
             setQuantity('');
             setLowStockIndicator('');
+            setPrice('');
         } catch (error) {
             console.log("Error updating inventory:", error);
         }

@@ -1,25 +1,26 @@
-const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
+import { API_URL } from '../constants';
 
-// Function that gets the list of products low on stock of a house
-export const getLowOnStockProducts = async (houseId) => {
+// Function to get all the existing products from the database
+export const getAllProducts = async () => {
     try {
-        const response = await fetch(`${API_URL}/houses/${houseId}/lowOnStock`, {
+        const response = await fetch(`${API_URL}/products`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
-        console.error("Failed to get low on stock products:", error);
+        console.error("Failed to get products:", error);
         throw error;
     }
 }
 
-// function to create a product
+// Function to create a product
 export const createProduct = async (productData) => {
     try {
         const response = await fetch(`${API_URL}/products/${productData.categoryId}`, {
@@ -30,30 +31,12 @@ export const createProduct = async (productData) => {
             body: JSON.stringify(productData)
         });
         if (!response.ok) {
-            throw new Error('Network response was not okeydoki');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
         console.error("Failed to create product:", error);
-        throw error;
-    }
-}
-
-
-export const getAllProducts = async () => {
-    try {
-        const response = await fetch(`${API_URL}/products`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to get products:", error);
         throw error;
     }
 }

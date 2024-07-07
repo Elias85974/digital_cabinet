@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:4321'; // Reemplaza esto con la URL real de tu backend
+import { API_URL } from '../constants';
 
 // Función para crear un nuevo mensaje en un chat
 export const createMessage = async (houseId, chatId, messageData) => {

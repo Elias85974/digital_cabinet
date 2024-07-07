@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getLowOnStockProducts, addStock} from "../../../Api";
+import {getLowOnStockProducts, addStock} from "../../../controller/InventoryController";
 import Tuple from "../../Contents/Tuple";
 import FilterModal from "../../Contents/FilterModal";
 

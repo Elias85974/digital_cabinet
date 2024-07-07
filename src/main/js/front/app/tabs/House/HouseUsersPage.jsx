@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable, SafeAreaView} from 'react-native';
 import axios from 'axios';
-import {getUserHouses, getUserIdByEmail, inviteUser} from "../../Api";
+import {inviteUser} from "../../controller/HouseController";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
@@ -44,23 +44,15 @@ const HouseUsersPage = ({ navigation }) => {
         if (emailRegex.test(inviteEmail)) {
             // If the email is valid, check if the user exists
             try {
-                const invitedUserId = await getUserIdByEmail(token, inviteEmail);
-                if (invitedUserId) {
-                    // If the user exists, call the inviteUser function
-                    await inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
-                    setModalMessage("The invitation was sent"); // Muestra el modal en lugar de un alert
-                    setModalVisible(true);
+                // If the user exists, call the inviteUser function
+                await inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
+                setModalMessage("The invitation was sent"); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
 
-                    setInviteEmail('');
-                } else {
-                    // If the user does not exist, show an alert
-                    setModalMessage("User does not exist."); // Muestra el modal en lugar de un alert
-                    setModalVisible(true);
-
-                }
+                setInviteEmail('');
             } catch (error) {
-                // Handle the error from getUserIdByEmail
-                alert('An error occurred while checking if the user exists :(');
+                setModalMessage(error.message); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
             }
         } else {
             // If the email is not valid, show an alert

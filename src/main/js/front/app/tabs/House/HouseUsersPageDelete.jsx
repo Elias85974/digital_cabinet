@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable, SafeAreaView} from 'react-native';
 import axios from 'axios';
-import {deleteUserFromHouse, getUserHouses, getUserIdByEmail, getUsersOfAHouse, inviteUser} from "../../Api";
+import {deleteUserFromHouse, getUsersOfAHouse} from "../../controller/HouseController";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
@@ -43,7 +43,8 @@ const HouseUsersPageDelete = ({ navigation }) => {
     const getHouseUsers = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
-            const houseUsers = await getUsersOfAHouse(houseId);
+            const userId = await AsyncStorage.getItem('userId');
+            const houseUsers = await getUsersOfAHouse(houseId, userId);
             if (Array.isArray(houseUsers)) {
                 setUsers(houseUsers);
             } else {

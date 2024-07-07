@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Pressable, StyleSheet, ScrollView, SafeAreaView} from "react-native";
-import {getUserHouses, getUserIdByEmail} from "../../Api";
-import LogoutButton from "../Contents/LogoutButton";
+import {getUserHouses} from "../../controller/UserController";
 import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
-import GoBackButton from "../Contents/GoBackButton";
 import Tuple from "../Contents/Tuple";
 
 export default function Homes({navigation}) {
@@ -22,7 +20,7 @@ export default function Homes({navigation}) {
 
     const getHouses = async () => {
         try {
-            const userId = await getUserIdByEmail(userToken, email);
+            const userId = await AsyncStorage.getItem('userId');
             const userHouses = await getUserHouses(userId);
 
             /*

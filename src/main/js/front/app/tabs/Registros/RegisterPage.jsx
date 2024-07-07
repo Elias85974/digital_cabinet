@@ -1,6 +1,6 @@
 import React, {useState } from 'react';
 import {View, ScrollView, TextInput, Pressable, StyleSheet, Text, SafeAreaView} from 'react-native';
-import {createUser} from '../../Api';
+import {createUser} from '../../controller/UserController';
 import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";
 

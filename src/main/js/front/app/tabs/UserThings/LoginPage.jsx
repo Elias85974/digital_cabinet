@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView} from "react-native";
-import {getUserIdByEmail, loginUser} from "../../Api";
+import {loginUser} from "../../controller/UserController";
 import {AuthContext} from "../../context/AuthContext";
 import React from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,13 +27,8 @@ export default function LoginPage({navigation}) {
                     signIn("", response.email);
                     setIsLoggedIn(true);
 
-                    // Use getUserIdByEmail to get the user ID
-                    const userId = await getUserIdByEmail(userToken, response.email);
-                    console.log("User ID:", userId); // Log the user ID to check if it's correct
-
                     // Save user ID to AsyncStorage
-                    await AsyncStorage.setItem('userId', userId.toString());
-
+                    await AsyncStorage.setItem('userId', response.userId);
 
                     navigation.navigate("UserThingsBeforeHouse");
                 }

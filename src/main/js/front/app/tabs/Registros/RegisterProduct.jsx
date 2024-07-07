@@ -13,7 +13,8 @@ import {
 import Picker from 'react-native-picker-select';
 
 
-import {createProduct, getCategories, createCategory} from "../../Api";
+import {getCategories, createCategory} from "../../controller/CategoryController";
+import {createProduct} from "../../controller/ProductController";
 import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";
 import {useIsFocused} from "@react-navigation/native";

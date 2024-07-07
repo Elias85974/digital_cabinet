@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {View, Text, TextInput, Pressable, StyleSheet, ScrollView, SafeAreaView} from 'react-native';
 import Picker from 'react-native-picker-select';
-import { getAllProducts, updateHouseInventory } from '../../Api';
+import {updateHouseInventory} from '../../controller/InventoryController';
+import {getAllProducts} from "../../controller/ProductController";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";

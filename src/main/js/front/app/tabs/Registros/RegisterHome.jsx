@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView} from "react-native";
-import {createHouse, getUserIdByEmail} from "../../Api";
+import {createHouse} from "../../controller/HouseController";
 import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Tuple from "../Contents/Tuple";
@@ -29,7 +29,7 @@ export default function RegisterHome({navigation}) {
                     setModalMessage("Incorrect house format. Please try again."); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
                 } else {
-                    const userId = await getUserIdByEmail(userToken,email);
+                    const userId = await AsyncStorage.getItem('userId');
                     await createHouse(newHouse, userId);
                     setModalMessage("House created successfully!"); // Muestra el modal en lugar de un alert
                     setModalVisible(true);

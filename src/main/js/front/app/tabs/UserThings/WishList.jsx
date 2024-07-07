@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Pressable, ScrollView, SafeAreaView} from 'react-native';
-import { getWishList, addProductToWishList, deleteProductFromWishList } from '../../Api';
+import { getWishList, addProductToWishList, deleteProductFromWishList } from '../../controller/WishListController';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Tuple from "../Contents/Tuple";
 

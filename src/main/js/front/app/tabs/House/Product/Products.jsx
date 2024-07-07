@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Modal, TextInput, Pressable, FlatList, SafeAreaView, ScrollView,} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getProductsFromHouseAndCategory, reduceStock} from "../../../Api";
+import {getProductsFromHouseAndCategory, reduceStock} from "../../../controller/InventoryController";
 import Tuple from "../../Contents/Tuple";
 import ModalAlert from "../../Contents/ModalAlert";
 

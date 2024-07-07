@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {Dimensions, FlatList, Pressable, SafeAreaView, ScrollView, Text, TextInput, View} from 'react-native';
-import {getHouseInventory} from "../../Api";
+import {getHouseInventory} from "../../controller/InventoryController";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet } from 'react-native';
 import {AuthContext} from "../../context/AuthContext";

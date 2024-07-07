@@ -70,7 +70,6 @@ export default function Homes({navigation}) {
                         <Pressable onPress={() => navigation.navigate("RegisterHome")}>
                             <Text style={styles.link}>Create a Home</Text>
                         </Pressable>
-                        <Tuple navigation={navigation}/>
                     </View>
                 </ScrollView>
             </SafeAreaView>

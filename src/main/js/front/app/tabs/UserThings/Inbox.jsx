@@ -98,7 +98,6 @@ export default function Inbox({navigation}) {
                             )}
                         </View>
                     </View>
-                    <Tuple navigation={navigation}/>
                 </View>
             </ScrollView>
             </SafeAreaView>

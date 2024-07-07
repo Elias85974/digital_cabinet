@@ -119,11 +119,7 @@ export default function House({navigation}) {
                                 <Text style={styles.link}>Create a Product</Text>
                             </Pressable>
                         </View>
-
                     </View>
-                    <p></p>
-                    <Tuple navigation={navigation}/>
-
                 </ScrollView>
             </SafeAreaView>
             <NavBar navigation={navigation}/>

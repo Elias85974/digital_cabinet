@@ -100,7 +100,6 @@ const HouseUsersPageDelete = ({ navigation }) => {
                 </View>
             </View>
             <p></p>
-            <Tuple navigation={navigation}/>
             </ScrollView>
         </SafeAreaView>
         <NavBar navigation={navigation}/>

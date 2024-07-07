@@ -201,7 +201,6 @@ export default function RegisterProduct({navigation}) {
                         </Pressable>
                     </View>
                     <p></p>
-                    <Tuple navigation={navigation}/>
                 </View>
                 </ScrollView>
             </SafeAreaView>

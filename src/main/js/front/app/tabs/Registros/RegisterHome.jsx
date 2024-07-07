@@ -81,7 +81,6 @@ export default function RegisterHome({navigation}) {
                             <Text style={{color: 'white', fontSize: 16}}>Select a house</Text>
                         </Pressable>
                     </View>
-                    <Tuple navigation={navigation}/>
                 </View>
                 </ScrollView>
             </SafeAreaView>

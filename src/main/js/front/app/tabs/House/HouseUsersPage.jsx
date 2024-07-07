@@ -94,7 +94,6 @@ const HouseUsersPage = ({ navigation }) => {
                     </Pressable>
                 </View>
                 <p></p>
-                <Tuple navigation={navigation}/>
                 </ScrollView>
             </SafeAreaView>
             <NavBar navigation={navigation}/>

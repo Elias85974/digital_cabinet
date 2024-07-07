@@ -134,8 +134,6 @@ export default function AddProduct({navigation}) {
                             </Pressable>
                         </View>
                     </View>
-                    <p></p>
-                    <Tuple navigation={navigation}/>
                 </View>
                 </ScrollView>
             </SafeAreaView>

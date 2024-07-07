@@ -90,7 +90,6 @@ export default function WishList({navigation}) {
                             </Pressable>
                         </View>
                     </View>
-                    <Tuple navigation={navigation}/>
                 </View>
                 </ScrollView>
             </SafeAreaView>

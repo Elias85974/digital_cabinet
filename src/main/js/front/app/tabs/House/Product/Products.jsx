@@ -191,9 +191,7 @@ export default function Product({navigation}) {
                         </View>
                     </Modal>
                     <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
-
                 </View>
-                <Tuple navigation={navigation}/>
                 </ScrollView>
             </SafeAreaView>
             <NavBar navigation={navigation}/>

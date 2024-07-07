@@ -198,13 +198,10 @@ navigation.navigate('LowOnStock', {key: refreshKey});
                                 </View>
                             </View>
                         </Modal>
-
                     </View>
-                    <Tuple navigation={navigation}/>
                 </ScrollView>
             </SafeAreaView>
             <NavBar navigation={navigation}/>
-
         </View>
     );
 }

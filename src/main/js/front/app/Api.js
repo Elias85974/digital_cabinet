@@ -8,6 +8,8 @@ import * as CategoriesApi from './api/categories';
 import * as InventoryApi from './api/inventory';
 import * as WishlistApi from './api/wishlist';
 import * as InboxApi from './api/inbox';
+import * as ChatApi from './api/chat';
+import * as MessageApi from './api/message';
 
 export {
     UsersApi,
@@ -17,4 +19,6 @@ export {
     InventoryApi,
     WishlistApi,
     InboxApi,
+    ChatApi,
+    MessageApi,
 };

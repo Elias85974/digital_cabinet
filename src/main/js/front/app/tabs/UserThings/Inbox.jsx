@@ -65,8 +65,8 @@ export default function Inbox({navigation}) {
                                             <View style={styles.right}>
                                                 <View style={styles.textWrap}>
                                                     <Text style={styles.textContent}>
-                                                        <Text style={styles.textLink}>{item.username}</Text>
-                                                          has invited you to access to its Digital Cabinet!!!
+                                                        <Text style={styles.textLink}>{item.username} </Text>
+                                                        has invited you to access to its Digital Cabinet!!!
                                                     </Text>
                                                     <Text style={styles.time}>1 minute</Text>
                                                 </View>

@@ -6,7 +6,7 @@ export default function ModalAlert({ message, isVisible, onClose }) {
         if (isVisible) {
             const timer = setTimeout(() => {
                 onClose();
-            }, 10000);
+            }, 5000);
             return () => clearTimeout(timer);
         }
     }, [isVisible]);

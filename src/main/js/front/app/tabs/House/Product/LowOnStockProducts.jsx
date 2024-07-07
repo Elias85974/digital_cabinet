@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getLowOnStockProducts, addStock} from "../../../Api";
 import Tuple from "../../Contents/Tuple";
 import FilterModal from "../../Contents/FilterModal";
+import {useFocusEffect} from "expo-router";
 
 export default function LowOnStockProducts({navigation}) {
     const [products, setProducts] = useState([]);
@@ -35,7 +36,7 @@ export default function LowOnStockProducts({navigation}) {
 
     //const displayedProducts = applyFilters(products);
 
-    useEffect(() => {
+  /* useEffect(() => {
         if (isFocused) {
             getProducts().then(r => {
                 //const filteredProducts = applyFilters(r);
@@ -48,8 +49,12 @@ export default function LowOnStockProducts({navigation}) {
         }
         console.log("refresh puto key aberte", refreshKey);
     }, [isFocused, refreshKey]);
+*/
+    useEffect(() => {
+        getProducts();
+    }, [refreshKey]);
 
-    const getProducts = async () => {
+     const getProducts = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
             const stock = await getLowOnStockProducts(houseId);
@@ -65,8 +70,18 @@ export default function LowOnStockProducts({navigation}) {
         const houseId = await AsyncStorage.getItem('houseId');
         await addStock(houseId, {productId: selectedProduct.product.producto_ID, quantity: quantityToAdd});
         setModalVisible3(false);
+        setModalVisible2(false);
         setQuantityToAdd('');
         setRefreshKey(oldKey => oldKey + 1);
+
+        const stock = await getLowOnStockProducts(houseId);
+        setProducts(stock)
+        setSuggestions(stock)
+        setFilteredProducts(stock)
+        console.log("Products loaded after adding stock", stock);
+        let key = refreshKey;
+        setRefreshKey(oldKey => oldKey + 1);
+navigation.navigate('LowOnStock', {key: refreshKey});
     }
 
     const handleInputChange = (text) => {
@@ -194,7 +209,7 @@ export default function LowOnStockProducts({navigation}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'blue',
+        backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
     },

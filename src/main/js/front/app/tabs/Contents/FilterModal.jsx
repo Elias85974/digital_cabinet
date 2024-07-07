@@ -4,8 +4,8 @@ import { Ionicons } from '@expo/vector-icons'; // Asegúrate de instalar @expo/v
 
 export default function FilterModal(props) {
     const [modalVisible, setModalVisible] = useState(false);
-    const [filteredProducts, setFilteredProducts] = useState([...props.products]);
-    //const [filteredProducts, setFilteredProducts] = useState(Array.isArray(props.products) ? [...props.products] : []);
+    //const [filteredProducts, setFilteredProducts] = useState([...props.products]);
+    const [filteredProducts, setFilteredProducts] = useState(Array.isArray(props.products) ? [...props.products] : []);
     // Asumiendo que tienes un estado para tus filtros
     const [filters, setFilters] = useState({totalQuantity: null, expiry: null, alphabetical: null, category: null });
 

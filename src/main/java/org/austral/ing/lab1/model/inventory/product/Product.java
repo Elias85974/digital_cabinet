@@ -1,4 +1,4 @@
-package org.austral.ing.lab1.model;
+package org.austral.ing.lab1.model.inventory.product;
 
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;

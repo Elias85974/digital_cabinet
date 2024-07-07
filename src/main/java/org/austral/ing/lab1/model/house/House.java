@@ -1,12 +1,11 @@
-package org.austral.ing.lab1.model;
+package org.austral.ing.lab1.model.house;
 
 import com.google.gson.Gson;
 import org.austral.ing.lab1.model.chat.Chat;
-import org.austral.ing.lab1.object.SpecialSet;
+import org.austral.ing.lab1.model.inventory.Inventory;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "HOUSE")

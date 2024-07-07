@@ -1,8 +1,10 @@
-package org.austral.ing.lab1.model;
+package org.austral.ing.lab1.model.inventory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
+import org.austral.ing.lab1.model.inventory.product.Category;
+import org.austral.ing.lab1.model.house.House;
+import org.austral.ing.lab1.model.inventory.product.Product;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

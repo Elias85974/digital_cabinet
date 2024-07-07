@@ -1,6 +1,6 @@
 package org.austral.ing.lab1.model.notification;
 
-import org.austral.ing.lab1.model.Product;
+import org.austral.ing.lab1.model.inventory.product.Product;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;

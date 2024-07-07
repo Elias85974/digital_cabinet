@@ -1,7 +1,11 @@
-package org.austral.ing.lab1.repository;
+package org.austral.ing.lab1.repository.inventories;
 
-import org.austral.ing.lab1.model.*;
+import org.austral.ing.lab1.model.house.House;
+import org.austral.ing.lab1.model.inventory.Inventory;
+import org.austral.ing.lab1.model.inventory.product.Product;
+import org.austral.ing.lab1.model.inventory.Stock;
 import org.austral.ing.lab1.object.ProductInfo;
+import org.austral.ing.lab1.repository.houses.LivesIns;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;

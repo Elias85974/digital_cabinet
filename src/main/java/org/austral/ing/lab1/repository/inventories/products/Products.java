@@ -1,7 +1,7 @@
-package org.austral.ing.lab1.repository;
+package org.austral.ing.lab1.repository.inventories.products;
 
-import org.austral.ing.lab1.model.Category;
-import org.austral.ing.lab1.model.Product;
+import org.austral.ing.lab1.model.inventory.product.Category;
+import org.austral.ing.lab1.model.inventory.product.Product;
 
 import javax.persistence.EntityManager;
 import java.util.List;

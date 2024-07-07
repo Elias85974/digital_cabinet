@@ -1,7 +1,7 @@
-package org.austral.ing.lab1.repository;
+package org.austral.ing.lab1.repository.users;
 
-import org.austral.ing.lab1.model.User;
-import org.austral.ing.lab1.model.WishList;
+import org.austral.ing.lab1.model.user.User;
+import org.austral.ing.lab1.model.user.WishList;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;

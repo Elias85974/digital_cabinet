@@ -2,11 +2,14 @@ package org.austral.ing.lab1.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.austral.ing.lab1.model.House;
-import org.austral.ing.lab1.model.User;
-import org.austral.ing.lab1.model.livesIn.LivesIn;
+import org.austral.ing.lab1.model.house.House;
+import org.austral.ing.lab1.model.user.User;
+import org.austral.ing.lab1.model.house.livesIn.LivesIn;
 import org.austral.ing.lab1.model.notification.HouseInvitation;
-import org.austral.ing.lab1.repository.*;
+import org.austral.ing.lab1.repository.houses.Houses;
+import org.austral.ing.lab1.repository.houses.LivesIns;
+import org.austral.ing.lab1.repository.inboxes.HouseInvitations;
+import org.austral.ing.lab1.repository.users.Users;
 import org.jetbrains.annotations.NotNull;
 import spark.Response;
 import spark.Spark;
@@ -20,6 +23,7 @@ import java.util.Optional;
 
 public class HouseController {
     private final EntityManagerFactory entityManagerFactory;
+    private final Gson gson = new Gson();
     private Houses housesRepo;
     private Users usersRepo;
     private LivesIns livesInsRepo;
@@ -65,8 +69,8 @@ public class HouseController {
                 return "The invitation was sent!";
             } catch (Exception e) {
                 resp.status(500);
-                System.out.println(e.getMessage());
-                return "An error occurred while inviting the user, please try again";
+                resp.type("application/json");
+                return gson.toJson(e.getMessage());
             } finally {
                 entityManager.close();
             }
@@ -197,23 +201,24 @@ public class HouseController {
         });
 
         // Route to get the users of a house
-        Spark.get("/houses/:houseId/users", (req, resp) -> {
+        Spark.get("/houses/:houseId/users/:userId", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             housesRepo = new Houses(entityManager);
             try {
                 Long houseId = Long.parseLong(req.params("houseId"));
+                Long userId = Long.parseLong(req.params("userId"));
 
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
 
-                List<Map<String, String>> usersList = housesRepo.getUsersOfHouse(houseId);
+                List<Map<String, String>> usersList = housesRepo.getUsersOfHouse(houseId, userId);
 
                 tx.commit();
 
                 if (!usersList.isEmpty()) {
                     resp.status(200);
                     resp.type("application/json");
-                    return new Gson().toJson(usersList);
+                    return gson.toJson(usersList);
                 } else {
                     resp.status(404);
                     return "House not found";

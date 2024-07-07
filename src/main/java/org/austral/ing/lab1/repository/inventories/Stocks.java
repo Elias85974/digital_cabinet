@@ -1,7 +1,7 @@
-package org.austral.ing.lab1.repository;
+package org.austral.ing.lab1.repository.inventories;
 
 import javax.persistence.EntityManager;
-import org.austral.ing.lab1.model.Stock;
+import org.austral.ing.lab1.model.inventory.Stock;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +14,7 @@ public class Stocks {
     }
 
     public Optional<Stock> findById(Long id) {
-        return entityManager.createQuery("SELECT s FROM Stock s WHERE s.ID_Stock = :id", Stock.class)
+        return entityManager.createQuery("SELECT s FROM Stock s WHERE s.id = :id", Stock.class)
                 .setParameter("id", id).getResultList()
                 .stream()
                 .findFirst();

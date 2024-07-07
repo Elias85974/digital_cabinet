@@ -3,19 +3,17 @@ package org.austral.ing.lab1.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import org.austral.ing.lab1.model.User;
-import org.austral.ing.lab1.repository.HouseInvitations;
-import org.austral.ing.lab1.repository.Users;
+import org.austral.ing.lab1.model.user.User;
+import org.austral.ing.lab1.repository.users.Users;
 import spark.Spark;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class UserController {
-    Gson gson = new Gson();
+    private final Gson gson = new Gson();
     private final EntityManagerFactory entityManagerFactory;
 
     public UserController(EntityManagerFactory entityManagerFactory) {
@@ -57,7 +55,7 @@ public class UserController {
 
                 if (foundUserOptional.isEmpty()) {
                     resp.status(404);
-                    return "User not found";
+                    return "Invalid user or password";
                 }
 
                 User foundUser = foundUserOptional.get();
@@ -82,7 +80,7 @@ public class UserController {
                 }
                 else {
                     resp.status(401);
-                    return "Invalid password";
+                    return "Invalid user or password";
                 }
             } catch (Exception e) {
                 resp.status(500);
@@ -130,25 +128,6 @@ public class UserController {
                 resp.status(500);
                 System.out.println(e.getMessage());
                 return "An error occurred while listing users, please try again";
-            } finally {
-                entityManager.close();
-            }
-        });
-
-        // Route to get the inbox of a given user
-        Spark.get("/getInbox/:userId", (req, resp) -> {
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            HouseInvitations houseInvitations = new HouseInvitations(entityManager);
-            try {
-                Long userId = Long.parseLong(req.params("userId"));
-                List<Map<String, Object>> inboxMessage = houseInvitations.getHousesByUserId(userId);
-                resp.status(200);
-                resp.type("application/json");
-                return new Gson().toJson(inboxMessage);
-            } catch (Exception e) {
-                resp.status(500);
-                System.out.println(e.getMessage());
-                return "An error occurred while getting the inbox, please try again";
             } finally {
                 entityManager.close();
             }

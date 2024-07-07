@@ -1,4 +1,4 @@
-package org.austral.ing.lab1.model.livesIn;
+package org.austral.ing.lab1.model.house.livesIn;
 
 import java.io.Serializable;
 import javax.persistence.Column;

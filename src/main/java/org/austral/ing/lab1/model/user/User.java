@@ -1,8 +1,9 @@
-package org.austral.ing.lab1.model;
+package org.austral.ing.lab1.model.user;
 
 import com.google.gson.Gson;
+import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.chat.Message;
-import org.austral.ing.lab1.model.livesIn.LivesIn;
+import org.austral.ing.lab1.model.house.livesIn.LivesIn;
 //import org.austral.ing.lab1.TokenResponse;
 import org.austral.ing.lab1.model.notification.HouseInvitation;
 import org.austral.ing.lab1.model.notification.Notification;

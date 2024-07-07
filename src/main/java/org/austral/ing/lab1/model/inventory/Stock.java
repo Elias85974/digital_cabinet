@@ -1,6 +1,7 @@
-package org.austral.ing.lab1.model;
+package org.austral.ing.lab1.model.inventory;
 
 import com.google.gson.Gson;
+import org.austral.ing.lab1.model.inventory.product.Product;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

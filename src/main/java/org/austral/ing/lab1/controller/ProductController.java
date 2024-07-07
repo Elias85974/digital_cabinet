@@ -2,10 +2,10 @@ package org.austral.ing.lab1.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.austral.ing.lab1.model.Category;
-import org.austral.ing.lab1.model.Product;
-import org.austral.ing.lab1.repository.Categories;
-import org.austral.ing.lab1.repository.Products;
+import org.austral.ing.lab1.model.inventory.product.Category;
+import org.austral.ing.lab1.model.inventory.product.Product;
+import org.austral.ing.lab1.repository.inventories.products.Categories;
+import org.austral.ing.lab1.repository.inventories.products.Products;
 import spark.Spark;
 
 import javax.persistence.EntityManager;

@@ -1,7 +1,7 @@
 package org.austral.ing.lab1.controller;
 
-import org.austral.ing.lab1.model.User;
-import org.austral.ing.lab1.repository.Users;
+import org.austral.ing.lab1.model.user.User;
+import org.austral.ing.lab1.repository.users.Users;
 import spark.Spark;
 
 import javax.persistence.EntityManager;

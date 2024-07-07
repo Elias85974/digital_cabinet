@@ -1,4 +1,4 @@
-package org.austral.ing.lab1.model;
+package org.austral.ing.lab1.model.user;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

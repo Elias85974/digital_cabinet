@@ -1,7 +1,7 @@
-package org.austral.ing.lab1.model.livesIn;
+package org.austral.ing.lab1.model.house.livesIn;
 
-import org.austral.ing.lab1.model.House;
-import org.austral.ing.lab1.model.User;
+import org.austral.ing.lab1.model.house.House;
+import org.austral.ing.lab1.model.user.User;
 
 import javax.persistence.*;
 

@@ -1,6 +1,6 @@
 package org.austral.ing.lab1.model.chat;
 
-import org.austral.ing.lab1.model.User;
+import org.austral.ing.lab1.model.user.User;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

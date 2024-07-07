@@ -1,10 +1,11 @@
-package org.austral.ing.lab1.repository;
+package org.austral.ing.lab1.repository.houses;
 
-import org.austral.ing.lab1.model.House;
-import org.austral.ing.lab1.model.Inventory;
-import org.austral.ing.lab1.model.User;
-import org.austral.ing.lab1.model.livesIn.LivesIn;
+import org.austral.ing.lab1.model.house.House;
+import org.austral.ing.lab1.model.inventory.Inventory;
+import org.austral.ing.lab1.model.user.User;
+import org.austral.ing.lab1.model.house.livesIn.LivesIn;
 import org.austral.ing.lab1.model.notification.HouseInvitation;
+import org.austral.ing.lab1.repository.users.Users;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.EntityManager;
@@ -28,17 +29,18 @@ public class Houses {
                 .findFirst();
     }
 
-    // Get all the users that live in a house with in the userId, userName format
-    public List<Map<String, String>> getUsersOfHouse(Long houseId) {
-    List<User> users = entityManager.createQuery("SELECT u FROM User u JOIN u.livesIns l WHERE l.casa.casa_ID = :houseId", User.class)
-        .setParameter("houseId", houseId)
-        .getResultList();
+    // Get all the users that live in a house with in the userId, userName format excluding the admin and the user who made the call
+    public List<Map<String, String>> getUsersOfHouse(Long houseId, Long userId) {
+        List<User> users = entityManager.createQuery("SELECT u FROM User u JOIN u.livesIns l WHERE l.casa.casa_ID = :houseId AND l.role = false AND u.usuario_ID != :userId", User.class)
+                .setParameter("houseId", houseId)
+                .setParameter("userId", userId)
+                .getResultList();
 
-    // Convert users to the required json format
-    return users.stream()
-    .map(user -> Map.of("userId", user.getUsuario_ID().toString(), "username", user.getNombre()))
-    .collect(Collectors.toList());
-}
+        // Convert users to the required json format
+        return users.stream()
+                .map(user -> Map.of("userId", user.getUsuario_ID().toString(), "username", user.getNombre()))
+                .collect(Collectors.toList());
+    }
 
     public House persist(House house) {
         entityManager.persist(house);
@@ -75,7 +77,11 @@ public class Houses {
         Optional<User> invitedUserOptional = usersRepo.findByEmail(invitedUserEmail);
         Optional<House> houseOptional = findById(houseId);
 
-        if (invitingUserOptional.isEmpty() || invitedUserOptional.isEmpty() || houseOptional.isEmpty()) {
+        if (invitedUserOptional.isEmpty()) {
+            throw new IllegalArgumentException("The user you are trying to invite does not exist.");
+        }
+
+        if (invitingUserOptional.isEmpty() || houseOptional.isEmpty()) {
             throw new IllegalArgumentException("Something went wrong when trying to invite the user to the house.");
         }
 

@@ -1,8 +1,8 @@
-package org.austral.ing.lab1.repository;
+package org.austral.ing.lab1.repository.houses;
 
-import org.austral.ing.lab1.model.House;
-import org.austral.ing.lab1.model.User;
-import org.austral.ing.lab1.model.livesIn.LivesIn;
+import org.austral.ing.lab1.model.house.House;
+import org.austral.ing.lab1.model.user.User;
+import org.austral.ing.lab1.model.house.livesIn.LivesIn;
 
 import javax.persistence.EntityManager;
 import java.util.List;

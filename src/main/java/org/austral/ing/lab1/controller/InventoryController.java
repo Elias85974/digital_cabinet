@@ -2,13 +2,13 @@ package org.austral.ing.lab1.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.austral.ing.lab1.model.House;
-import org.austral.ing.lab1.model.Inventory;
-import org.austral.ing.lab1.model.Product;
+import org.austral.ing.lab1.model.house.House;
+import org.austral.ing.lab1.model.inventory.Inventory;
+import org.austral.ing.lab1.model.inventory.product.Product;
 import org.austral.ing.lab1.object.ProductInfo;
-import org.austral.ing.lab1.repository.Houses;
-import org.austral.ing.lab1.repository.Inventories;
-import org.austral.ing.lab1.repository.Products;
+import org.austral.ing.lab1.repository.houses.Houses;
+import org.austral.ing.lab1.repository.inventories.Inventories;
+import org.austral.ing.lab1.repository.inventories.products.Products;
 import spark.Spark;
 
 import javax.persistence.EntityManager;
@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class InventoryController {
+    private final Gson gson = new Gson();
     private final EntityManagerFactory entityManagerFactory;
 
     public InventoryController(EntityManagerFactory entityManagerFactory) {
@@ -145,7 +146,7 @@ public class InventoryController {
                 if (products != null) {
                     resp.status(200);
                     resp.type("application/json");
-                    return new Gson().toJson(products);
+                    return gson.toJson(products);
                 } else {
                     resp.status(404);
                     return "House not found";
@@ -174,7 +175,7 @@ public class InventoryController {
                 if (products != null) {
                     resp.status(200);
                     resp.type("application/json");
-                    return new Gson().toJson(products);
+                    return gson.toJson(products);
                 } else {
                     resp.status(404);
                     return "House not found";
@@ -240,7 +241,7 @@ public class InventoryController {
                 Map<String, Double> valueByCategory = inventories.getValueByCategory(inventory);
 
                 resp.type("application/json");
-                return new Gson().toJson(valueByCategory);
+                return gson.toJson(valueByCategory);
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());

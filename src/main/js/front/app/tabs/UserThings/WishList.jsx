@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Pressable, ScrollView, SafeAreaView} from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    Pressable,
+    ScrollView,
+    SafeAreaView,
+    TextInput,
+    Modal
+} from 'react-native';
 import { WishlistApi} from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NavBar from "../NavBar/NavBar";
@@ -8,6 +18,10 @@ export default function WishList({navigation}) {
     const [wishList, setWishList] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const isFocused = navigation.isFocused();
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [newProduct, setNewProduct] = useState('');
+
 
     useEffect(() => {
         if (isFocused) {
@@ -27,11 +41,15 @@ export default function WishList({navigation}) {
     }
 
     const handleAddProduct = async () => {
-        const userId = await AsyncStorage.getItem('userId');
-        const newProduct = prompt("Enter the new product name:");
+        setModalVisible(true);
+    }
+
+    const handleSubmit = async () => {
         console.log(newProduct);
+        const userId = await AsyncStorage.getItem('userId');
         await WishlistApi.addProductToWishList(newProduct, userId);
         await loadWishList();
+        setModalVisible(false);
     }
 
     const handleCheck = (index) => {
@@ -59,7 +77,35 @@ export default function WishList({navigation}) {
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-                <View>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            setModalVisible(!modalVisible);
+                        }}
+                    >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Text style={styles.modalText}>Enter your wish product name</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={setNewProduct}
+                                    value={newProduct}
+                                />
+                                <View style={styles.linksContainer}>
+                                    <Pressable onPress={handleSubmit}>
+                                        <Text style={styles.link}>Confirm Addition</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => setModalVisible(false)} >
+                                        <Text style={styles.link}>Cancel</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+
+                    <View>
                     <Text style={styles.title}>WishList</Text>
                     <View style={styles.contentWishList}>
                         <View style={styles.checklist}>
@@ -148,14 +194,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     input: {
+        flex: 1,
         height: 40,
+        width: 200,
         margin: 12,
         borderWidth: 1,
-        color: 'white',
-        backgroundColor: '#4B5940',
         padding: 10,
-        justifyContent: 'center',
-        alignContent: 'center',
+        color: 'white',
+        backgroundColor: '#3b0317',
+        borderRadius: 30,
+        borderStyle: undefined,
     },
     title: {
         fontSize: 60,
@@ -177,7 +225,6 @@ const styles = StyleSheet.create({
         lineHeight: 30,
     },
     linksContainer: {
-        marginBottom: 20,
         marginTop: 20,
     },
     contentWishList: {
@@ -186,5 +233,43 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         width: 150,
         alignSelf: 'center',
-    }
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 10,
+            height: 20,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        elevation: 15
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    buttonClose: {
+        backgroundColor: "#4B5940",
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
 })

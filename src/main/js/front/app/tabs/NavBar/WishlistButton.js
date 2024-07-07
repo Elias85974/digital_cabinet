@@ -6,7 +6,7 @@ import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 const WishlistButton = ({navigation}) => {
 
     const handleGoBack = () => {
-        navigation.navigate('Settings');
+        navigation.navigate("WishList")
     }
 
     return (

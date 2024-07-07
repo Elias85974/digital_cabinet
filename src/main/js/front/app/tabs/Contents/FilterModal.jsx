@@ -41,22 +41,26 @@ export default function FilterModal(props) {
         });
     }
 
-    function compareNumbers(a, b) {
+    function compareCant(a, b) {
         return a.totalQuantity - b.totalQuantity;
     }
 
     const sortByQuantity = (products, order) => {
         if (order === 'min') {
-            return products.sort(compareNumbers);
+            return products.sort(compareCant);
         }
-        return products.sort(compareNumbers).reverse();
+        return products.sort(compareCant).reverse();
+    }
+
+    function compareDates(a, b) {
+        return a.expiry - b.expiry;
     }
 
     const sortByExpiry = (products, expiry) => {
-        if (expiry) {
-            return products.sort((a, b) => new Date(a.expiry) - new Date(b.expiry));
+        if (expiry === 'asc') {
+            return products.sort(compareDates);
         }
-        return products;
+        return products.sort(compareDates).reverse();
     }
 
     const sortByAlphabetical = (products, alphabetical) => {
@@ -112,7 +116,7 @@ export default function FilterModal(props) {
                             <Ionicons name="close" size={24} color="black" />
                         </Pressable>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
                             <Pressable style={styles.button} onPress={() => handleFilterButtonPress({totalQuantity: 'min'})}>
                                 <Text style={styles.buttonText}>Menor cantidad</Text>
                             </Pressable>
@@ -121,28 +125,33 @@ export default function FilterModal(props) {
                             </Pressable>
                         </View>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Pressable style={styles.button} onPress={() =>  handleFilterButtonPress({ alphabetical: 'asc' })}>
-                                <Text style={styles.buttonText}>A - Z</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
+                            <Pressable style={styles.button} onPress={() =>  handleFilterButtonPress({ expiry: 'asc' })}>
+                                <Text style={styles.buttonText}>  Expiry Asc  </Text>
                             </Pressable>
-                            <Pressable style={styles.button} onPress={() =>  handleFilterButtonPress({ alphabetical: 'desc' })}>
-                                <Text style={styles.buttonText}>Z - A</Text>
+                            <Pressable style={styles.button} onPress={() =>  handleFilterButtonPress({ expiry: 'desc' })}>
+                                <Text style={styles.buttonText}>  Expiry Desc </Text>
                             </Pressable>
                         </View>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(text) =>  handleFilterButtonPress({ expiry: text })}
-                                placeholder="Expiry date (DD-MM-YYYY)"
-                            />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
+                            <Pressable style={styles.button} onPress={() =>  handleFilterButtonPress({ alphabetical: 'asc' })}>
+                                <Text style={styles.buttonText}>    A - Z    </Text>
+                            </Pressable>
+                            <Pressable style={styles.button} onPress={() =>  handleFilterButtonPress({ alphabetical: 'desc' })}>
+                                <Text style={styles.buttonText}>    Z - A    </Text>
+                            </Pressable>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={(text) =>  handleFilterButtonPress({ category: text })}
                                 placeholder="Category"
                             />
                         </View>
-                        <Pressable style={styles.button} onPress={handleClose}>
+
+                        <Pressable style={[styles.button, {width: '90%'}]} onPress={handleClose}>
                             <Text style={styles.buttonText}>Apply</Text>
                         </Pressable>
                     </View>
@@ -167,10 +176,10 @@ const styles = StyleSheet.create({
         marginTop: 22,
     },
     modalView: {
-        width: '70%', // Reduce el ancho para que los campos de entrada no se estiren demasiado
+        width: '80%', // Reduce el ancho para que los campos de entrada no se estiren demasiado
         backgroundColor: "white",
         borderRadius: 20,
-        padding: 35,
+        padding: 10,
         alignItems: "center",
     },
     input: {
@@ -182,7 +191,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     button: {
-        backgroundColor: '#4B5940',
+        backgroundColor: '#3b0317',
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',

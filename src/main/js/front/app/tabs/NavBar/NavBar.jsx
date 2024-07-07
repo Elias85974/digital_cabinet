@@ -6,6 +6,7 @@ import LogoutButton from "./LogoutButton";
 import ChatButton from "./ChatButton";
 import InboxButton from "./InboxButton";
 import SettingsButton from "./SettingsButton";
+import WishlistButton from "./WishlistButton";
 
 const NavBar = ({ navigation }) => {
   return (
@@ -14,6 +15,8 @@ const NavBar = ({ navigation }) => {
             <LogoutButton navigation={navigation}/>
 
             <ChatButton navigation={navigation} />
+
+            <WishlistButton navigation={navigation}/>
 
             <GoBackButton navigation={navigation}/>
 

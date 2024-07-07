@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import {Dimensions, FlatList, Pressable, SafeAreaView, ScrollView, Text, TextInput, View} from 'react-native';
-import {getHouseInventory} from "../../Api";
+import { FlatList, Pressable, SafeAreaView, ScrollView, Text, TextInput, View} from 'react-native';
+import {HousesApi} from "../../Api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet } from 'react-native';
 import {AuthContext} from "../../context/AuthContext";
 import {useIsFocused} from "@react-navigation/native";
-import Tuple from "../Contents/Tuple";
 import NavBar from "../NavBar/NavBar";
 
 
@@ -32,7 +31,7 @@ export default function House({navigation}) {
             const houseId = await AsyncStorage.getItem('houseId');
 
             console.log('house id is:', houseId);
-            const categories = await getHouseInventory(houseId);
+            const categories = await HousesApi.getHouseInventory(houseId);
             console.log('categories are:', categories);
 
             setCategories(categories);

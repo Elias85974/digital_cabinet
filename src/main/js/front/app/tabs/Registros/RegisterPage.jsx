@@ -1,7 +1,6 @@
 import React, {useState } from 'react';
 import {View, ScrollView, TextInput, Pressable, StyleSheet, Text, SafeAreaView} from 'react-native';
-import {createUser} from '../../Api';
-import Tuple from "../Contents/Tuple";
+import {UsersApi} from '../../Api';
 import ModalAlert from "../Contents/ModalAlert";
 
 export default function RegisterPage({navigation}) {
@@ -24,7 +23,7 @@ export default function RegisterPage({navigation}) {
                     setModalMessage("Incorrect email format. Please try again."); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
                 } else {
-                    await createUser(newUser);
+                    await UsersApi.createUser(newUser);
                     setModalMessage("User created successfully!"); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
 

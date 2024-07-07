@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {View, Text, TextInput, Pressable, StyleSheet, ScrollView, SafeAreaView} from 'react-native';
 import Picker from 'react-native-picker-select';
-import { getAllProducts, updateHouseInventory } from '../../Api';
+import {InventoryApi, ProductsApi} from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
 
@@ -27,7 +26,7 @@ export default function AddProduct({navigation}) {
 
     const fetchProducts = async () => {
         try {
-            const fetchedProducts = await getAllProducts();
+            const fetchedProducts = await ProductsApi.getAllProducts();
             setProducts(fetchedProducts);
             console.log('fetchedProducts:', fetchedProducts)
         } catch (error) {
@@ -75,7 +74,7 @@ export default function AddProduct({navigation}) {
                 const stockUpdate = {productId: selectedProduct,
                     quantity: quantity, expiration: expiration, lowStockIndicator: lowStockIndicator, price: price};
                 console.log('stockUpdate:', stockUpdate);
-                await updateHouseInventory(houseId, stockUpdate);
+                await InventoryApi.updateHouseInventory(houseId, stockUpdate);
                 setModalMessage("Inventory updated successfully!"); // Muestra el modal en lugar de un alert
                 setModalVisible(true);
             }

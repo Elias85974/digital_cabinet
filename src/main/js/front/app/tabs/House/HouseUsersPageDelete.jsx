@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable, SafeAreaView} from 'react-native';
-import axios from 'axios';
-import {deleteUserFromHouse, getUserHouses, getUserIdByEmail, getUsersOfAHouse, inviteUser} from "../../Api";
+import {View, Text, Button, StyleSheet, ScrollView, Pressable, SafeAreaView} from 'react-native';
+import { HousesApi,InboxApi} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
-import LogoutButton from "../NavBar/LogoutButton";
-import GoBackButton from "../NavBar/GoBackButton";
-import Tuple from "../Contents/Tuple";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
 
@@ -44,7 +40,7 @@ const HouseUsersPageDelete = ({ navigation }) => {
     const getHouseUsers = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
-            const houseUsers = await getUsersOfAHouse(houseId);
+            const houseUsers = await HousesApi.getUsersOfAHouse(houseId);
             if (Array.isArray(houseUsers)) {
                 setUsers(houseUsers);
             } else {
@@ -62,7 +58,7 @@ const HouseUsersPageDelete = ({ navigation }) => {
         const houseId = await AsyncStorage.getItem('houseId');
         const currentUserId = await AsyncStorage.getItem('userId'); // Obtén el userId del usuario actual
 
-        await deleteUserFromHouse(houseId, userId);
+        await InboxApi.deleteUserFromHouse(houseId, userId);
         setModalMessage("User deleted successfully"); // Muestra el modal en lugar de un alert
         setModalVisible(true);
         setTimeout(() => {

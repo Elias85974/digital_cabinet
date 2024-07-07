@@ -3,10 +3,8 @@ import {
     StyleSheet,
     Text,
     View,
-    Button,
     Modal,
     TextInput,
-    Alert,
     Pressable,
     FlatList,
     SafeAreaView,
@@ -14,10 +12,8 @@ import {
 } from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getLowOnStockProducts, addStock} from "../../../Api";
-import Tuple from "../../Contents/Tuple";
+import {InventoryApi, ProductsApi} from "../../../Api";
 import FilterModal from "../../Contents/FilterModal";
-import {useFocusEffect} from "expo-router";
 import NavBar from "../../NavBar/NavBar";
 
 export default function LowOnStockProducts({navigation}) {
@@ -28,7 +24,6 @@ export default function LowOnStockProducts({navigation}) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantityToAdd, setQuantityToAdd] = useState('');
     const [refreshKey, setRefreshKey] = useState(0);
-    const isFocused = useIsFocused();
 
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
@@ -58,7 +53,7 @@ export default function LowOnStockProducts({navigation}) {
      const getProducts = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
-            const stock = await getLowOnStockProducts(houseId);
+            const stock = await ProductsApi.getLowOnStockProducts(houseId);
             console.log("getProducts?",stock);
             setProducts(stock);
             setSuggestions(stock)
@@ -69,20 +64,19 @@ export default function LowOnStockProducts({navigation}) {
 
     const handleAddStock = async () => {
         const houseId = await AsyncStorage.getItem('houseId');
-        await addStock(houseId, {productId: selectedProduct.product.producto_ID, quantity: quantityToAdd});
+        await InventoryApi.addStock(houseId, {productId: selectedProduct.product.producto_ID, quantity: quantityToAdd});
         setModalVisible3(false);
         setModalVisible2(false);
         setQuantityToAdd('');
         setRefreshKey(oldKey => oldKey + 1);
 
-        const stock = await getLowOnStockProducts(houseId);
+        const stock = await ProductsApi.getLowOnStockProducts(houseId);
         setProducts(stock)
         setSuggestions(stock)
         setFilteredProducts(stock)
         console.log("Products loaded after adding stock", stock);
-        let key = refreshKey;
         setRefreshKey(oldKey => oldKey + 1);
-navigation.navigate('LowOnStock', {key: refreshKey});
+        navigation.navigate('LowOnStock', {key: refreshKey});
     }
 
     const handleInputChange = (text) => {

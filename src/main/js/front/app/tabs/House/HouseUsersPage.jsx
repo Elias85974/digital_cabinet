@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import {View, Text, Button, FlatList, TextInput, StyleSheet, ScrollView, Pressable, SafeAreaView} from 'react-native';
-import axios from 'axios';
-import {getUserHouses, getUserIdByEmail, inviteUser} from "../../Api";
+import React, { useState } from 'react';
+import {View, Text, Button, TextInput, StyleSheet, ScrollView, Pressable, SafeAreaView} from 'react-native';
+import {UsersApi, InboxApi} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
-import LogoutButton from "../NavBar/LogoutButton";
-import GoBackButton from "../NavBar/GoBackButton";
-import Tuple from "../Contents/Tuple";
+
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
 
@@ -45,10 +42,10 @@ const HouseUsersPage = ({ navigation }) => {
         if (emailRegex.test(inviteEmail)) {
             // If the email is valid, check if the user exists
             try {
-                const invitedUserId = await getUserIdByEmail(token, inviteEmail);
+                const invitedUserId = await UsersApi.getUserIdByEmail(token, inviteEmail);
                 if (invitedUserId) {
                     // If the user exists, call the inviteUser function
-                    await inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
+                    await InboxApi.inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
                     setModalMessage("The invitation was sent"); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
 

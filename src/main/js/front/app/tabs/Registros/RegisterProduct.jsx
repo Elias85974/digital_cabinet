@@ -12,9 +12,7 @@ import {
 } from "react-native";
 import Picker from 'react-native-picker-select';
 
-
-import {createProduct, getCategories, createCategory} from "../../Api";
-import Tuple from "../Contents/Tuple";
+import {CategoriesApi, ProductsApi} from "../../Api";
 import ModalAlert from "../Contents/ModalAlert";
 import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../NavBar/NavBar";
@@ -67,7 +65,7 @@ export default function RegisterProduct({navigation}) {
 
 
     const fetchCategories = async () => {
-        const fetchedCategories = await getCategories();
+        const fetchedCategories = await CategoriesApi.getCategories();
         setCategories(fetchedCategories);
     };
 
@@ -78,7 +76,7 @@ export default function RegisterProduct({navigation}) {
     };
 
     const handleCategoryChange = async () => {
-        const createdCategory = await createCategory({nombre: newCategory});
+        const createdCategory = await CategoriesApi.createCategory({nombre: newCategory});
         setCategories([...categories, createdCategory]);
         setNewProduct({...newProduct, categoryId: createdCategory.id});
         setShowNewCategoryInput(false);
@@ -111,7 +109,7 @@ export default function RegisterProduct({navigation}) {
             });
         } else {
             // Si la categoría no existe, créala
-            const createdCategory = await createCategory({nombre: formattedCategoryName});
+            const createdCategory = await CategoriesApi.createCategory({nombre: formattedCategoryName});
             setCategories([...categories, createdCategory]);
             setNewProduct({...newProduct, categoryId: createdCategory.id});
             setQuery(createdCategory.nombre);
@@ -129,7 +127,7 @@ export default function RegisterProduct({navigation}) {
     const handleCreateProduct = async() => {
         try {
             if (newProduct.nombre && newProduct.marca && newProduct.tipoDeCantidad && newProduct.categoryId) {
-                createProduct(newProduct).then(r =>
+                ProductsApi.createProduct(newProduct).then(r =>
                         setModalMessage("Product created successfully!"), // Muestra el modal en lugar de un alert
                     setModalVisible(true),
                 );

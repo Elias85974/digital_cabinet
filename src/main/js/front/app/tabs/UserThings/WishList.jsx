@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Pressable, ScrollView, SafeAreaView} from 'react-native';
-import { getWishList, addProductToWishList, deleteProductFromWishList } from '../../Api';
+import { WishlistApi} from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Tuple from "../Contents/Tuple";
 import NavBar from "../NavBar/NavBar";
 
 export default function WishList({navigation}) {
     const [wishList, setWishList] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const isFocused = navigation.isFocused();
-
-    const mockWishList = [
-        { id: '1', name: 'Bread', checked: false },
-        { id: '2', name: 'Cheese', checked: false },
-        { id: '3', name: 'Coffee', checked: false },
-    ];
 
     useEffect(() => {
         if (isFocused) {
@@ -26,7 +19,7 @@ export default function WishList({navigation}) {
     const loadWishList = async () => {
         try {
             const userId = await AsyncStorage.getItem('userId');
-            const list = await getWishList(userId);
+            const list = await WishlistApi.getWishList(userId);
             setWishList(list);
         } catch (error){
             console.log(error);
@@ -37,7 +30,7 @@ export default function WishList({navigation}) {
         const userId = await AsyncStorage.getItem('userId');
         const newProduct = prompt("Enter the new product name:");
         console.log(newProduct);
-        await addProductToWishList(newProduct, userId);
+        await WishlistApi.addProductToWishList(newProduct, userId);
         await loadWishList();
     }
 
@@ -57,7 +50,7 @@ export default function WishList({navigation}) {
         const userId = await AsyncStorage.getItem('userId');
         const selectedProductNames = selectedItems.map(item => item.name);
         console.log(selectedProductNames);
-        await deleteProductFromWishList(selectedProductNames, userId);
+        await WishlistApi.deleteProductFromWishList(selectedProductNames, userId);
         setSelectedItems([]);
         await loadWishList();
     }

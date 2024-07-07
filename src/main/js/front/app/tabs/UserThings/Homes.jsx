@@ -1,19 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Pressable, StyleSheet, ScrollView, SafeAreaView} from "react-native";
-import {getUserHouses, getUserIdByEmail} from "../../Api";
-import LogoutButton from "../NavBar/LogoutButton";
+import {UsersApi, HousesApi} from "../../Api";
 import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
-import GoBackButton from "../NavBar/GoBackButton";
-import Tuple from "../Contents/Tuple";
 import NavBar from "../NavBar/NavBar";
 
 export default function Homes({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
     const [houses, setHouses] = useState([]);
     const isFocused = useIsFocused();
-    const houseId = AsyncStorage.getItem('houseId');
 
     useEffect(() => {
         if (isFocused){
@@ -23,8 +19,8 @@ export default function Homes({navigation}) {
 
     const getHouses = async () => {
         try {
-            const userId = await getUserIdByEmail(userToken, email);
-            const userHouses = await getUserHouses(userId);
+            const userId = await UsersApi.getUserIdByEmail(userToken, email);
+            const userHouses = await HousesApi.getUserHouses(userId);
 
             /*
             // Iterar sobre userHouses y guardar cada houseId en AsyncStorage

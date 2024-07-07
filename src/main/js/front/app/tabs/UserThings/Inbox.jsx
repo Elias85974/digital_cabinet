@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
-import { View, Text, Button, FlatList, Pressable } from 'react-native';
-import { getUsersInbox, processInvitations } from '../../Api';
-import GoBackButton from "../NavBar/GoBackButton";
-import LogoutButton from "../NavBar/LogoutButton";
+import { View, Text, FlatList } from 'react-native';
+import { InboxApi } from '../../Api';
+
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ScrollViewWithEventThrottle
-    from "react-native-web/dist/vendor/react-native/Animated/components/AnimatedScrollView";
-import Tuple from "../Contents/Tuple";
+
 import NavBar from "../NavBar/NavBar";
 
 export default function Inbox({navigation}) {
@@ -23,7 +20,7 @@ export default function Inbox({navigation}) {
 
     const loadInbox = async () => {
         const userId = await AsyncStorage.getItem('userId');
-        const messages = await getUsersInbox(userId);
+        const messages = await InboxApi.getUsersInbox(userId);
         console.log(messages);
         setInbox(messages);
     }
@@ -32,7 +29,7 @@ export default function Inbox({navigation}) {
         const userId = await AsyncStorage.getItem('userId');
         const invitation = {userId: userId, houseId: houseId.toString(), isAccepted: true};
         try {
-            await processInvitations(invitation);
+            await InboxApi.processInvitations(invitation);
             await loadInbox();
         } catch (error) {
             console.error('Failed to process invitation:', error);
@@ -43,7 +40,7 @@ export default function Inbox({navigation}) {
         const userId = await AsyncStorage.getItem('userId');
         const invitation = {userId: userId, houseId: houseId.toString(), isAccepted: false};
         try {
-            await processInvitations(invitation);
+            await InboxApi.processInvitations(invitation);
             await loadInbox();
         } catch (error) {
             console.error('Failed to process invitation:', error);

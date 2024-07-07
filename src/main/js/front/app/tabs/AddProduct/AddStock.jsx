@@ -122,7 +122,7 @@ export default function AddProduct({navigation}) {
                                    inputMode="numeric"
                         />
                         <TextInput style={styles.input}
-                                   placeholder={"Add the total price of the products"}
+                                   placeholder={"Total price"}
                                    value={price}
                                    onChangeText={(value) => handleChanges(value, 'price')}
                                    inputMode="numeric"

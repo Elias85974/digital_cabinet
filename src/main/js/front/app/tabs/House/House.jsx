@@ -96,18 +96,7 @@ export default function House({navigation}) {
                     </View>
                     <p></p>
                     <View style={styles.linksContainer}>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <Pressable onPress={() => navigation.navigate("LowOnStock")}>
-                                <Text style={styles.link}>Low on stock products</Text>
-                            </Pressable>
-                            <Pressable onPress={() => navigation.navigate("AddStock")}>
-                                <Text style={styles.link}>Add a Product</Text>
-                            </Pressable>
-                            <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
-                                <Text style={styles.link}>Create a Product</Text>
-                            </Pressable>
-                        </View>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <View style={styles.linksContainer}>
                             <Pressable onPress={()=> navigation.navigate("Homes")}>
                                 <Text style={styles.link}>Select another home</Text>
                             </Pressable>
@@ -118,7 +107,20 @@ export default function House({navigation}) {
                                 <Text style={styles.link}>Manage users</Text>
                             </Pressable>
                         </View>
+                        <View style={styles.linksContainer}>
+                            <Pressable onPress={() => navigation.navigate("LowOnStock")}>
+                                <Text style={styles.link}>Low on stock products</Text>
+                            </Pressable>
+                            <Pressable onPress={() => navigation.navigate("AddStock")}>
+                                <Text style={styles.link}>Add a Product</Text>
+                            </Pressable>
+                            <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
+                                <Text style={styles.link}>Create a Product</Text>
+                            </Pressable>
+                        </View>
+
                     </View>
+                    <p></p>
                     <Tuple navigation={navigation}/>
 
                 </ScrollView>

@@ -46,6 +46,7 @@ export default function LowOnStockProducts({navigation}) {
 
             }).catch(e => console.log("Error loading products"));
         }
+        console.log("refresh puto key aberte", refreshKey);
     }, [isFocused, refreshKey]);
 
     const getProducts = async () => {
@@ -58,6 +59,14 @@ export default function LowOnStockProducts({navigation}) {
         } catch (error) {
             console.log("Error getting products:", error);
         }
+    }
+
+    const handleAddStock = async () => {
+        const houseId = await AsyncStorage.getItem('houseId');
+        await addStock(houseId, {productId: selectedProduct.product.producto_ID, quantity: quantityToAdd});
+        setModalVisible3(false);
+        setQuantityToAdd('');
+        setRefreshKey(oldKey => oldKey + 1);
     }
 
     const handleInputChange = (text) => {
@@ -78,13 +87,7 @@ export default function LowOnStockProducts({navigation}) {
         setModalVisible2(true);
     };
 
-    const handleAddStock = async () => {
-        const houseId = await AsyncStorage.getItem('houseId');
-        await addStock(houseId, {productId: selectedProduct.product.producto_ID, quantity: quantityToAdd});
-        setModalVisible3(false);
-        setQuantityToAdd('');
-        setRefreshKey(oldKey => oldKey + 1);
-    }
+
 
     const handleFilteredProducts = (filteredProducts) => {
         console.log("Filtered products in lowstock:", filteredProducts);
@@ -102,7 +105,7 @@ export default function LowOnStockProducts({navigation}) {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container} key={refreshKey}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
             <View>
@@ -191,7 +194,7 @@ export default function LowOnStockProducts({navigation}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'red',
+        backgroundColor: 'blue',
         alignItems: 'center',
         justifyContent: 'space-between',
     },

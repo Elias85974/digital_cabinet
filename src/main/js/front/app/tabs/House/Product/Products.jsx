@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Modal, TextInput, Pressable, FlatList, SafeAreaView, ScrollView,} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getProductsFromHouseAndCategory, reduceStock} from "../../../Api";
+import {getLowOnStockProducts, getProductsFromHouseAndCategory, reduceStock} from "../../../Api";
 import Tuple from "../../Contents/Tuple";
 import ModalAlert from "../../Contents/ModalAlert";
 
@@ -23,10 +23,20 @@ export default function Product({navigation}) {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
+
+    const [reduceProduct, setReduceProduct] = useState([]);
+
     useEffect(() => {
         if (isFocused) {
-            getProducts().then(r => console.log("Products loaded")).catch(e => console.log("Error loading products"));
+            const fetchProds = async () => {
+                const newProds = await getProducts().then(r => {
+                    console.log("Products loaded");
+                }).catch(e => console.log("Error loading products"));
+                setReduceProduct(newProds);
+            }
+            fetchProds();
         }
+        console.log('refresh key puto cambiate', refreshKey)
     }, [isFocused, refreshKey]);
 
     const getProducts = async () => {
@@ -34,8 +44,11 @@ export default function Product({navigation}) {
             const category = await AsyncStorage.getItem('category');
             const houseId = await AsyncStorage.getItem('houseId');
             const products = await getProductsFromHouseAndCategory(houseId, category);
-            console.log(products);
+            console.log('productos cargados',products);
+
+            setReduceProduct(products);
             setFilteredProducts(products);
+            console.log('reduce Products:', setReduceProduct(products));
             if (query === '') {
                 setSuggestions(products); // Initialize suggestions with the fetched products only if query is empty
             }
@@ -46,6 +59,7 @@ export default function Product({navigation}) {
 
     const handleReduceStock = async () => {
         if (Number(quantityToReduce) > selectedProduct.totalQuantity) {
+            setModalVisible3(false);
             setModalMessage("You cannot reduce more stock than available"); // Muestra el modal en lugar de un alert
             setModalVisible(true);
             return;
@@ -55,8 +69,17 @@ export default function Product({navigation}) {
         // After successful reduction, close the modal and reset the quantity to reduce
         await reduceStock(houseId, selectedProduct.product.producto_ID, quantityToReduce);
         setModalVisible3(false);
+        setModalVisible2(false); // Close both modals
         setQuantityToReduce('');
         setRefreshKey(oldKey => oldKey + 1);
+
+        const category = await AsyncStorage.getItem('category');
+        const reduceProd = await getProductsFromHouseAndCategory(houseId, category);
+        setSuggestions( reduceProd)
+        console.log('reduceProd con getProdHC:', reduceProd);
+        //navigation.navigate('Product'); // ni siquiera con navigate me cansé estoy hace 5 horas con esto,
+        // no logro hacer que se refresher bien los productos con la reduction,
+        // es raro xq lo unico que no hace es volver a cargar la página, pero si se actualiza la maldita lista
     }
 
 
@@ -73,6 +96,7 @@ export default function Product({navigation}) {
 
     const handleSuggestionPress = (suggestion) => {
         setQuery(suggestion.product.nombre);
+        setSuggestions([]);
         setSelectedProduct(suggestion);
         setModalVisible2(true);
 
@@ -89,10 +113,9 @@ export default function Product({navigation}) {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container} key={refreshKey}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
-                <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <View style={styles.container2}>
                         <View style={{backgroundColor: '#3b0317', borderRadius: 30}}>
@@ -166,6 +189,7 @@ export default function Product({navigation}) {
                             </View>
                         </View>
                     </Modal>
+                    <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
 
                 </View>
                 <Tuple navigation={navigation}/>

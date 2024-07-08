@@ -133,6 +133,8 @@ export const inboxStyles = StyleSheet.create({
     },
 
     typesContainer:{
+        color: 'white',
+        textAlign: 'center',
         backgroundColor: '#3b0317',
         padding: 10,
         borderRadius: 100,

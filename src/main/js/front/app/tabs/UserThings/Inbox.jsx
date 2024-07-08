@@ -9,19 +9,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {InboxApi} from "../../Api";
 import NavBar from "../NavBar/NavBar";
+import {ChatNotification} from "./Notification/ChatNotification";
 
 export default function Inbox({navigation}) {
-    const [isHouseInvitationCollapsed, setHouseInvitationCollapsed] = useState(true);
-    const [isExpirationNotificationCollapsed, setExpirationNotificationCollapsed] = useState(true);
-    const [isChatNotificationCollapsed, setChatNotificationCollapsed] = useState(true);
-    const [inboxSize, setInboxSize] = useState({chatNotificationSize: 0, expirationNotificationSize: 0, houseInvitationSize: 0});
+    const [invitationsLength, setInvitationsLength] = useState(0);
+    const [expirationLength, setExpirationLength] = useState(0);
+    const [chatLength, setChatLength] = useState(0);
+    const [totalSize, setInboxSize] = useState(0);
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        if (isFocused) {
-            loadInboxSize().then(r => console.log('Inbox size loaded'), e => console.error('Error loading inbox size', e));
-        }
-    }, [isFocused]);
+        setInboxSize(invitationsLength + expirationLength + chatLength);
+    }, [isFocused, invitationsLength, expirationLength, chatLength]);
 
     const loadInboxSize = async () => {
         const userId = await AsyncStorage.getItem('userId');
@@ -30,8 +29,8 @@ export default function Inbox({navigation}) {
         console.log(inboxSize);
     }
 
-    const isEmpty = (sizes) => {
-        return sizes.totalSize === 0;
+    const isInboxEmpty = () => {
+        return totalSize === 0;
     }
 
     return (
@@ -39,48 +38,20 @@ export default function Inbox({navigation}) {
         <SafeAreaView style={StyleSheet.absoluteFill}>
             <ScrollView style={inboxStyles.contentContainer} showsVerticalScrollIndicator={false}>
                 <Text style={inboxStyles.title}>Inbox</Text>
-                {isEmpty(inboxSize) ? (
+                {isInboxEmpty() && (
                     <View style={inboxStyles.contentWishList}>
                         <View style={inboxStyles.emptyInbox}>
                             <Text style={{alignSelf: 'center'}}>No notifications left to read</Text>
                         </View>
                     </View>
-                ) : (
+                )}
                     <View style={inboxStyles.contentWishList}>
                         <View>
-                            {inboxSize.houseInvitationSize > 0 && (
-                                <>
-                                    <TouchableOpacity onPress={() => setHouseInvitationCollapsed(!isHouseInvitationCollapsed)}>
-                                        <Text style={inboxStyles.typesContainer}>House Invitations</Text>
-                                    </TouchableOpacity>
-                                    <Collapsible collapsed={isHouseInvitationCollapsed}>
-                                        <HouseInvitation/>
-                                    </Collapsible>
-                                </>
-                            )}
-                            {inboxSize.expirationNotificationSize > 0 && (
-                                <>
-                                    <TouchableOpacity onPress={() => setExpirationNotificationCollapsed(!isExpirationNotificationCollapsed)}>
-                                        <Text style={inboxStyles.typesContainer}>Expiration Notifications</Text>
-                                    </TouchableOpacity>
-                                    <Collapsible collapsed={isExpirationNotificationCollapsed}>
-                                        <ExpirationNotification navigation={navigation}/>
-                                    </Collapsible>
-                                </>
-                            )}
-                            {inboxSize.chatNotificationSize > 0 && (
-                                <>
-                                    <TouchableOpacity onPress={() => setChatNotificationCollapsed(!isChatNotificationCollapsed)}>
-                                        <Text style={inboxStyles.typesContainer}>Chat Invitations</Text>
-                                    </TouchableOpacity>
-                                    <Collapsible collapsed={isChatNotificationCollapsed}>
-                                        <HouseInvitation/>
-                                    </Collapsible>
-                                </>
-                            )}
+                            <HouseInvitation setInvitationsLength={setInvitationsLength}/>
+                            <ExpirationNotification navigation={navigation} setExpirationsLength={setExpirationLength}/>
+                            <ChatNotification navigation={navigation} setChatLength={setChatLength}/>
                         </View>
                     </View>
-                )}
             </ScrollView>
         </SafeAreaView>
         <NavBar navigation={navigation}/>

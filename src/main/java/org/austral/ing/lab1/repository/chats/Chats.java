@@ -73,7 +73,7 @@ public class Chats {
         for (Message message : messages) {
             String senderName = message.getSender().getNombre(); // Assuming the User entity has a 'nombre' field for the name
             Long senderId = message.getSender().getUsuario_ID();
-            MessageInfo messageInfo = new MessageInfo(chatId, senderName, senderId.toString(), message.getContent());
+            MessageInfo messageInfo = new MessageInfo(chatId, senderName, senderId.toString(), message.getContent(), message.getChat().getChatName());
             messageInfos.add(messageInfo);
         }
         return messageInfos;

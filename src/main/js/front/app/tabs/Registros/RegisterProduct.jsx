@@ -115,6 +115,7 @@ export default function RegisterProduct({navigation}) {
             setQuery(createdCategory.nombre);
         }
         setSuggestions([]);
+        setNewCategory('');
     };
 
     const handleKeyPress = (e) => {

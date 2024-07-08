@@ -1,5 +1,6 @@
 package org.austral.ing.lab1.repository.houses;
 
+import org.austral.ing.lab1.model.chat.Chat;
 import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.inventory.Inventory;
 import org.austral.ing.lab1.model.user.User;
@@ -66,11 +67,14 @@ public class Houses {
         }
         User user = optionalUser.get();
         final Inventory inventory = new Inventory();
+        final Chat chat = new Chat(house.getNombre());
         entityManager.persist(inventory);
         house.setInventario(inventory);
+        entityManager.persist(chat);
+        house.setChat(chat);
         entityManager.persist(house);
         inventory.setHouse(house);
-        entityManager.persist(inventory);
+        chat.setHouse(house);
         makeUserLiveInHouse(user, house, true);
         entityManager.refresh(user);
         tx.commit();

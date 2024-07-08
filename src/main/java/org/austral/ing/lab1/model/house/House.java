@@ -25,7 +25,8 @@ public class House {
     @Column(name = "DIRECCION", nullable = false, unique = true)
     private String direccion;
 
-    @OneToOne(mappedBy = "house", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "CHAT_ID", referencedColumnName = "CHATID")
     private Chat chat;
 
     public House() { }
@@ -68,6 +69,14 @@ public class House {
 
     public String getDireccion() {
         return direccion;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+
+    public Chat getChat() {
+        return chat;
     }
 
     private House(HouseBuilder builder) {

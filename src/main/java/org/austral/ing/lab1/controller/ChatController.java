@@ -22,12 +22,9 @@ public class ChatController {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Chats chatsRepo = new Chats(entityManager);
             try {
-                EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
                 Long chatId = Long.parseLong(req.params("chatId"));
                 Long userId = Long.parseLong(req.params("userId"));
                 String messagesJson = gson.toJson(chatsRepo.getMessages(chatId, userId));
-                tx.commit();
                 resp.type("application/json");
                 return messagesJson;
             } catch (Exception e) {
@@ -44,13 +41,10 @@ public class ChatController {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Chats chatsRepo = new Chats(entityManager);
             try {
-                EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
                 Long chatId = Long.parseLong(req.params("chatId"));
                 Long userId = Long.parseLong(req.params("userId"));
                 String message = req.body();
                 chatsRepo.sendMessage(chatId, userId, message);
-                tx.commit();
                 resp.type("application/json");
                 resp.status(201);
                 return "Message sent successfully";

@@ -2,7 +2,7 @@ import { API_URL } from '../constants';
 
 export const getMessages = async (chatId, userId) => {
     try {
-        const response = await fetch(`${API_URL}/chat/${chatId}/messages/${userId}`, {
+        const response = await fetch(`${API_URL}/chat/${1}/messages/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -21,18 +21,18 @@ export const getMessages = async (chatId, userId) => {
 
 export const sendMessage = async (chatId, userId, message) => {
     try {
-        const response = await fetch(`${API_URL}/chat/${chatId}/messages/${userId}`, {
+        const response = await fetch(`${API_URL}/chat/${1}/messages/${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(message),
+            body: message,
         });
         if (!response.ok) {
             const errorMessage = await response.text();
             throw new Error(errorMessage);
         }
-        return await response.json();
+        return await response.text();
     } catch (error) {
         console.error("Failed to send message:", error);
         throw error;

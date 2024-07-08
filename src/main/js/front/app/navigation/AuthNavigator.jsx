@@ -15,7 +15,7 @@ import HouseUsersPage from "../tabs/House/HouseUsersPage";
 import HouseUsersPageDelete from "../tabs/House/HouseUsersPageDelete";
 import LowOnStockProducts from "../tabs/House/Product/LowOnStockProducts";
 import Settings from "../tabs/Settings/Settings";
-import Chat from "../tabs/UserThings/Chat";
+import Chat from "../tabs/UserThings/Chat/Chat";
 
 
 import Test from "../test.";

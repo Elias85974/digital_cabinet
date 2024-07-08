@@ -79,7 +79,9 @@ export default function House({navigation}) {
                     <View style={styles.logInCont}>
                         <Text style={styles.info}>Select a Category</Text>
                         <View style={styles.container2}>
-                            <View style={{backgroundColor: '#3b0317', borderRadius: 30}}>
+                            <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 2, alignItems: 'center',
+                                flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
+                                <FontAwesome style={{paddingLeft:10}} name="search" size={24} color="white" />
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={handleInputChange}

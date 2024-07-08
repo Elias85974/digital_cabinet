@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Button, TextInput} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {ChatApi} from "../../Api";
+import {ChatApi} from "../../../Api";
 import {useIsFocused} from "@react-navigation/native";
-import NavBar from "../NavBar/NavBar";
+import NavBar from "../../NavBar/NavBar";
 
 export default function Chat({navigation}) {
   const [messages, setMessages] = useState([]);

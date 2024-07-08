@@ -17,6 +17,25 @@ public class ChatController {
     }
 
     public void init() {
+        // Route to get the chats of a user
+        Spark.get("/chat/:userId", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Chats chatsRepo = new Chats(entityManager);
+            try {
+                Long userId = Long.parseLong(req.params("userId"));
+                String chatsJson = gson.toJson(chatsRepo.getChats(userId));
+                resp.type("application/json");
+                return chatsJson;
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the chats of the user, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+
         // Route to get the messages of a chat
         Spark.get("/chat/:chatId/messages/:userId", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();

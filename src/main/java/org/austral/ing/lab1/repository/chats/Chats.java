@@ -2,6 +2,7 @@ package org.austral.ing.lab1.repository.chats;
 
 import org.austral.ing.lab1.model.chat.Chat;
 import org.austral.ing.lab1.model.chat.Message;
+import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.notification.ChatNotification;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.object.MessageInfo;
@@ -12,10 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class Chats {
     private final EntityManager entityManager;
@@ -112,5 +110,22 @@ public class Chats {
                 }
             }
         }
+    }
+
+    public List<Map<String, String>> getChats(Long userId) {
+        Map<String, String> chatInfo;
+        List<Map<String, String>> chatsInfo = new ArrayList<>();
+        Users usersRepo = new Users(entityManager);
+        User user = usersRepo.findById(userId).orElseThrow();
+        List<House> houses = user.getHouses();
+        Chat houseChat;
+        for (House house: houses) {
+            chatInfo = new HashMap<>();
+            houseChat = house.getChat();
+            chatInfo.put("chatId", houseChat.getChatId().toString());
+            chatInfo.put("chatName", houseChat.getChatName());
+            chatsInfo.add(chatInfo);
+        }
+        return chatsInfo;
     }
 }

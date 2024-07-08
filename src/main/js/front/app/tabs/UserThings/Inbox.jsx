@@ -51,7 +51,7 @@ export default function Inbox({navigation}) {
                             {inboxSize.houseInvitationSize > 0 && (
                                 <>
                                     <TouchableOpacity onPress={() => setHouseInvitationCollapsed(!isHouseInvitationCollapsed)}>
-                                        <Text>House Invitations</Text>
+                                        <Text style={inboxStyles.typesContainer}>House Invitations</Text>
                                     </TouchableOpacity>
                                     <Collapsible collapsed={isHouseInvitationCollapsed}>
                                         <HouseInvitation/>
@@ -61,14 +61,23 @@ export default function Inbox({navigation}) {
                             {inboxSize.expirationNotificationSize > 0 && (
                                 <>
                                     <TouchableOpacity onPress={() => setExpirationNotificationCollapsed(!isExpirationNotificationCollapsed)}>
-                                        <Text>Expiration Notifications</Text>
+                                        <Text style={inboxStyles.typesContainer}>Expiration Notifications</Text>
                                     </TouchableOpacity>
                                     <Collapsible collapsed={isExpirationNotificationCollapsed}>
                                         <ExpirationNotification navigation={navigation}/>
                                     </Collapsible>
                                 </>
                             )}
-                            {/*<ChatNotification navigation={navigation}/> Add this view next */}
+                            {inboxSize.chatNotificationSize > 0 && (
+                                <>
+                                    <TouchableOpacity onPress={() => setChatNotificationCollapsed(!isChatNotificationCollapsed)}>
+                                        <Text style={inboxStyles.typesContainer}>Chat Invitations</Text>
+                                    </TouchableOpacity>
+                                    <Collapsible collapsed={isChatNotificationCollapsed}>
+                                        <HouseInvitation/>
+                                    </Collapsible>
+                                </>
+                            )}
                         </View>
                     </View>
                 )}

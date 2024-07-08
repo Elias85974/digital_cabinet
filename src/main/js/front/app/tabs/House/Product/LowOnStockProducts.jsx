@@ -98,7 +98,6 @@ export default function LowOnStockProducts({navigation}) {
     };
 
 
-
     const handleFilteredProducts = (filteredProducts) => {
         console.log("Filtered products in lowstock:", filteredProducts);
         setFilteredProducts(filteredProducts);

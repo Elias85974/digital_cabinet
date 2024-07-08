@@ -3,7 +3,7 @@ import {StyleSheet} from "react-native";
 export const inboxStyles = StyleSheet.create({
     // ... other styles
     emptyInbox: {
-        width: '50%',
+        width: '70%',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 10,
@@ -131,4 +131,12 @@ export const inboxStyles = StyleSheet.create({
         color: '#fff',
         margin: 8,
     },
+
+    typesContainer:{
+        backgroundColor: '#3b0317',
+        padding: 10,
+        borderRadius: 100,
+        alignItems: 'center',
+        margin: 5,
+    }
 });

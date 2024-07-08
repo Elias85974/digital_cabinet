@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {InventoryApi } from "../../../Api";
 import FilterModal from "../../Contents/FilterModal";
 import NavBar from "../../NavBar/NavBar";
+import {FontAwesome} from "@expo/vector-icons";
 
 export default function LowOnStockProducts({navigation}) {
     const [products, setProducts] = useState([]);
@@ -119,8 +120,9 @@ export default function LowOnStockProducts({navigation}) {
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                     <View>
                         <View style={styles.container2}>
-                            <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 2, alignItems: 'center',
+                            <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 3, alignItems: 'center',
                                 flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
+                                <FontAwesome style={{paddingLeft:10}} name="search" size={24} color="white" />
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={handleInputChange}

@@ -120,7 +120,7 @@ export default function RegisterProduct({navigation}) {
             const createdCategory = await CategoriesApi.createCategory({nombre: formattedCategoryName});
             setCategories([...categories, createdCategory]);
             setNewProduct({...newProduct, categoryId: createdCategory.id});
-            setQuery(createdCategory.nombre);
+            setQuery('');
         }
         setSuggestions([]);
         setNewCategory('');

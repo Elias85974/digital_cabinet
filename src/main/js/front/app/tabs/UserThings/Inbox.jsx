@@ -72,9 +72,9 @@ export default function Inbox({navigation}) {
                         </View>
                     </View>
                 )}
-                <Tuple navigation={navigation}/>
             </ScrollView>
         </SafeAreaView>
+        <NavBar navigation={navigation}/>
     </View>
     );
 }

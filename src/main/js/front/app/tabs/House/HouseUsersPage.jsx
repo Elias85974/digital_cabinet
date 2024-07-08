@@ -7,6 +7,7 @@ import {AuthContext} from "../../context/AuthContext";
 
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
+import {AntDesign} from "@expo/vector-icons";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -73,13 +74,17 @@ const HouseUsersPage = ({ navigation }) => {
                                onChangeText={(value) => setInviteEmail(value)} // Update the mail state when the text input changes
                     />
                     <Pressable style={styles.link} onPress={async () => await handleInvite()}>
-                        <Text style={{color: 'white', fontSize: 16}}>Invite a user</Text>
+                        <Text style={{color: 'white', fontSize: 16}}>
+                            <AntDesign name="adduser" size={24} color="white" /> Invite a user
+                        </Text>
                     </Pressable>
                 </View>
                 <p></p>
                 <View style={styles.deleteUsers}>
                     <Pressable style={{alignSelf:'center'}} onPress={() => navigation.navigate("HouseUsersPageDelete")}>
-                        <Text style={styles.linkdel}>Delete a user</Text>
+                        <Text style={styles.linkdel}>
+                            <AntDesign name="deleteuser" size={24} color="white" /> Delete a user
+                        </Text>
                     </Pressable>
                 </View>
                 <p></p>
@@ -105,7 +110,6 @@ const styles = StyleSheet.create({
         marginTop: 15,
         marginBottom: 10,
         color: '#F2EFE9',
-        textDecorationLine: 'underline',
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
@@ -193,7 +197,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         color: '#F2EFE9',
-        textDecorationLine: 'underline',
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',

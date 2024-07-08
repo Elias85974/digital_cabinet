@@ -6,6 +6,7 @@ import { StyleSheet } from 'react-native';
 import {AuthContext} from "../../context/AuthContext";
 import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../NavBar/NavBar";
+import {AntDesign, FontAwesome, FontAwesome5, FontAwesome6, Ionicons} from "@expo/vector-icons";
 
 
 export default function House({navigation}) {
@@ -98,24 +99,36 @@ export default function House({navigation}) {
                     <View style={styles.linksContainer}>
                         <View style={styles.linksContainer}>
                             <Pressable onPress={()=> navigation.navigate("Homes")}>
-                                <Text style={styles.link}>Select another home</Text>
+                                <Text style={styles.link}>
+                                    <AntDesign name="home" size={24} color="white" /> Select another home
+                                </Text>
                             </Pressable>
-                            <Pressable onPress={()=> navigation.navigate("PieChart")}>
-                                <Text style={styles.link}>See expenses</Text>
+                            <Pressable style={{flexDirection: 'row', alignContent: 'center'}} onPress={()=> navigation.navigate("PieChart")}>
+                                <Text style={styles.link}>
+                                    <AntDesign name="piechart" size={24} color="white" /> See expenses
+                                </Text>
                             </Pressable>
                             <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
-                                <Text style={styles.link}>Manage users</Text>
+                                <Text style={styles.link}>
+                                    <AntDesign name="user" size={24} color="white" /> Manage users
+                                </Text>
                             </Pressable>
                         </View>
                         <View style={styles.linksContainer}>
                             <Pressable onPress={() => navigation.navigate("LowOnStock")}>
-                                <Text style={styles.link}>Low on stock products</Text>
+                                <Text style={styles.link}>
+                                    <FontAwesome5 name="cart-arrow-down" size={24} color="white" /> Low on stock products
+                                </Text>
                             </Pressable>
                             <Pressable onPress={() => navigation.navigate("AddStock")}>
-                                <Text style={styles.link}>Add a Product</Text>
+                                <Text style={styles.link}>
+                                    <FontAwesome6 name="cart-plus" size={24} color="white" /> Add a Product
+                                </Text>
                             </Pressable>
                             <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
-                                <Text style={styles.link}>Create a Product</Text>
+                                <Text style={styles.link}>
+                                    <Ionicons name="create" size={24} color="white" /> Create a Product
+                                </Text>
                             </Pressable>
                         </View>
                     </View>
@@ -175,7 +188,6 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 1,
         color: '#F2EFE9',
-        textDecorationLine: 'underline',
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
@@ -187,6 +199,19 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,
+        fontSize: 16,
+    },
+    text: {
+        marginTop: 5,
+        marginBottom: 1,
+        color: '#F2EFE9',
+        textDecorationLine: 'underline',
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 'auto', // Set width
+        alignSelf: 'center',
+        alignContent: 'center',
         fontSize: 16,
     },
     container2: {

@@ -11,8 +11,8 @@ export const chatsStyles = StyleSheet.create({
         backgroundColor: '#4B5940', // or any color you want
     },
     container: {
-        height: '100%',
         width: '100%',
+        height: '100%',
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -21,7 +21,6 @@ export const chatsStyles = StyleSheet.create({
         marginTop: 15,
         marginBottom: 10,
         color: '#F2EFE9',
-        textDecorationLine: 'underline',
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
@@ -153,7 +152,11 @@ export const chatsStyles = StyleSheet.create({
         borderRadius: 10,
         margin: 5,
     },
-
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
 
 
 });

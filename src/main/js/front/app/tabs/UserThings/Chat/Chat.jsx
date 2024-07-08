@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Button, TextInput, Pressable, ScrollView, SafeAreaView} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {ChatApi} from "../../../Api";
@@ -42,78 +42,68 @@ export default function Chat({navigation}) {
   }
 
 return (
-    <View style={chatsStyles.container}>
-            <View style={styles.container}>
-            <Text style={styles.title}>Chat</Text>
-              <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={chatsStyles.contentContainer} showsVerticalScrollIndicator={false}>
-                    {messages.map((msg, index) => (
-                      <View key={index} style={msg.senderId === userId ? styles.userMessage : styles.otherMessage}>
-                        <Text>{msg.message}</Text>
-                      </View>
-                  ))}
-                    <TextInput
-                        style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                        onChangeText={setMessage}
-                        value={message}
-                    />
-                  <Pressable style={styles.link} onPress={() => handleSendMessage(message)}>
-                    <Text style={styles.textStyle}>Send</Text>
-                  </Pressable>
-                </ScrollView>
-              </SafeAreaView>
-              <NavBar navigation={navigation}/>
+    <View style={styles.containers}>
+      <SafeAreaView style={StyleSheet.absoluteFill}>
+        <Text style={styles.title}>Chat</Text>
+        <ScrollView style={[styles.contentContainer,{height: '50%'}]} showsVerticalScrollIndicator={false}>
+        <View style={[chatsStyles.container]}>
+              {messages.map((msg, index) => (
+                  <View key={index} style={msg.senderId === userId ? styles.userMessage : styles.otherMessage}>
+                    <Text>{msg.senderId === userId ? 'You' : msg.sender}: {msg.message}</Text>
+                  </View>
+              ))}
+
+
         </View>
-    </View>
+
+        </ScrollView>
+        <View style={[styles.container]}>
+          <TextInput
+                style={{borderRadius: 100,height: 50, borderColor: 'gray', borderWidth: 1, width: '80%', color: 'white', backgroundColor: '#3b0317',}}
+                onChangeText={setMessage}
+                value={message}
+                multiline={true}
+                numberOfLines={5} // Ajusta este número según tus necesidades
+            />
+            <Pressable style={chatsStyles.link} onPress={() => handleSendMessage(message)}>
+              <Text style={chatsStyles.textStyle}>Send</Text>
+            </Pressable>
+      </View>
+      </SafeAreaView>
+    <NavBar navigation={navigation}/>
+
+  </View>
 );
 };
-
+//<NavBar navigation={navigation}/>
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    padding: 10,
+    height: 500,
+    width: '100%',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    marginBottom: 95,
+    margin: 5,
+  },
+  containers: {
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#BFAC9B',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   title: {
-    fontSize: 20,
+    fontSize: 60,
+    fontWeight: 'bold',
     textAlign: 'center',
-    margin: 10,
-  },
-  link: {
-    marginTop: 15,
-    marginBottom: 10,
-    color: '#F2EFE9',
-    textDecorationLine: 'underline',
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3, // Add border
-    borderColor: '#717336', // Set border color
-    padding: 10, // Add some padding so the text isn't right up against the border
-    backgroundColor: '#717336', // Set background color
-    width: 200, // Set width
-    alignSelf: 'center',
-    alignContent: 'center',
-    borderRadius: 100,
-    fontSize: 16,
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    width: 200,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    color: 'white',
-    backgroundColor: '#3b0317',
-    borderRadius: 30,
-    borderStyle: undefined,
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
+    marginTop: 10,
+    marginBottom: 5,
+    color: '#1B1A26',
+    fontFamily: 'lucida grande',
+    lineHeight: 80,
   },
   userMessage: {
     alignSelf: 'flex-end',

@@ -100,7 +100,7 @@ public class Chats {
                 TypedQuery<ChatNotification> query = entityManager.createQuery(
                         "SELECT n FROM ChatNotification n WHERE n.inbox_user.usuario_ID = :userId AND n.lastMessage.chat.chatId = :chatId", ChatNotification.class);
                 query.setParameter("chatId", chat.getChatId());
-                query.setParameter("userId", userId);
+                query.setParameter("userId", user.getUsuario_ID());
                 if (query.getResultList().isEmpty()) {
                     notification = new ChatNotification(newMessage);
                     notification.setInbox_user(user);

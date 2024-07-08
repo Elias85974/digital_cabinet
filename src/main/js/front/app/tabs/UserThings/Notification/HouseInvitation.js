@@ -5,7 +5,7 @@ import {useIsFocused} from "@react-navigation/native";
 import {FlatList, TouchableOpacity, View, Text} from "react-native";
 import {HousesApi, InboxApi} from "../../../Api";
 
-export function HouseInvitation({ }) {
+export function HouseInvitation({ navigation }) {
     const [invitations, setInvitations] = useState([]);
     const isFocused = useIsFocused();
 

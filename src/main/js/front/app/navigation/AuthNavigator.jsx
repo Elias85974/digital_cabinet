@@ -16,6 +16,7 @@ import HouseUsersPageDelete from "../tabs/House/HouseUsersPageDelete";
 import LowOnStockProducts from "../tabs/House/Product/LowOnStockProducts";
 import Settings from "../tabs/Settings/Settings";
 import Chat from "../tabs/UserThings/Chat";
+import PieChart from "../tabs/House/Product/PieChart";
 
 
 import Test from "../test.";
@@ -42,6 +43,7 @@ function AuthNavigator() {
                 <Stack.Screen options={{headerShown: false}} name="LowOnStock" component={LowOnStockProducts} />
                 <Stack.Screen options={{headerShown: false}} name="Settings" component={Settings} />
                 <Stack.Screen options={{headerShown: false}} name="Chat" component={Chat} />
+                <Stack.Screen options={{headerShown: false}} name="PieChart" component={PieChart} />
             </Stack.Navigator>
     );
 }

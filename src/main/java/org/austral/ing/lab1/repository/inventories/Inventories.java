@@ -250,7 +250,7 @@ public class Inventories {
         for (Stock stock : stocks) {
             Product product = stock.getProduct();
             String category = product.getCategory().getNombre();
-            double value = stock.getPrice() * stock.getCantidadVencimiento();
+            double value = stock.getPrice();
 
             // Update the total value of the category
             valueByCategory.put(category, valueByCategory.getOrDefault(category, 0.0) + value);

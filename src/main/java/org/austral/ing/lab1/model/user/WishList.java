@@ -37,7 +37,7 @@ public class WishList {
   }
 
   public String asJson() {
-    return "{\"id\":" + wishList_Id + ",\"user\":" + usuario.getUsuario_ID() + ",\"product\":\"" + product + "\"}";
+    return "{\"id\":" + wishList_Id + ",\"user\":" + usuario.getUsuario_ID() + ",\"productName\":\"" + product + "\"}";
   }
 
   public void setProduct(String product) {

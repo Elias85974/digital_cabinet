@@ -24,7 +24,7 @@ public class InboxController {
     public void init() {
 
         // Route to get the house invitations of a given user
-        Spark.get("/getInbox/:userId", (req, resp) -> {
+        Spark.get("/getHouseInvitations/:userId", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             HouseInvitations houseInvitations = new HouseInvitations(entityManager);
             try {

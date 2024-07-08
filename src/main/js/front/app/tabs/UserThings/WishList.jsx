@@ -34,6 +34,7 @@ export default function WishList({navigation}) {
         try {
             const userId = await AsyncStorage.getItem('userId');
             const list = await WishlistApi.getWishList(userId);
+            console.log(list);
             setWishList(list);
         } catch (error){
             console.log(error);
@@ -45,11 +46,14 @@ export default function WishList({navigation}) {
     }
 
     const handleSubmit = async () => {
-        console.log(newProduct);
-        const userId = await AsyncStorage.getItem('userId');
-        await WishlistApi.addProductToWishList(newProduct, userId);
-        await loadWishList();
-        setModalVisible(false);
+        if (newProduct.length > 0) {
+            console.log(newProduct);
+            const userId = await AsyncStorage.getItem('userId');
+            await WishlistApi.addProductToWishList(newProduct, userId);
+            await loadWishList();
+            setModalVisible(false);
+            setNewProduct('');
+        }
     }
 
     const handleCheck = (index) => {
@@ -57,18 +61,19 @@ export default function WishList({navigation}) {
         newWishList[index].checked = !newWishList[index].checked;
         setWishList(newWishList);
 
+        const selectedItem = { productName: newWishList[index].productName };
+
         if (newWishList[index].checked) {
-            setSelectedItems([...selectedItems, newWishList[index]]);
+            setSelectedItems([...selectedItems, selectedItem]);
         } else {
-            setSelectedItems(selectedItems.filter(item => item.id !== newWishList[index].id));
+            setSelectedItems(selectedItems.filter(item => item.productName !== newWishList[index].productName));
         }
     }
 
     const handleUpdate = async () => {
         const userId = await AsyncStorage.getItem('userId');
-        const selectedProductNames = selectedItems.map(item => item.name);
-        console.log(selectedProductNames);
-        await WishlistApi.deleteProductFromWishList(selectedProductNames, userId);
+        console.log(selectedItems)
+        await WishlistApi.deleteProductsFromWishList(selectedItems, userId);
         setSelectedItems([]);
         await loadWishList();
     }
@@ -114,7 +119,7 @@ export default function WishList({navigation}) {
                                     <TouchableOpacity style={styles.checkbox} onPress={() => handleCheck(index)}>
                                         {item.checked && <View style={styles.check} />}
                                     </TouchableOpacity>
-                                    <Text style={styles.label}>{item.product}</Text>
+                                    <Text style={styles.label}>{item.productName}</Text>
                                 </View>
                             ))}
                         </View>

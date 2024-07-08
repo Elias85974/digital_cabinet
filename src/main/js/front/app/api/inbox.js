@@ -3,7 +3,7 @@ import { API_URL } from '../constants';
 // Function to get the house invitations of a user
 export const getUsersHouseInvitations = async (userId) => {
     try {
-        const response = await fetch(`${API_URL}/getInbox/${userId}`, {
+        const response = await fetch(`${API_URL}/getHouseInvitations/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

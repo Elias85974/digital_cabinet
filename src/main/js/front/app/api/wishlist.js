@@ -38,20 +38,20 @@ export const addProductToWishList = async (product, userId) => {
     }
 }
 
-export const deleteProductFromWishList = async (products, userId) => {
+export const deleteProductsFromWishList = async (products, userId) => {
     try {
         const response = await fetch(`${API_URL}/wishList/${userId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: products
+            body: JSON.stringify(products)
         });
         if (!response.ok) {
             const errorMessage = await response.text();
             throw new Error(errorMessage);
         }
-        return await response.json();
+        return await response.text();
     } catch (error) {
         console.error("Failed to delete product from wish list:", error);
         throw error;

@@ -27,7 +27,7 @@ public class HouseInvitations {
         return notifications.stream()
                 .map(notification -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("username", notification.getInbox_user().getNombre());
+                    map.put("username", notification.getInviterUser().getNombre());
                     map.put("houseId", notification.getHouse().getCasa_ID());
                     return map;
                 })

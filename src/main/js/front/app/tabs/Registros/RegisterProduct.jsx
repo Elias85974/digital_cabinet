@@ -31,6 +31,14 @@ export default function RegisterProduct({navigation}) {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
+    const [selectedQuantityType, setSelectedQuantityType] = useState('');
+
+    const handleQuantityTypePress = (type) => {
+        setSelectedQuantityType(type);
+        handleInputChange('tipoDeCantidad', type);
+    };
+
+
     const handleInputChangeCat = (text) => {
         setQuery(text);
 
@@ -121,7 +129,7 @@ export default function RegisterProduct({navigation}) {
     const handleKeyPress = (e) => {
         if (e.nativeEvent.key === "Enter") {
             handleCreateCategory(query);
-            setQuery(""); // Establece la categoría recién creada como la categoría seleccionada
+            //setQuery(""); // Establece la categoría recién creada como la categoría seleccionada
         }
     };
 
@@ -156,28 +164,41 @@ export default function RegisterProduct({navigation}) {
                     <Text style={styles.title}>Products</Text>
                     <View style={styles.createprod}>
                         <Text style={styles.info}>Please fill in all fields to create your product</Text>
+
                         <TextInput style={styles.input}
                                    placeholder="Nombre"
                                    value={newProduct.nombre}
                                    onChangeText={(value) => handleInputChange('nombre', value)}
                         />
+
                         <TextInput style={styles.input}
                                    placeholder="Marca"
                                    value={newProduct.marca}
                                    onChangeText={(value) => handleInputChange('marca', value)}
                         />
-                        <View style={ styles.picker}>
-                            <Picker
-                                onValueChange={(value) => handleInputChange('tipoDeCantidad', value)}
-                                items={[
-                                    ...quantityTypes.map((type) => ({
-                                        label: type,
-                                        value: type,
-                                    })),
-                                ]}
-                                placeholder={{label: "Select a quantity type", value: null}}
-                            />
+
+                        <View style={styles.quantityTypesContainer}>
+                            {quantityTypes.map((type) => (
+                                <TouchableOpacity
+                                    key={type}
+                                    style={[
+                                        styles.quantityTypeButton,
+                                        selectedQuantityType === type && styles.selectedQuantityTypeButton
+                                    ]}
+                                    onPress={() => handleQuantityTypePress(type)}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.quantityTypeButtonText,
+                                            selectedQuantityType === type && styles.selectedQuantityTypeButtonText
+                                        ]}
+                                    >
+                                        {type}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
                         </View>
+
                         <TextInput
                             style={styles.input}
                             value={query}
@@ -195,6 +216,7 @@ export default function RegisterProduct({navigation}) {
                                 </TouchableOpacity>
                             )}
                         />
+
                         <Pressable style={styles.link} onPress={handleCreateProduct}>
                             <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>
                         </Pressable>
@@ -297,5 +319,26 @@ const styles = StyleSheet.create({
         backgroundColor: '#717336',
         borderColor: '#5d5e24',
         borderWidth: 2,
-    }
+    },
+    quantityTypesContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginVertical: 20,
+    },
+    quantityTypeButton: {
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#4B5940',
+        borderRadius: 5,
+    },
+    selectedQuantityTypeButton: {
+        backgroundColor: '#717336',
+    },
+    quantityTypeButtonText: {
+        fontSize: 16,
+        color: 'black',
+    },
+    selectedQuantityTypeButtonText: {
+        color: 'white',
+    },
 });

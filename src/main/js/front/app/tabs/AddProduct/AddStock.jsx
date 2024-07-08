@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, TextInput, Pressable, StyleSheet, ScrollView, SafeAreaView} from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    Pressable,
+    StyleSheet,
+    ScrollView,
+    SafeAreaView,
+    TouchableOpacity,
+    FlatList
+} from 'react-native';
 import Picker from 'react-native-picker-select';
 import {InventoryApi, ProductsApi} from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,6 +25,27 @@ export default function AddProduct({navigation}) {
     const [price, setPrice] = useState('');
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+
+    const [query, setQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+
+    const handleInputChangeProd = (text) => {
+        setQuery(text);
+
+        if (text === '') {
+            setSuggestions([]);
+        } else {
+            const regex = new RegExp(`${text.trim()}`, 'i');
+            setSuggestions(products.filter(product => product.nombre.search(regex) >= 0));
+        }
+    };
+
+    const handleSuggestionPress = (suggestion) => {
+        setQuery(suggestion.nombre);
+        setSuggestions([]);
+        setSelectedProduct(suggestion.producto_ID);
+    };
+
 
     const isValidDate = (date) => {
         return /^(\d{2}\/\d{2}\/\d{4})$/.test(date);
@@ -97,37 +128,52 @@ export default function AddProduct({navigation}) {
                     <Text style={styles.title}>Add products!</Text>
                     <View style={styles.addProd}>
                         <Text style={styles.info}>Select a Product</Text>
-                        <View style={styles.picker}>
-                            <Picker
-                                onValueChange={(value) => handleChanges(value, 'product')}
-                                items={products.map((product) => ({label: product.nombre, value: product.producto_ID}))}
-                                value={selectedProduct}
-                            />
-                        </View>
+
+                        <TextInput
+                            style={styles.input}
+                            value={query}
+                            onChangeText={handleInputChangeProd}
+                            placeholder="Select a product"
+                        />
+                        <FlatList
+                            data={suggestions}
+                            numColumns={6}
+                            keyExtractor={(item) => item.producto_ID.toString()}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
+                                    <Text style={styles.prod}>{item.nombre}</Text>
+                                </TouchableOpacity>
+                            )}
+                        />
+
                         <TextInput style={styles.input}
                                    placeholder={"Quantity of products"}
                                    value={quantity.toString()}
                                    onChangeText={(value) => handleChanges(value, 'quantity')}
                                    inputMode="numeric"
                         />
+
                         <TextInput style={styles.input}
                                    placeholder={"DD/MM/YYYY"}
                                    value={expiration}
                                    onChangeText={(value) => handleChanges(value, 'expiration')}
                                    inputMode="text"
                         />
+
                         <TextInput style={styles.input}
                                    placeholder={"Low stock indicator"}
                                    value={lowStockIndicator}
                                    onChangeText={(value) => handleChanges(value, 'lowStockIndicator')}
                                    inputMode="numeric"
                         />
+
                         <TextInput style={styles.input}
                                    placeholder={"Total price"}
                                    value={price}
                                    onChangeText={(value) => handleChanges(value, 'price')}
                                    inputMode="numeric"
                         />
+
                         <View style={styles.linksContainer}>
                             <Pressable style={styles.link} onPress={handleSubmit}>
                                 <Text style={{color: 'white', fontSize: 16}}>Add Stock</Text>
@@ -224,5 +270,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#717336',
         borderColor: '#5d5e24',
         borderWidth: 2,
-    }
+    },
+    prod: {
+        fontSize: 16,
+        fontFamily: 'lucida grande',
+        color: 'white',
+        margin: 5,
+        flex: 1, // Asegura que el elemento ocupe to do el espacio disponible
+        justifyContent: 'center', // Centra el texto verticalmente
+        alignItems: 'center', // Centra el texto horizontalmente
+    },
 });

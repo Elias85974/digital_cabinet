@@ -75,7 +75,7 @@ export default function Product({navigation}) {
 
         const category = await AsyncStorage.getItem('category');
         const reduceProd = await InventoryApi.getProductsFromHouseAndCategory(houseId, category);
-        setSuggestions( reduceProd)
+        setSuggestions(reduceProd)
         console.log('reduceProd con getProdHC:', reduceProd);
         //navigation.navigate('Product'); // ni siquiera con navigate me cansé estoy hace 5 horas con esto,
         // no logro hacer que se refresher bien los productos con la reduction,
@@ -96,10 +96,9 @@ export default function Product({navigation}) {
 
     const handleSuggestionPress = (suggestion) => {
         setQuery(suggestion.product.nombre);
-        setSuggestions([]);
         setSelectedProduct(suggestion);
         setModalVisible2(true);
-
+        setQuery('');
     };
 
     const renderItem = ({ item }) => {

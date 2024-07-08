@@ -57,7 +57,7 @@ export default function FilterModal(props) {
     }
 
     const sortByExpiry = (products, expiry) => {
-        if (expiry === 'asc') {
+        if (expiry === 'desc') {
             return products.sort(compareDates);
         }
         return products.sort(compareDates).reverse();

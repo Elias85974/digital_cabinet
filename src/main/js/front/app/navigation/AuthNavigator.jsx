@@ -42,6 +42,7 @@ function AuthNavigator() {
                 <Stack.Screen options={{headerShown: false}} name="LowOnStock" component={LowOnStockProducts} />
                 <Stack.Screen options={{headerShown: false}} name="Settings" component={Settings} />
                 <Stack.Screen options={{headerShown: false}} name="Chat" component={Chat} />
+
             </Stack.Navigator>
     );
 }

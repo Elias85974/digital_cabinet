@@ -68,7 +68,7 @@ export default function Inbox({navigation}) {
                                     </Collapsible>
                                 </>
                             )}
-                            {inboxSize.chatNotificationSize > 0 && (
+                            {/*{inboxSize.chatNotificationSize > 0 && (
                                 <>
                                     <TouchableOpacity onPress={() => setChatNotificationCollapsed(!isChatNotificationCollapsed)}>
                                         <Text style={inboxStyles.typesContainer}>Chat Invitations</Text>
@@ -77,7 +77,7 @@ export default function Inbox({navigation}) {
                                         <HouseInvitation/>
                                     </Collapsible>
                                 </>
-                            )}
+                            )}*/}
                         </View>
                     </View>
                 )}

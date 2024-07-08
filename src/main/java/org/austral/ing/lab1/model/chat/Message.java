@@ -23,4 +23,41 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User sender;
+
+    public Message() {
+    }
+
+    public Message(String content, Chat chat, User sender) {
+        this.content = content;
+        this.chat = chat;
+        this.sender = sender;
+    }
+
+    public Long getMessageId() {
+        return messageId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Chat getChat() {
+        return chat;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
 }

@@ -42,6 +42,13 @@ public class Houses {
                 .collect(Collectors.toList());
     }
 
+    // Get all the users living in the house
+    public List<User> getHouseUsers(Long casaId) {
+        return entityManager.createQuery("SELECT u FROM User u JOIN u.livesIns l WHERE l.casa.casa_ID = :casaId", User.class)
+                .setParameter("casaId", casaId)
+                .getResultList();
+    }
+
     public House persist(House house) {
         entityManager.persist(house);
         return house;

@@ -23,6 +23,7 @@ public class Application {
         new InboxController(entityManagerFactory).init();
         new ProductController(entityManagerFactory).init();
         new CategoryController(entityManagerFactory).init();
+        new ChatController(entityManagerFactory).init();
 
         Spark.init();
 

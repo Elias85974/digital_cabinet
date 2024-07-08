@@ -22,9 +22,6 @@ public class Chat {
     @JoinColumn(name = "CASA_ID", referencedColumnName = "CASA_ID")
     private House house;
 
-    @Column(name = "MESSAGE", nullable = false)
-    private String message;
-
     @OneToMany(mappedBy = "chat")
     private List<Message> messages = new ArrayList<>();
 
@@ -41,14 +38,6 @@ public class Chat {
 
     public String getChatName() {
         return chatName;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public List<Message> getMessages() {

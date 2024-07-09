@@ -25,7 +25,7 @@ export default function Product({navigation}) {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
-    const [categoryName, setCategoryName] = AsyncStorage.getItem('categoryName');
+    const [categoryName, setCategoryName] = useState('')
 
     const [reduceProduct, setReduceProduct] = useState([]);
 
@@ -37,14 +37,19 @@ export default function Product({navigation}) {
                 }).catch(e => console.log("Error loading products"));
                 setReduceProduct(newProds);
             }
+            const loadCategoryName = async () => {
+                const name = await AsyncStorage.getItem('categoryName');
+                setCategoryName(name);
+            }
             fetchProds();
+            loadCategoryName();
         }
         console.log('refresh key puto cambiate', refreshKey)
     }, [isFocused, refreshKey]);
 
     const getProducts = async () => {
         try {
-            const category = await AsyncStorage.getItem('category');
+            const category = await AsyncStorage.getItem('categoryName');
             const houseId = await AsyncStorage.getItem('houseId');
             const products = await InventoryApi.getProductsFromHouseAndCategory(houseId, category);
             console.log('productos cargados',products);

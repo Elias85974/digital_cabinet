@@ -76,7 +76,7 @@ export default function FilterModal(props) {
 
     const filterByCategory = (products, category) => {
         if (category) {
-            return products.filter(product => product.category === category);
+            return products.filter(product => product.category.nombre === category);
         }
         return products;
     }

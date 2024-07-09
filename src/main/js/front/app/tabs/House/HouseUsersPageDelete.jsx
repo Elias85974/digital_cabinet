@@ -7,6 +7,7 @@ import {AuthContext} from "../../context/AuthContext";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
+import {AntDesign} from "@expo/vector-icons";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -46,8 +47,9 @@ const HouseUsersPageDelete = ({ navigation }) => {
 
     const getHouseUsers = async () => {
         try {
+            const userId = await AsyncStorage.getItem('userId');
             const houseId = await AsyncStorage.getItem('houseId');
-            const houseUsers = await HousesApi.getUsersOfAHouse(houseId);
+            const houseUsers = await HousesApi.getUsersOfAHouse(houseId, userId);
             if (Array.isArray(houseUsers)) {
                 setUsers(houseUsers);
             } else {
@@ -75,7 +77,7 @@ const HouseUsersPageDelete = ({ navigation }) => {
             if (userId === currentUserId) {
                 navigation.navigate('Homes');
             }
-        }, 2500);
+        }, 1500);
 
         // Update the users list
         await getHouseUsers();
@@ -105,6 +107,15 @@ const HouseUsersPageDelete = ({ navigation }) => {
                 </View>
             </View>
             <p></p>
+            <View style={styles.deleteUsers}>
+                <Pressable style={{alignSelf:'center'}} onPress={ async () => {
+                    await handleDelete(userId);
+                }}>
+                    <Text style={styles.linkdel}>
+                        <AntDesign name="deleteuser" size={24} color="white" /> Leave {houseName}
+                    </Text>
+                </Pressable>
+            </View>
             </ScrollView>
         </SafeAreaView>
         <NavBar navigation={navigation}/>
@@ -122,6 +133,31 @@ const styles = StyleSheet.create({
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    deleteUsers: {
+        backgroundColor: '#4B5940',
+        borderRadius: 20,
+        width: 150,
+        height: 70,
+        alignSelf: 'center',
+        alignItems: 'center',
+    },
+    linkdel: {
+        marginTop: 10,
+        marginBottom: 10,
+        color: '#F2EFE9',
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 3, // Add border
+        borderColor: '#717336', // Set border color
+        padding: 10, // Add some padding so the text isn't right up against the border
+        backgroundColor: '#717336', // Set background color
+        width: 200, // Set width
+        alignSelf: 'center',
+        alignContent: 'center',
+        borderRadius: 100,
+        fontSize: 16,
     },
     container2: {
         flex: 4,

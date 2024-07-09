@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Pie } from 'react-chartjs-2';
-import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
-Chart.register(ArcElement, Tooltip, Legend);
+import React, {useEffect, useState} from 'react';
+import {Pie} from 'react-chartjs-2';
+import {ArcElement, Chart, Legend, Tooltip} from 'chart.js';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getInventoryValueByCategory } from '../../../api/piechart';
-import {View, Text, ScrollView, StyleSheet, SafeAreaView} from "react-native";
+import {getInventoryValueByCategory, getProductsFromHouseAndCategory} from '../../../api/piechart';
+import {Picker, SafeAreaView, ScrollView, StyleSheet, Text, View} from "react-native";
 import NavBar from "../../NavBar/NavBar";
 
-export const PieChartComponent = () => {
+Chart.register(ArcElement, Tooltip, Legend);
+
+export default function PieChartComponent({navigation}){
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [{
@@ -40,35 +41,88 @@ export const PieChartComponent = () => {
 
     });
 
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const houseId = await AsyncStorage.getItem('houseId');
+                if (houseId) {
+                    const inventoryValueResponse = await getInventoryValueByCategory(houseId);
+                    const fetchedCategories = Object.keys(inventoryValueResponse);
+                    console.log('Fetched categories:', fetchedCategories);
+                    setCategories(fetchedCategories);
+                    if (fetchedCategories.length > 0) {
+                        setSelectedCategory(fetchedCategories[0]);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const houseId = await AsyncStorage.getItem('houseId');
-                if (houseId) {
-                    const response = await getInventoryValueByCategory(houseId);
+                if (houseId && selectedCategory) {
+                    const response = await getProductsFromHouseAndCategory(houseId, selectedCategory);
                     console.log("Response received:", response);
-                    if (response && typeof response === 'object' && !Array.isArray(response)) {
-                        const dataArray = Object.entries(response).map(([category, value]) => ({
-                            category,
-                            value
-                        }));
+                    if (response && Array.isArray(response)) {
+                        const dataArray = response.map((item) => {
+                            console.log('Item:', item);
+                            const categoryName = selectedCategory; // Use the selectedCategory state
+                            const productName = item.product.nombre;
+                            return {
+                                product: productName,
+                                value: item.price,
+                            };
+                        });
+                        console.log('Data array:', dataArray);
                         // Calculate total value
                         const totalValue = dataArray.reduce((acc, item) => acc + item.value, 0);
                         // Calculate percentages and update labels with percentages
-                        const categoriesWithPercentages = dataArray.map(item => {
-                            const percentage = ((item.value / totalValue) * 100).toFixed(2); // Keep two decimal places
-                            return `${item.category} (${percentage}%)`;
+                        const categoriesWithPercentages = dataArray.map((item) => {
+                            const percentage = ((item.value / totalValue) * 100).toFixed(2);
+                            return `${item.product} (${percentage}%)`;
                         });
-                        const values = dataArray.map(item => item.value);
-                        setChartData({
+                        const values = dataArray.map((item) => item.value);
+                        const newChartData = {
                             labels: categoriesWithPercentages,
                             datasets: [{
-                                ...chartData.datasets[0],
+                                label: 'Total Value',
                                 data: values,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)',
+                                    'rgba(199, 199, 199, 0.2)',
+                                    'rgba(83, 102, 255, 0.2)',
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)',
+                                    'rgba(199, 199, 199, 1)',
+                                    'rgba(83, 102, 255, 1)',
+                                ],
+                                borderWidth: 1,
                             }],
-                        });
+                        };
+                        setChartData(newChartData);
                     } else {
-                        console.error('Expected an object but received:', response);
+                        console.error('Expected an array but received:', response);
                     }
                 }
             } catch (error) {
@@ -77,34 +131,106 @@ export const PieChartComponent = () => {
         };
 
         fetchData();
-    }, []);
+    }, [selectedCategory]);
 
-    const chartOptions = {
-        plugins: {
-            legend: {
-                position: 'left', // Position the legend on the left side of the chart
-            },
-        },
+    const handleInputChange = (name, value) => {
+        console.log('Selected category:', value);
+        setSelectedCategory(value);
+        if (value === 'totalValues') {
+            fetchTotalData(); // This function should fetch and aggregate data across all categories
+        } else {
+            fetchData(); // This function should fetch data for the selected category
+        }
     };
+
+    const fetchTotalData = async () => {
+        try {
+            const houseId = await AsyncStorage.getItem('houseId');
+            if (houseId) {
+                const response = await getInventoryValueByCategory(houseId);
+                if (response && typeof response === 'object' && !Array.isArray(response)) {
+                    const totalData = Object.entries(response).map(([category, value]) => ({
+                        category,
+                        value
+                    }));
+                    const totalValue = totalData.reduce((acc, item) => acc + item.value, 0);
+                    const categoriesWithPercentages = totalData.map(item => {
+                        const percentage = ((item.value / totalValue) * 100).toFixed(2);
+                        return `${item.category} (${percentage}%)`;
+                    });
+                    const values = totalData.map(item => item.value);
+                    const totalChartData = {
+                        labels: categoriesWithPercentages,
+                        datasets: [{
+                            label: 'Total Value',
+                            data: values,
+                            backgroundColor: chartData.datasets[0].backgroundColor,
+                            borderColor: chartData.datasets[0].borderColor,
+                            borderWidth: 1,
+                        }],
+                    };
+                    setChartData(totalChartData);
+                } else {
+                    console.error('Invalid response:', response);
+                }
+            } else {
+                console.error('No house ID found');
+            }
+        } catch (error) {
+            console.error('Error fetching inventory value by category:', error);
+        }
+    };
+
 
     return (
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                     <Text style={styles.title}>Inventory Value by Category</Text>
+                    <View style={styles.picker}>
+                        <Text style={styles.label}>Select Category:</Text>
+                        <Picker
+                            selectedValue={selectedCategory}
+                            onValueChange={(itemValue) => handleInputChange('category', itemValue)}
+                        >
+                            {categories.map((category, index) => (
+                                <Picker.Item key={index} label={category} value={category} />
+                            ))}
+                            <Picker.Item label="Total Values" value="totalValues" />
+                        </Picker>
+                    </View>
                     <View style={{width: '35%', alignSelf: 'center'}}>
-                        <Pie data={chartData} options={chartOptions}/>
+                        <Pie data={chartData} />
                     </View>
                 </ScrollView>
             </SafeAreaView>
-            <NavBar navigation={navigation}/>
+            <NavBar navigation={navigation} />
         </View>
     );
-};
 
-export default PieChartComponent;
+}
 
 const styles = StyleSheet.create({
+    pickerContainer: {
+        marginVertical: 20,
+        marginHorizontal: "auto",
+    },
+    picker:{
+        width: '50%',
+        alignSelf: 'center',
+        height: 60,
+        backgroundColor: '#717336',
+        borderColor: '#5d5e24',
+        borderWidth: 2,
+    },
+    label: {
+        fontSize: 16,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    chartContainer: {
+        marginVertical: 20,
+    },
     container: {
         height: '100%',
         width: '100%',

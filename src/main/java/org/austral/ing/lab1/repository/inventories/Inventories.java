@@ -57,15 +57,13 @@ public class Inventories {
         double totalValue = 0.0;
         for (Stock s : sameProductStocks) {
             totalQuantity += s.getCantidadVencimiento();
-            totalValue += s.getPrice() * s.getCantidadVencimiento();
+            totalValue += s.getPrice();
             if (nearestExpirationDate == null || s.getExpirationDate().before(nearestExpirationDate)) {
                 nearestExpirationDate = s.getExpirationDate();
             }
-        }
-        double averagePrice = totalQuantity > 0 ? totalValue / totalQuantity : 0;
-
+        };
         // Create a new ProductInfo object with the calculated values
-        return new ProductInfo(product, totalQuantity, nearestExpirationDate, averagePrice);
+        return new ProductInfo(product, totalQuantity, nearestExpirationDate, totalValue);
     }
 
     public Inventory persist(Inventory inventory) {

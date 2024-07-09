@@ -16,7 +16,7 @@ import HouseUsersPageDelete from "../tabs/House/HouseUsersPageDelete";
 import LowOnStockProducts from "../tabs/House/Product/LowOnStockProducts";
 import Settings from "../tabs/Settings/Settings";
 import Chat from "../tabs/UserThings/Chat/Chat";
-
+import GroupsChats from "../tabs/UserThings/GroupsChats";
 
 import Test from "../test.";
 import {NavigationContainer} from "@react-navigation/native";
@@ -42,6 +42,7 @@ function AuthNavigator() {
                 <Stack.Screen options={{headerShown: false}} name="LowOnStock" component={LowOnStockProducts} />
                 <Stack.Screen options={{headerShown: false}} name="Settings" component={Settings} />
                 <Stack.Screen options={{headerShown: false}} name="Chat" component={Chat} />
+                <Stack.Screen options={{headerShown: false}} name="GroupsChats" component={GroupsChats} />
 
             </Stack.Navigator>
     );

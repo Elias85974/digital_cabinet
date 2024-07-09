@@ -17,6 +17,7 @@ public class ChatController {
     }
 
     public void init() {
+
         // Route to get the chats of a user
         Spark.get("/chat/:userId", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();

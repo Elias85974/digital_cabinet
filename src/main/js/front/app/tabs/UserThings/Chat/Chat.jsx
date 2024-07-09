@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Button, TextInput, Pressable, ScrollView, SafeAreaView} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {ChatApi} from "../../../Api";
@@ -12,9 +12,22 @@ export default function Chat({navigation}) {
   const [userId, setUserId] = useState('');
   const isFocused = useIsFocused();
 
+  const [chatName, setChatName] = useState('');
+
+
   useEffect(() => {
+    const loadChatName = async () => {
+      const name = await AsyncStorage.getItem('chatName');
+      setChatName(name);
+    }
+
     if (isFocused) {
-      loadMessages().then(r => console.log('Messages loaded'), e => console.error('Error loading messages', e));
+      loadMessages().then(() => {
+        console.log('Messages loaded');
+        loadChatName();
+      }, e => console.error('Error loading messages', e));
+    } else {
+      loadChatName();
     }
   }, [isFocused]);
 
@@ -44,7 +57,7 @@ export default function Chat({navigation}) {
 return (
     <View style={styles.containers}>
       <SafeAreaView style={StyleSheet.absoluteFill}>
-        <Text style={styles.title}>Chat</Text>
+        <Text style={styles.title}>{chatName}</Text>
         <ScrollView style={[styles.contentContainer,{height: '50%'}]} showsVerticalScrollIndicator={false}>
         <View style={[chatsStyles.container]}>
               {messages.map((msg, index) => (

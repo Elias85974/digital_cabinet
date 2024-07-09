@@ -36,7 +36,7 @@ export default function Inbox({navigation}) {
     return (
     <View style={inboxStyles.container}>
         <SafeAreaView style={StyleSheet.absoluteFill}>
-            <ScrollView style={inboxStyles.contentContainer} showsVerticalScrollIndicator={false}>
+            <ScrollView style={[inboxStyles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <Text style={inboxStyles.title}>Inbox</Text>
                 {isInboxEmpty() && (
                     <View style={inboxStyles.contentWishList}>

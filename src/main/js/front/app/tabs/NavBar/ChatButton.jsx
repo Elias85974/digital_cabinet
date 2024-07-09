@@ -6,7 +6,7 @@ import {Ionicons} from "@expo/vector-icons";
 const ChatButton = ({navigation}) => {
 
     const handleGoBack = () => {
-        navigation.navigate('Chat');
+        navigation.navigate('GroupsChats');
     }
 
     return (

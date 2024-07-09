@@ -55,12 +55,12 @@ export const chatsStyles = StyleSheet.create({
         lineHeight: 80,
     },
     info: {
-        fontSize: 25,
+        fontSize: 45,
         fontFamily: 'lucida grande',
         textAlign: 'center',
         marginTop: 20,
         marginBottom: 20,
-        color: '#BFAC9B',
+        color: '#3b0317',
         lineHeight: 30,
     },
     linksContainer: {
@@ -86,6 +86,10 @@ export const chatsStyles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 5,
+        width: '60%',
+        alignSelf: 'center',
+        alignContent: 'center',
+        justifyContent: 'space-evenly',
     },
     statusInd: {
         width: 10,

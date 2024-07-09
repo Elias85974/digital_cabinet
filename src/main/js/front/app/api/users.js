@@ -100,25 +100,6 @@ export const loginUser = async (credentials) => {
     }
 };
 
-/*export const authentication = async() => {
-    try {
-        const data = localStorage.getItem('myDataKey');
-        let parsedData = JSON.parse(data);
-        const response = await fetch(`${API_URL}/auth`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Token': parsedData.token,
-                'Email': parsedData.email
-            },
-        })
-        console.log(response);
-        return response.status === 200;
-    } catch (error) {
-        console.error("Failed to authenticate user:", error);
-        throw error;
-    }
-}*/
 
 export const getUserHouses = async (userId) => {
     try {

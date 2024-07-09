@@ -4,7 +4,7 @@ import {UsersApi} from '../../Api';
 import ModalAlert from "../Contents/ModalAlert";
 
 export default function RegisterPage({navigation}) {
-    let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: ''});
+    let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: '', edad: '', telefono: ''});
 
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
@@ -18,7 +18,8 @@ export default function RegisterPage({navigation}) {
 
     const handleCreateUser = async () => {
         try {
-            if (newUser.mail && newUser.nombre && newUser.apellido && newUser.password) {
+            if (newUser.mail && newUser.nombre && newUser.apellido
+                && newUser.edad && newUser.telefono && newUser.password) {
                 if (!isEmail(newUser.mail)) {
                     setModalMessage("Incorrect email format. Please try again."); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
@@ -31,7 +32,7 @@ export default function RegisterPage({navigation}) {
                         setModalVisible(false);
                         // Navega a la siguiente página después de un retraso
                         navigation.navigate('LoginPage');
-                    }, 5000);
+                    }, 2500);
                 }
             }
             else {
@@ -39,7 +40,7 @@ export default function RegisterPage({navigation}) {
                 setModalVisible(true);
 
             }
-            setNewUser({mail: '', nombre: '', apellido: '', password: ''});
+            setNewUser({mail: '', nombre: '', apellido: '', password: '', edad: '', telefono: ''});
         } catch (error) {
             console.log("Error creating user:", error);
         }
@@ -70,10 +71,20 @@ export default function RegisterPage({navigation}) {
                                    onChangeText={(value) => handleInputChange('apellido', value)}
                         />
                         <TextInput style={styles.input}
-                                   secureTextEntry={true}
-                                   placeholder="Password"
-                                   value={newUser.password}
-                                   onChangeText={(value) => handleInputChange('password', value)}
+                                   placeholder="Edad"
+                                   value={newUser.edad}
+                                   onChangeText={(value) => handleInputChange('edad', value)}
+                        />
+                        <TextInput style={styles.input}
+                                   placeholder="Teléfono"
+                                   value={newUser.telefono}
+                                   onChangeText={(value) => handleInputChange('telefono', value)}
+                        />
+                        <TextInput style={styles.input}
+                                     secureTextEntry={true}
+                                     placeholder="Password"
+                                     value={newUser.password}
+                                     onChangeText={(value) => handleInputChange('password', value)}
                         />
                         <Pressable style={styles.link} onPress={handleCreateUser}>
                             <Text style={{color: 'white', fontSize: 16}} >Create User</Text>

@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Settings = () => {
+export default function Settings({navigation}) {
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Settings</Text>
@@ -23,5 +25,3 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
-
-export default Settings;

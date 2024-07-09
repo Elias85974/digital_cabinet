@@ -4,6 +4,7 @@ export const settingStyles = StyleSheet.create({
     container: {
         width: '100%',
         height: '100%',
+        padding: 50,
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -25,4 +26,18 @@ export const settingStyles = StyleSheet.create({
         borderRadius: 100,
         fontSize: 16,
     },
+    title: {
+        fontSize: 40,
+        textAlign: 'center',
+        margin: 10,
+    },
+    typesContainer:{
+        color: 'white',
+        textAlign: 'center',
+        backgroundColor: '#3b0317',
+        padding: 10,
+        borderRadius: 100,
+        alignItems: 'center',
+        margin: 5,
+    }
 });

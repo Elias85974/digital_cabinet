@@ -14,16 +14,27 @@ export default function House({navigation}) {
     const [categories, setCategories] = useState([]);
     const isFocused = useIsFocused();
 
+    const [houseName, setHouseName] = useState('');
 
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
     useEffect(() => {
-        if (isFocused){
-            getProducts().then(r => console.log("Products loaded")).catch(e => console.log("Error loading products"));
-        } else {
+        const loadHouseName = async () => {
+            const name = await AsyncStorage.getItem('houseName');
+            setHouseName(name);
+        }
+
+        if (isFocused) {
+            getProducts().then(() => {
+                console.log('Products loaded');
+                loadHouseName();
+            }, e => console.error('Error loading Products', e));
+        }
+        else {
             setQuery('');
             setSuggestions(categories);
+            loadHouseName();
         }
     }, [isFocused]);
 
@@ -75,7 +86,7 @@ export default function House({navigation}) {
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
 
-                    <Text style={styles.title}>Welcome Home!</Text>
+                    <Text style={styles.title}>Welcome to {houseName}!</Text>
                     <View style={styles.logInCont}>
                         <Text style={styles.info}>Select a Category</Text>
                         <View style={styles.container2}>

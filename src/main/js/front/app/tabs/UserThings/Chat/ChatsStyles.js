@@ -55,7 +55,7 @@ export const chatsStyles = StyleSheet.create({
         lineHeight: 80,
     },
     info: {
-        fontSize: 45,
+        fontSize: 35,
         fontFamily: 'lucida grande',
         textAlign: 'center',
         marginTop: 20,

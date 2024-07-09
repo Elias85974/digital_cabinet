@@ -22,17 +22,6 @@ export default function Homes({navigation}) {
             const userId = await AsyncStorage.getItem('userId');
             const userHouses = await UsersApi.getUserHouses(userId);
 
-            /*
-            // Iterar sobre userHouses y guardar cada houseId en AsyncStorage
-            for (let i = 0; i < userHouses.length; i++) {
-                const houseKey = `house${i + 1}`; // Generar una clave única para cada casa
-                let id = userHouses[i].houseId;
-                console.log(id)
-                await AsyncStorage.setItem(houseKey, id.toString());
-            }
-
-             */
-
             setHouses(userHouses);
         } catch (error) {
             console.log("Error getting houses:", error);
@@ -52,6 +41,7 @@ export default function Homes({navigation}) {
                                     <Pressable onPress={async () => {
                                         // Obtener el houseId de AsyncStorage
                                         await AsyncStorage.setItem('houseId', house.houseId.toString());
+                                        await AsyncStorage.setItem('houseName', house.name);
                                         // Navegar a la página House con el houseId correcto
                                         navigation.navigate("House");
                                     }}>

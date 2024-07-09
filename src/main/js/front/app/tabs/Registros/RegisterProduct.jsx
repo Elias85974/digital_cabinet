@@ -78,10 +78,14 @@ export default function RegisterProduct({navigation}) {
         setCategories(fetchedCategories);
     };
 
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
 
     const handleInputChange = (field, value) => {
-        console.log(`handleInputChange called with field: ${field} and value: ${value}`);
-        setNewProduct({...newProduct, [field]: value});
+        // console.log(`handleInputChange called with field: ${field} and value: ${value}`);
+
+        setNewProduct({...newProduct, [field]: capitalizeFirstLetter(value)});
     };
 
     const handleCategoryChange = async () => {

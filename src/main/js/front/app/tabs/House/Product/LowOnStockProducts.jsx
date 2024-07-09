@@ -118,10 +118,9 @@ export default function LowOnStockProducts({navigation}) {
     return (
         <View style={styles.container} key={refreshKey}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                     <View>
-                            <GoBackButton navigation={navigation}/>
-                            <Text style={styles.title}>Low on Stock Products</Text>
+                        <GoBackButton navigation={navigation}/>
+                        <Text style={styles.title}>Low on Stock Products</Text>
                         <View style={styles.container2}>
                             <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 3, alignItems: 'center',
                                 flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
@@ -134,12 +133,14 @@ export default function LowOnStockProducts({navigation}) {
                                 />
                                 <FilterModal products={products} onFilter={handleFilteredProducts} />
                             </View>
-                            <FlatList
-                                data={filteredProducts.length > 0 ? filteredProducts : products}
-                                renderItem={renderItem}
-                                keyExtractor={(item, index) => index.toString()}
-                                numColumns={2}
-                            />
+                            <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
+                                <FlatList
+                                    data={filteredProducts.length > 0 ? filteredProducts : products}
+                                    renderItem={renderItem}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    numColumns={2}
+                                />
+                            </ScrollView>
                         </View>
                         <Modal
                             animationType="slide"
@@ -197,7 +198,6 @@ export default function LowOnStockProducts({navigation}) {
                             </View>
                         </Modal>
                     </View>
-                </ScrollView>
             </SafeAreaView>
             <NavBar navigation={navigation}/>
         </View>

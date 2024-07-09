@@ -19,8 +19,12 @@ export default function RegisterHome({navigation}) {
         /^[A-Z0-9.]+\s+[A-Z0-9.]+\s+[0-9]+$/i.test(direccion);
     //!! chequear mas de 1 palabra como se hace!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
 
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
+
     const handleInputChange = (field, value) => {
-        setNewHouse({...newHouse, [field]: value});
+        setNewHouse({...newHouse, [field]: capitalizeFirstLetter(value)});
     };
 
     const handleCreateHome = async () => {

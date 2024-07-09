@@ -13,8 +13,12 @@ export default function RegisterPage({navigation}) {
     const isEmail = (email) =>
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
 
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
+
     const handleInputChange = (field, value) => {
-        setNewUser({...newUser, [field]: value});
+        setNewUser({...newUser, [field]: capitalizeFirstLetter(value)});
     };
 
     const handleCreateUser = async () => {

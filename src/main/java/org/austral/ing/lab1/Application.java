@@ -2,6 +2,7 @@ package org.austral.ing.lab1;
 
 import org.austral.ing.lab1.controller.*;
 
+import spark.HaltException;
 import spark.Spark;
 
 import javax.persistence.EntityManagerFactory;
@@ -25,7 +26,25 @@ public class Application {
         new CategoryController(entityManagerFactory).init();
         new ChatController(entityManagerFactory).init();
 
-        Spark.init();
+        // Apply authentication middleware to protected routes
+        Spark.before((request, response) -> {
+            String path = request.pathInfo();
+            // Allow requests to /users and /login to bypass authentication
+            if (!path.startsWith("/users") && !path.startsWith("/login") && !path.startsWith("/logout")) {
+                TokenValidator.authenticateRequest(request, response);
+            }
+        });
+
+        // Global exception handler for HaltException
+        Spark.exception(HaltException.class, (exception, request, response) -> {
+            // Log the exception or perform additional actions
+            System.out.println("HaltException caught: " + exception.getMessage());
+            System.out.println(exception.statusCode());
+            System.out.println(exception.body());
+            // Optionally modify the response
+            response.status(403);
+            response.body("Unauthorized");
+        });
 
         Spark.options("/*", (req, res) -> {
             String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
@@ -46,5 +65,7 @@ public class Application {
             res.header("Access-Control-Allow-Headers", "*");
             res.type("application/json");
         });
+
+        Spark.init();
     }
 }

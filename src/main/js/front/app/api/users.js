@@ -100,6 +100,26 @@ export const loginUser = async (credentials) => {
     }
 };
 
+// Function to log out a User
+export const logoutUser = async () => {
+    try {
+        const response = await fetch(`${API_URL}/logout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to logout user:", error);
+        throw error;
+    }
+};
+
 /*export const authentication = async() => {
     try {
         const data = localStorage.getItem('myDataKey');

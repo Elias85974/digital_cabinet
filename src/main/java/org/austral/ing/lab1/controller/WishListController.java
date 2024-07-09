@@ -2,6 +2,7 @@ package org.austral.ing.lab1.controller;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.repository.users.Users;
 import org.austral.ing.lab1.repository.users.WishLists;
@@ -24,11 +25,11 @@ public class WishListController {
 
     public void init() {
         // Route to get the products of the user's wishlist
-        Spark.get("/wishList/:userId", (req, resp) -> {
+        Spark.get("/wishList", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users usersRepo = new Users(entityManager);
             try {
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
 
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
@@ -55,12 +56,13 @@ public class WishListController {
         });
 
         // Route to add a product to the user's wishlist
-        Spark.post("/wishList/:userId/:product", "application/json", (req, resp) -> {
+        Spark.put("/wishList", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users usersRepo = new Users(entityManager);
             try {
-                Long userId = Long.parseLong(req.params("userId"));
-                String product = req.params("product");
+                Long userId = Long.parseLong(req.headers("UserId"));
+                JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
+                String product = jsonObject.get("productName").getAsString();
 
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
@@ -82,12 +84,12 @@ public class WishListController {
         });
 
         // Route to remove products from the user's wishlist
-        Spark.delete("/wishList/:userId", "application/json", (req, resp) -> {
+        Spark.delete("/wishList", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             WishLists wishListsRepo = new WishLists(entityManager);
             Users usersRepo = new Users(entityManager);
             try {
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
                 // Parse the JSON array as a List of Maps
                 List<Map<String, Object>> productsList = new Gson().fromJson(req.body(), new TypeToken<List<Map<String, Object>>>(){}.getType());
                 // Extract the productName values

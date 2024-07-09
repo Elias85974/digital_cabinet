@@ -18,8 +18,7 @@ export function ExpirationNotification({ navigation, setExpirationsLength }) {
     }, [isFocused]);
 
     const loadStocks = async () => {
-        const userId = await AsyncStorage.getItem('userId');
-        const nearExpirationStocks = await InboxApi.getNearExpirationStocks(userId);
+        const nearExpirationStocks = await InboxApi.getNearExpirationStocks(navigation);
         console.log(nearExpirationStocks);
         setStocks(nearExpirationStocks);
         setExpirationsLength(nearExpirationStocks.length);

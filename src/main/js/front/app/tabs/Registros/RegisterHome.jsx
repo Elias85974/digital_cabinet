@@ -29,8 +29,7 @@ export default function RegisterHome({navigation}) {
                     setModalMessage("Incorrect house format. Please try again."); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
                 } else {
-                    const userId = await AsyncStorage.getItem('userId');
-                    await HousesApi.createHouse(newHouse, userId);
+                    await HousesApi.createHouse(newHouse, navigation);
                     setModalMessage("House created successfully!"); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
                     setNewHouse(prevState => ({...prevState, nombre: '', direccion: ''}));

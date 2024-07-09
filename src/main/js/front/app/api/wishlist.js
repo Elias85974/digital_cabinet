@@ -1,6 +1,7 @@
 import { API_URL } from '../constants';
+import {FetchApi} from "../Api";
 
-export const getWishList = async (userId) => {
+export const getWishList2 = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/wishList/${userId}`, {
             method: 'GET',
@@ -19,7 +20,11 @@ export const getWishList = async (userId) => {
     }
 }
 
-export const addProductToWishList = async (product, userId) => {
+export const getWishList = async (navigation) => {
+    return await FetchApi.getFetch(`/wishList`, 'Failed to get wish list:', navigation);
+}
+
+export const addProductToWishList2 = async (product, userId) => {
     try {
         const response = await fetch(`${API_URL}/wishList/${userId}/${product}`, {
             method: 'POST',
@@ -38,7 +43,11 @@ export const addProductToWishList = async (product, userId) => {
     }
 }
 
-export const deleteProductsFromWishList = async (products, userId) => {
+export const addProductToWishList = async (product, navigation) => {
+    return await FetchApi.putFetch({productName: product}, `/wishList`, 'Failed to add product to wish list:', navigation);
+}
+
+export const deleteProductsFromWishList2 = async (products, userId) => {
     try {
         const response = await fetch(`${API_URL}/wishList/${userId}`, {
             method: 'DELETE',
@@ -58,22 +67,6 @@ export const deleteProductsFromWishList = async (products, userId) => {
     }
 }
 
-export const updateProductInWishList = async (product) => {
-    try {
-        const response = await fetch(`${API_URL}/wishList/${product.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(product),
-        });
-        if (!response.ok) {
-            const errorMessage = await response.text();
-            throw new Error(errorMessage);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to update product in wish list:", error);
-        throw error;
-    }
+export const deleteProductsFromWishList = async (product, navigation) => {
+    return await FetchApi.deleteFetch(product, `/wishList`, 'Failed to delete product from wish list:', navigation);
 }

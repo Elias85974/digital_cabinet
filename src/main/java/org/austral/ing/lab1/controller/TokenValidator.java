@@ -1,4 +1,4 @@
-package org.austral.ing.lab1;
+package org.austral.ing.lab1.controller;
 
 import org.austral.ing.lab1.object.Token;
 import spark.Spark;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class TokenValidator {
     private static final Map<Long, Token> tokens = new HashMap<>();
-    private static final Integer TOKEN_EXPIRATION_MINUTES = 1;
+    private static final Integer TOKEN_EXPIRATION_MINUTES = 30;
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 

@@ -8,7 +8,6 @@ import NavBar from "../NavBar/NavBar";
 export default function Chat({navigation}) {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
-  const [userId, setUserId] = useState('');
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -18,23 +17,16 @@ export default function Chat({navigation}) {
   }, [isFocused]);
 
   const loadMessages = async() => {
-    let newUserId = userId;
-    if (userId === '') {
-      newUserId = await AsyncStorage.getItem('userId');
-      setUserId(newUserId);
-    }
     const chatId = await AsyncStorage.getItem('chatId');
-    const messages = await ChatApi.getMessages(chatId, newUserId);
+    const messages = await ChatApi.getMessages(chatId, navigation);
     console.log(messages);
     setMessages(messages);
   }
 
   const handleSendMessage = async(message) => {
-    console.log(userId);
     if (message.length > 0) {
-      const newUserId = await AsyncStorage.getItem('userId');
       const chatId = await AsyncStorage.getItem('chatId');
-      await ChatApi.sendMessage(chatId, newUserId, message);
+      await ChatApi.sendMessage(chatId, message);
       setMessage('');
       await loadMessages();
     }

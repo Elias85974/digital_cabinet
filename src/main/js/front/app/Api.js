@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
 
 // Api.js
@@ -9,7 +11,7 @@ import * as InventoryApi from './api/inventory';
 import * as WishlistApi from './api/wishlist';
 import * as InboxApi from './api/inbox';
 import * as ChatApi from './api/chat';
-import * as MessageApi from './api/message';
+import * as FetchApi from './api/fetchMethods';
 
 export {
     UsersApi,
@@ -20,5 +22,5 @@ export {
     WishlistApi,
     InboxApi,
     ChatApi,
-    MessageApi,
+    FetchApi,
 };

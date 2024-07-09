@@ -1,7 +1,8 @@
 import { API_URL } from '../constants';
+import {FetchApi} from "../Api";
 
 // Function to get the house invitations of a user
-export const getUsersHouseInvitations = async (userId) => {
+export const getUsersHouseInvitations2 = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/getHouseInvitations/${userId}`, {
             method: 'GET',
@@ -20,8 +21,12 @@ export const getUsersHouseInvitations = async (userId) => {
     }
 };
 
+export const getUsersHouseInvitations = async (navigation) => {
+    return await FetchApi.getFetch(`/inbox/getHouseInvitations`, 'Failed to get house invitations:', navigation);
+}
+
 // Function to get the near expirations products of the house of a user
-export const getNearExpirationStocks = async (userId) => {
+export const getNearExpirationStocks2 = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/getSoonToExpire/${userId}`, {
             method: 'GET',
@@ -40,8 +45,12 @@ export const getNearExpirationStocks = async (userId) => {
     }
 };
 
+export const getNearExpirationStocks = async (navigation) => {
+    return await FetchApi.getFetch(`/inbox/getSoonToExpire`, 'Failed to get near expiration stocks:', navigation);
+}
+
 // Function to receive chat notifications of a user
-export const getChatNotifications = async (userId) => {
+export const getChatNotifications2 = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/getChatNotifications/${userId}`, {
             method: 'GET',
@@ -60,22 +69,6 @@ export const getChatNotifications = async (userId) => {
     }
 };
 
-// Function to get the inbox size of a user
-export const getInboxSize = async (userId) => {
-    try {
-        const response = await fetch(`${API_URL}/getInboxSize/${userId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        if (!response.ok) {
-            const errorMessage = await response.text();
-            throw new Error(errorMessage);
-        }
-        return await response.json(); // This will be the inbox size
-    } catch (error) {
-        console.error("Failed to get inbox size:", error);
-        throw error;
-    }
-};
+export const getChatNotifications = async (navigation) => {
+    return await FetchApi.getFetch(`/inbox/getChatNotifications`, 'Failed to get chat notifications:', navigation);
+}

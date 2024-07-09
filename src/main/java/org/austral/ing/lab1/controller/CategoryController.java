@@ -18,6 +18,8 @@ public class CategoryController {
     }
 
     public void init() {
+
+        // Route to get all the categories from the database
         Spark.get("/categories", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Categories categoriesRepo = new Categories(entityManager);
@@ -38,7 +40,8 @@ public class CategoryController {
             }
         });
 
-        Spark.post("/categories", "application/json", (req, resp) -> {
+        // Route to create a new category
+        Spark.put("/categories", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Categories categoriesRepo = new Categories(entityManager);
             try {
@@ -49,7 +52,7 @@ public class CategoryController {
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
-                return category.asJson();
+                return "The category was created successfully";
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());
@@ -80,7 +83,6 @@ public class CategoryController {
         });
 
          */
-
 
         Spark.put("/categories/:name", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();

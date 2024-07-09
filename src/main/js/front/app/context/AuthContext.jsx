@@ -41,10 +41,10 @@ export function AuthProvider({ children }) {
 
     const signOut = async () => {
         try {
+            await UsersApi.logoutUser();
             await AsyncStorage.removeItem('userToken');
             await AsyncStorage.removeItem('email');
             await AsyncStorage.removeItem('userId');
-            await UsersApi.logoutUser();
             setUserToken(null);
             setEmail(null);
         } catch (e) {

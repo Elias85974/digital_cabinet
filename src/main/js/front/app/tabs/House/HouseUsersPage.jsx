@@ -36,15 +36,13 @@ const HouseUsersPage = ({ navigation }) => {
         // Regular expression for email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const houseId = await AsyncStorage.getItem('houseId');
-        const userId = await AsyncStorage.getItem('userId');
-        const token = await AsyncStorage.getItem('userToken');
 
         // Check if the email is valid
         if (emailRegex.test(inviteEmail)) {
             // If the email is valid, check if the user exists
             try {
                 // If the user exists, call the inviteUser function
-                await HousesApi.inviteUser({invitingUser: userId, invitedUser: inviteEmail, houseId: houseId});
+                await HousesApi.inviteUser({invitedUser: inviteEmail, houseId: houseId}, navigation);
                 setModalMessage("The invitation was sent"); // Muestra el modal en lugar de un alert
                 setModalVisible(true);
 

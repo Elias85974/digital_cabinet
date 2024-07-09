@@ -1,13 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, Text, View, SafeAreaView, ScrollView} from 'react-native';
-import Collapsible from 'react-native-collapsible';
+import {Text, View, SafeAreaView, ScrollView} from 'react-native';
 import { HouseInvitation } from './Notification/HouseInvitation';
 import { ExpirationNotification } from "./Notification/ExpirationNotification";
 import {inboxStyles} from "./Notification/InboxStyles";
-import Tuple from "../Contents/Tuple";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
-import {InboxApi} from "../../Api";
 import NavBar from "../NavBar/NavBar";
 import {ChatNotification} from "./Notification/ChatNotification";
 
@@ -21,13 +17,6 @@ export default function Inbox({navigation}) {
     useEffect(() => {
         setInboxSize(invitationsLength + expirationLength + chatLength);
     }, [isFocused, invitationsLength, expirationLength, chatLength]);
-
-    const loadInboxSize = async () => {
-        const userId = await AsyncStorage.getItem('userId');
-        const inboxSize = await InboxApi.getInboxSize(userId);
-        setInboxSize(inboxSize);
-        console.log(inboxSize);
-    }
 
     const isInboxEmpty = () => {
         return totalSize === 0;

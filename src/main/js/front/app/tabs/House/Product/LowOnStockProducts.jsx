@@ -12,11 +12,12 @@ import {
 } from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {InventoryApi } from "../../../Api";
+import {FetchApi, InventoryApi} from "../../../Api";
 import FilterModal from "../../Contents/FilterModal";
 import NavBar from "../../NavBar/NavBar";
 
 export default function LowOnStockProducts({navigation}) {
+    FetchApi.setNavigation(navigation);
     const [products, setProducts] = useState([]);
     const [modalVisible2, setModalVisible2] = useState(false);
     const [modalVisible3, setModalVisible3] = useState(false);
@@ -53,7 +54,7 @@ export default function LowOnStockProducts({navigation}) {
      const getProducts = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
-            const stock = await InventoryApi.getLowOnStockProducts(houseId);
+            const stock = await InventoryApi.getLowOnStockProducts(houseId, navigation);
             console.log("getProducts?",stock);
             setProducts(stock);
             setSuggestions(stock)
@@ -64,7 +65,7 @@ export default function LowOnStockProducts({navigation}) {
 
     const handleAddStock = async () => {
         const houseId = await AsyncStorage.getItem('houseId');
-        await InventoryApi.addStock(houseId, {productId: selectedProduct.product.producto_ID, quantity: quantityToAdd});
+        await InventoryApi.addLowOnStockProduct(houseId, {productId: selectedProduct.product.producto_ID, quantity: quantityToAdd}, navigation);
         setModalVisible3(false);
         setModalVisible2(false);
         setQuantityToAdd('');

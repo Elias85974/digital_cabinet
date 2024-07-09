@@ -1,7 +1,8 @@
 import { API_URL } from '../constants';
+import {FetchApi} from "../Api";
 
 // function to create a house
-export const createHouse = async (houseData, userId) => {
+export const createHouse2 = async (houseData, userId) => {
     try {
         const response = await fetch(`${API_URL}/houses/${userId}`, {
             method: 'POST',
@@ -27,8 +28,12 @@ export const createHouse = async (houseData, userId) => {
     }
 };
 
+export const createHouse = async (houseData, navigation) => {
+    return await FetchApi.putFetch(houseData, '/houses', 'Failed to create house:', navigation);
+}
+
 // Function to get the list of users of a house
-export const getUsersOfAHouse = async (houseId, userId) => {
+export const getUsersOfAHouse2 = async (houseId, userId) => {
     try {
         const response = await fetch(`${API_URL}/houses/${houseId}/users/${userId}`, {
             method: 'GET',
@@ -47,8 +52,12 @@ export const getUsersOfAHouse = async (houseId, userId) => {
     }
 }
 
+export const getUsersOfAHouse = async (houseId, navigation) => {
+    return await FetchApi.getFetch(`/houses/${houseId}/users`, 'Failed to get house users:', navigation);
+}
+
 // Function to invite a user to a house
-export const inviteUser = async (data) => {
+export const inviteUser2 = async (data) => {
     try {
         const response = await fetch(`${API_URL}/inviteUser`, {
             method: 'PUT',
@@ -69,8 +78,12 @@ export const inviteUser = async (data) => {
     }
 };
 
+export const inviteUser = async (data, navigation) => {
+    return await FetchApi.putFetch(data, '/houses/inviteUser', 'Failed to invite user:', navigation);
+}
+
 // Function to delete a user from a house
-export const deleteUserFromHouse = async (houseId, userId) => {
+export const deleteUserFromHouse2 = async (houseId, userId) => {
     try {
         const response = await fetch(`${API_URL}/houses/${houseId}/users/${userId}`, {
             method: 'DELETE',
@@ -86,8 +99,12 @@ export const deleteUserFromHouse = async (houseId, userId) => {
     }
 };
 
+export const deleteUserFromHouse = async (houseId, userId, navigation) => {
+    return await FetchApi.deleteFetch({}, `/houses/${houseId}/users/${userId}`, 'Failed to delete user from house:', navigation);
+}
+
 // Function to process invitations of the inbox
-export const processInvitations = async (invitation) => {
+export const processInvitations2 = async (invitation) => {
     // Invitations is an array of objects with the following structure:
     // {"userId": "user_id", "houseId": "house_id", "isAccepted": true_or_false}
     try {
@@ -108,3 +125,7 @@ export const processInvitations = async (invitation) => {
         throw error;
     }
 };
+
+export const processInvitation = async (invitation, navigation) => {
+    return await FetchApi.postFetch(invitation, '/houses/inbox/processInvitation', 'Failed to process invitations:', navigation);
+}

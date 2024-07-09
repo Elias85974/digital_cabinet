@@ -1,6 +1,7 @@
 import { API_URL } from '../constants';
+import {FetchApi} from "../Api";
 
-export const getCategories = async () => {
+export const getCategories2 = async () => {
     try {
         const response = await fetch(`${API_URL}/categories`, {
             method: 'GET',
@@ -19,7 +20,11 @@ export const getCategories = async () => {
     }
 }
 
-export const createCategory = async (categoryData) => {
+export const getCategories = async (navigation) => {
+    return await FetchApi.getFetch('/categories', 'Failed to get categories:', navigation);
+}
+
+export const createCategory2 = async (categoryData) => {
     try {
         const response = await fetch(`${API_URL}/categories`, {
             method: 'POST',
@@ -37,4 +42,8 @@ export const createCategory = async (categoryData) => {
         console.error("Failed to create category:", error);
         throw error;
     }
+}
+
+export const createCategory = async (categoryData, navigation) => {
+    return await FetchApi.putFetch(categoryData, '/categories', 'Failed to create category:', navigation);
 }

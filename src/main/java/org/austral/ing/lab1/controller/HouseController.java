@@ -34,16 +34,16 @@ public class HouseController {
 
     public void init() {
         // Route to create a house of a given user
-        Spark.post("/houses/:userID", "application/json", (req, resp) -> {
+        Spark.put("/houses", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             housesRepo = new Houses(entityManager);
             try {
-                final Long userId = Long.valueOf(req.params("userID"));
+                final Long userId = Long.valueOf(req.headers("UserId"));
                 final House house = House.fromJson(req.body());
                 housesRepo.createUserHouse(house, userId);
                 resp.type("application/json");
                 resp.status(201);
-                return resp;
+                return "House created successfully";
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());
@@ -54,13 +54,13 @@ public class HouseController {
         });
 
         // Route to invite a user to a house
-        Spark.put("/inviteUser", "application/json", (req, resp) -> {
+        Spark.put("/houses/inviteUser", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             usersRepo = new Users(entityManager);
             housesRepo = new Houses(entityManager);
             try {
                 JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
-                String userId = jsonObject.get("invitingUser").getAsString();
+                Long userId = Long.parseLong(req.headers("UserId"));
                 String invitedUserEmail = jsonObject.get("invitedUser").getAsString();
                 Long houseId = jsonObject.get("houseId").getAsLong();
 
@@ -127,7 +127,7 @@ public class HouseController {
             try {
                 JsonObject invitationJson = new Gson().fromJson(req.body(), JsonObject.class);
 
-                Long userId = invitationJson.get("userId").getAsLong();
+                Long userId = Long.parseLong(req.headers("UserId"));
                 Long houseId = invitationJson.get("houseId").getAsLong();
                 boolean isAccepted = invitationJson.get("isAccepted").getAsBoolean();
 
@@ -201,12 +201,12 @@ public class HouseController {
         });
 
         // Route to get the users of a house
-        Spark.get("/houses/:houseId/users/:userId", (req, resp) -> {
+        Spark.get("/houses/:houseId/users", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             housesRepo = new Houses(entityManager);
             try {
                 Long houseId = Long.parseLong(req.params("houseId"));
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
 
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();

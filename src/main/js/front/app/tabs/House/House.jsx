@@ -32,7 +32,7 @@ export default function House({navigation}) {
             const houseId = await AsyncStorage.getItem('houseId');
 
             console.log('house id is:', houseId);
-            const categories = await InventoryApi.getHouseInventory(houseId);
+            const categories = await InventoryApi.getHouseInventory(houseId, navigation);
             console.log('categories are:', categories);
 
             setCategories(categories);

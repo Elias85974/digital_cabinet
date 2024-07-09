@@ -1,8 +1,9 @@
 import { API_URL } from '../constants';
+import {FetchApi} from "../Api";
 
-export const getMessages = async (chatId, userId) => {
+export const getMessages2 = async (chatId) => {
     try {
-        const response = await fetch(`${API_URL}/chat/${1}/messages/${userId}`, {
+        const response = await fetch(`${API_URL}/chat/${chatId}/messages`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -19,7 +20,11 @@ export const getMessages = async (chatId, userId) => {
     }
 }
 
-export const sendMessage = async (chatId, userId, message) => {
+export const getMessages = async (chatId, navigation) => {
+    return await FetchApi.getFetch(`/chat/${chatId}/messages`, 'Failed to get messages:', navigation);
+}
+
+export const sendMessage2 = async (chatId, userId, message) => {
     try {
         const response = await fetch(`${API_URL}/chat/${1}/messages/${userId}`, {
             method: 'POST',
@@ -39,7 +44,11 @@ export const sendMessage = async (chatId, userId, message) => {
     }
 }
 
-export const getChatNotifications = async (userId) => {
+export const sendMessage = async (chatId, message, navigation) => {
+    return await FetchApi.postFetch(message, `/chat/${chatId}/messages`, 'Failed to send message:', navigation);
+}
+
+export const getChatNotifications2 = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/chat/${userId}/notifications`, {
             method: 'GET',
@@ -56,4 +65,8 @@ export const getChatNotifications = async (userId) => {
         console.error("Failed to get notifications:", error);
         throw error;
     }
+}
+
+export const getChatNotifications = async (navigation) => {
+    return await FetchApi.getFetch(`/chat/user/notifications`, 'Failed to get notifications:', navigation);
 }

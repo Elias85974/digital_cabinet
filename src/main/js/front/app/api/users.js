@@ -1,7 +1,9 @@
 import { API_URL } from '../constants';
+import {FetchApi} from "../Api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Function to create a user
-export const createUser = async (userData) => {
+export const createUser2 = async (userData) => {
     try {
         const response = await fetch(`${API_URL}/users`, {
             method: 'POST',
@@ -21,49 +23,20 @@ export const createUser = async (userData) => {
     }
 };
 
-// Function to edit a user
-export const editUser = async (userId, userData) => {
-    const token = localStorage.getItem('token');
-    try {
-        const response = await fetch(`${API_URL}/users/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
+export const createUser = async (userData) => {
+    await FetchApi.unauthenticatedPost(userData, '/register', 'Failed to create user:');
+}
 
-            },
-            body: JSON.stringify(userData),
-        });
-        if (!response.ok) {
-            const errorMessage = await response.text();
-            throw new Error(errorMessage);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to edit user:", error);
-        throw error;
-    }
-};
+export const editUser = async (userData, navigation) => {
+    await FetchApi.postFetch(userData, '/users/editUser', 'Failed to edit user:', navigation);
+}
 
-// Function to delete a user
-export const deleteUser = async (userId) => {
-    try {
-        const response = await fetch(`${API_URL}/users/${userId}`, {
-            method: 'DELETE',
-        });
-        if (!response.ok) {
-            const errorMessage = await response.text();
-            throw new Error(errorMessage);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to delete user:", error);
-        throw error;
-    }
-};
-
+export const deleteUser = async (navigation) => {
+    await FetchApi.deleteFetch({}, '/users/deleteUser', 'Failed to delete user:', navigation);
+}
 
 // Function to log in a User
-export const loginUser = async (credentials) => {
+export const loginUser2 = async (credentials) => {
     try {
         const response = await fetch(`${API_URL}/login`, {
             method: 'POST',
@@ -100,8 +73,12 @@ export const loginUser = async (credentials) => {
     }
 };
 
+export const loginUser = async (credentials) => {
+    return await FetchApi.unauthenticatedPost(credentials, '/login', 'Failed to login user:');
+}
+
 // Function to log out a User
-export const logoutUser = async () => {
+export const logoutUser2 = async () => {
     try {
         const response = await fetch(`${API_URL}/logout`, {
             method: 'POST',
@@ -119,6 +96,10 @@ export const logoutUser = async () => {
         throw error;
     }
 };
+
+export const logoutUser = async (navigation) => {
+    await FetchApi.deleteFetch({}, `/logout`, 'Failed to logout user:', navigation);
+}
 
 /*export const authentication = async() => {
     try {
@@ -140,7 +121,7 @@ export const logoutUser = async () => {
     }
 }*/
 
-export const getUserHouses = async (userId) => {
+export const getUserHouses2 = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/user/${userId}/houses`, {
             method: 'GET',
@@ -157,4 +138,8 @@ export const getUserHouses = async (userId) => {
         console.error("Failed to get user houses:", error);
         throw error;
     }
+}
+
+export const getUserHouses = async (navigation) => {
+    return await FetchApi.getFetch(`/users/user/getHouses`, 'Failed to get user houses:', navigation);
 }

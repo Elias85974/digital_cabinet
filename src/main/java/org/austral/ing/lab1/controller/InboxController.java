@@ -24,11 +24,11 @@ public class InboxController {
     public void init() {
 
         // Route to get the house invitations of a given user
-        Spark.get("/getHouseInvitations/:userId", (req, resp) -> {
+        Spark.get("/inbox/getHouseInvitations", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             HouseInvitations houseInvitations = new HouseInvitations(entityManager);
             try {
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
                 List<Map<String, Object>> inboxMessage = houseInvitations.getHousesByUserId(userId);
                 resp.status(200);
                 resp.type("application/json");
@@ -43,11 +43,11 @@ public class InboxController {
         });
 
         // Route to get the soon to expire products of a given user
-        Spark.get("/getSoonToExpire/:userId", (req, resp) -> {
+        Spark.get("/inbox/getSoonToExpire", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             NearExpirations expirationsRepo = new NearExpirations(entityManager);
             try {
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
                 List<ExpirationInfo> inboxMessage = expirationsRepo.getExpiringStocks(userId);
                 resp.status(200);
                 resp.type("application/json");
@@ -62,11 +62,11 @@ public class InboxController {
         });
 
         // Route to get the chat notifications of a user
-        Spark.get("/getChatNotifications/:userId", (req, resp) -> {
+        Spark.get("/inbox/getChatNotifications", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             ChatNotifications chatNotifications = new ChatNotifications(entityManager);
             try {
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
                 List<Map<String, Object>> inboxMessage = chatNotifications.getChatNotifications(userId);
                 resp.status(200);
                 resp.type("application/json");
@@ -80,12 +80,12 @@ public class InboxController {
             }
         });
 
-        // Route to get the sizes of the different notifications of a user
-        Spark.get("/getInboxSize/:userId", (req, resp) -> {
+        // Route to get the sizes of the different notifications of a user (unused)
+        Spark.get("/inbox/getInboxSize", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Notifications notifications = new Notifications(entityManager);
             try {
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
                 Map<String, Long> notificationCounts = notifications.getNotificationCounts(userId);
                 resp.status(200);
                 resp.type("application/json");

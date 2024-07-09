@@ -26,30 +26,11 @@ public class Application {
         new CategoryController(entityManagerFactory).init();
         new ChatController(entityManagerFactory).init();
 
-        // Apply authentication middleware to protected routes
-        Spark.before((request, response) -> {
-            String path = request.pathInfo();
-            // Allow requests to /users and /login to bypass authentication
-            if (!path.startsWith("/users") && !path.startsWith("/login") && !path.startsWith("/logout")) {
-                TokenValidator.authenticateRequest(request, response);
-            }
-        });
-
-        // Global exception handler for HaltException
-        Spark.exception(HaltException.class, (exception, request, response) -> {
-            // Log the exception or perform additional actions
-            System.out.println("HaltException caught: " + exception.getMessage());
-            System.out.println(exception.statusCode());
-            System.out.println(exception.body());
-            // Optionally modify the response
-            response.status(403);
-            response.body("Unauthorized");
-        });
-
         Spark.options("/*", (req, res) -> {
             String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
             if (accessControlRequestHeaders != null) {
-                res.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+                // Add UserId and Token to the list of allowed headers
+                res.header("Access-Control-Allow-Headers", accessControlRequestHeaders + ",UserId,Token");
             }
 
             String accessControlRequestMethod = req.headers("Access-Control-Request-Method");
@@ -62,8 +43,31 @@ public class Application {
 
         Spark.before((req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "*");
+            // Explicitly specify which headers are allowed
+            res.header("Access-Control-Allow-Headers", "Content-Type,UserId,Token");
             res.type("application/json");
+        });
+
+        // Apply authentication middleware to protected routes
+        Spark.before((request, response) -> {
+            if (!request.requestMethod().equals("OPTIONS")) {
+                String path = request.pathInfo();
+                // Allow requests to /users and /login and /logout to bypass authentication
+                if (!path.equals("/register") && !path.equals("/login") && !path.equals("/logout")) {
+                    TokenValidator.authenticateRequest(request, response);
+                }
+            }
+        });
+
+        // Global exception handler for HaltException
+        Spark.exception(HaltException.class, (exception, request, response) -> {
+            // Log the exception or perform additional actions
+            System.out.println("HaltException caught: " + exception.getMessage());
+            System.out.println(exception.statusCode());
+            System.out.println(exception.body());
+            // Optionally modify the response
+            response.status(403);
+            response.body("Unauthorized");
         });
 
         Spark.init();

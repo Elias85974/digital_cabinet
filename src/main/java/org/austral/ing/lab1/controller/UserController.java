@@ -3,7 +3,6 @@ package org.austral.ing.lab1.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import org.austral.ing.lab1.TokenValidator;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.repository.users.Users;
 import spark.Spark;
@@ -24,7 +23,7 @@ public class UserController {
     public void init() {
 
         // Route to create a user
-        Spark.post("/users", "application/json", (req, resp) -> {
+        Spark.post("/register", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);
             try {
@@ -155,11 +154,11 @@ public class UserController {
         });
 
         // Route to get the houses of a given user
-        Spark.get("/user/:userId/houses", (req, resp) -> {
+        Spark.get("/users/user/getHouses", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);
             try {
-                final String userId = req.params("userId");
+                final String userId = req.headers("UserId");
                 Optional<User> user = users.findById(Long.parseLong(userId));
 
                 if (user.isEmpty()) {

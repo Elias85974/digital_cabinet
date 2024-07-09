@@ -6,24 +6,24 @@ import {settingStyles} from "./SettingStyles";
 import {HouseEdit} from "./HouseEdit";
 import {Support} from "./Support";
 import LogoutButton from "../NavBar/LogoutButton";
+import WishlistButton from "../NavBar/WishlistButton";
+import InboxButton from "../NavBar/InboxButton";
+import GoBackButton from "../NavBar/GoBackButton";
 
 export default function Settings({navigation}) {
-  const handleGoBack = () => {
-    navigation.goBack();
-  }
 
   return (
       <View style={settingStyles.container}>
         <SafeAreaView style={StyleSheet.absoluteFill}>
           <ScrollView style={[settingStyles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-            <View style={{justifyContent:'space-evenly', padding: 50}}>
-              <Ionicons name="close" size={24} color="black" onPress={handleGoBack}/>
+              <GoBackButton navigation={navigation}/>
               <Text style={settingStyles.title}>Settings</Text>
-            </View>
             <View style={{flexDirection: 'column', justifyContent: 'center'}}>
               <UserAccount navigation={navigation}/>
               <HouseEdit navigation={navigation}/>
               <Support navigation={navigation}/>
+              <WishlistButton navigation={navigation}/>
+              <InboxButton navigation={navigation}/>
               <LogoutButton navigation={navigation}/>
             </View>
           </ScrollView>

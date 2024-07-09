@@ -7,6 +7,7 @@ import {AuthContext} from "../../context/AuthContext";
 import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../NavBar/NavBar";
 import {AntDesign, FontAwesome, FontAwesome5, FontAwesome6, Ionicons} from "@expo/vector-icons";
+import GoBackButton from "../NavBar/GoBackButton";
 
 
 export default function House({navigation}) {
@@ -67,7 +68,7 @@ export default function House({navigation}) {
     const handleSuggestionPress = async (suggestion) => {
         setQuery(suggestion);
         setSuggestions([]);
-        await AsyncStorage.setItem('category', suggestion);
+        await AsyncStorage.setItem('categoryName', suggestion);
         navigation.navigate("Product");
     };
 
@@ -85,8 +86,8 @@ export default function House({navigation}) {
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-
-                    <Text style={styles.title}>Welcome to {houseName}!</Text>
+                        <GoBackButton navigation={navigation}/>
+                        <Text style={styles.title}>Welcome to {houseName}!</Text>
                     <View style={styles.logInCont}>
                         <Text style={styles.info}>Select a Category</Text>
                         <View style={styles.container2}>
@@ -166,8 +167,7 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 30,
-        marginBottom: 50,
+        marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,

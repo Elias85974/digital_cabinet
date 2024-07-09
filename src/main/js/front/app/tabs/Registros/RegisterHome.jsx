@@ -5,6 +5,7 @@ import {AuthContext} from "../../context/AuthContext";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import GoBackButton from "../NavBar/GoBackButton";
 
 export default function RegisterHome({navigation}) {
     let [newHouse, setNewHouse] = useState({nombre: '', direccion: ''});
@@ -57,7 +58,8 @@ export default function RegisterHome({navigation}) {
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
-                    <Text style={styles.title}>Homes</Text>
+                        <GoBackButton navigation={navigation}/>
+                        <Text style={styles.title}>Register your Home</Text>
                     <View style={styles.signInCont}>
                         <Text style={styles.info}>Please fill in all fields to create your house</Text>
                         <TextInput style={styles.input}
@@ -130,8 +132,7 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 30,
-        marginBottom: 50,
+        marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,

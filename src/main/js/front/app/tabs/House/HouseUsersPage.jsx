@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, Button, TextInput, StyleSheet, ScrollView, Pressable, SafeAreaView} from 'react-native';
 import {HousesApi} from "../../Api";
 import {useIsFocused} from "@react-navigation/native";
@@ -8,6 +8,7 @@ import {AuthContext} from "../../context/AuthContext";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
 import {AntDesign} from "@expo/vector-icons";
+import GoBackButton from "../NavBar/GoBackButton";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -30,6 +31,16 @@ const HouseUsersPage = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
 
+    const [houseName, setHouseName] = useState('');
+
+    useEffect(() => {
+        const loadHouseName = async () => {
+            const name = await AsyncStorage.getItem('houseName');
+            setHouseName(name);
+        }
+
+        loadHouseName();
+    }, []);
 
     // Envío invitación a usuarios para mi casa
     const handleInvite = async () => {
@@ -66,7 +77,8 @@ const HouseUsersPage = ({ navigation }) => {
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)}/>
-                <Text style={styles.title}>Digital Cabinet</Text>
+                    <GoBackButton navigation={navigation}/>
+                    <Text style={styles.title}>Users in {houseName}</Text>
                 <View style={styles.addUser}>
                     <TextInput style={styles.input}
                                placeholder="Mail"
@@ -137,7 +149,6 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 30,
         marginBottom: 50,
         color: '#1B1A26',
         fontFamily: 'lucida grande',

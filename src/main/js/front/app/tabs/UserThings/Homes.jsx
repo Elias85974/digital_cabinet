@@ -5,6 +5,8 @@ import {AuthContext} from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../NavBar/NavBar";
+import GoBackButton from "../NavBar/GoBackButton";
+import LogoutButton from "../NavBar/LogoutButton";
 
 export default function Homes({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
@@ -32,16 +34,15 @@ export default function Homes({navigation}) {
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-                    <Text style={styles.title}>Digital Cabinet</Text>
+                        <Text style={styles.title}>Select your home</Text>
                     <View style={styles.logInCont}>
-                        <Text style={styles.info}>Select a home</Text>
                         <View style={styles.container2}>
                             {houses.map((house, index) => (
                                 <View key={index} style={styles.circle}>
                                     <Pressable onPress={async () => {
                                         // Obtener el houseId de AsyncStorage
                                         await AsyncStorage.setItem('houseId', house.houseId.toString());
-                                        await AsyncStorage.setItem('houseName', house.name);
+                                        await AsyncStorage.setItem('houseName', house.name.toString());
                                         // Navegar a la página House con el houseId correcto
                                         navigation.navigate("House");
                                     }}>
@@ -57,6 +58,7 @@ export default function Homes({navigation}) {
                             <Text style={styles.link}>Create a Home</Text>
                         </Pressable>
                     </View>
+                    <LogoutButton navigation={navigation}/>
                 </ScrollView>
             </SafeAreaView>
             <NavBar navigation={navigation}/>
@@ -124,8 +126,7 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 30,
-        marginBottom: 50,
+        marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,

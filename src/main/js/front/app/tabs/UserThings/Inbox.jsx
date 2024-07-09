@@ -10,6 +10,7 @@ import {useIsFocused} from "@react-navigation/native";
 import {InboxApi} from "../../Api";
 import NavBar from "../NavBar/NavBar";
 import {ChatNotification} from "./Notification/ChatNotification";
+import GoBackButton from "../NavBar/GoBackButton";
 
 export default function Inbox({navigation}) {
     const [invitationsLength, setInvitationsLength] = useState(0);
@@ -37,7 +38,8 @@ export default function Inbox({navigation}) {
     <View style={inboxStyles.container}>
         <SafeAreaView style={StyleSheet.absoluteFill}>
             <ScrollView style={[inboxStyles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-                <Text style={inboxStyles.title}>Inbox</Text>
+                    <GoBackButton navigation={navigation}/>
+                    <Text style={inboxStyles.title}>Inbox</Text>
                 {isInboxEmpty() && (
                     <View style={inboxStyles.contentWishList}>
                         <View style={inboxStyles.emptyInbox}>

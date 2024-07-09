@@ -7,18 +7,17 @@ import ChatButton from "./ChatButton";
 import InboxButton from "./InboxButton";
 import SettingsButton from "./SettingsButton";
 import WishlistButton from "./WishlistButton";
+import HomesButton from "./HomesButton";
 
 const NavBar = ({ navigation }) => {
   return (
     <View style={styles.bottom}>
         <View style={styles.navBar}>
-            <LogoutButton navigation={navigation}/>
+            <WishlistButton navigation={navigation}/>
 
             <ChatButton navigation={navigation} />
 
-            <WishlistButton navigation={navigation}/>
-
-            <GoBackButton navigation={navigation}/>
+            <HomesButton navigation={navigation}/>
 
             <InboxButton navigation={navigation}/>
 

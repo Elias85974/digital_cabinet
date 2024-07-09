@@ -16,6 +16,7 @@ import {InventoryApi } from "../../../Api";
 import FilterModal from "../../Contents/FilterModal";
 import NavBar from "../../NavBar/NavBar";
 import {FontAwesome} from "@expo/vector-icons";
+import GoBackButton from "../../NavBar/GoBackButton";
 
 export default function LowOnStockProducts({navigation}) {
     const [products, setProducts] = useState([]);
@@ -119,6 +120,8 @@ export default function LowOnStockProducts({navigation}) {
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                     <View>
+                            <GoBackButton navigation={navigation}/>
+                            <Text style={styles.title}>Low on Stock Products</Text>
                         <View style={styles.container2}>
                             <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 3, alignItems: 'center',
                                 flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
@@ -288,5 +291,14 @@ const styles = StyleSheet.create({
     },
     linksContainer: {
         marginTop: 20,
+    },
+    title: {
+        fontSize: 60,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
+        color: '#1B1A26',
+        fontFamily: 'lucida grande',
+        lineHeight: 80,
     },
 });

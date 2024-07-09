@@ -27,9 +27,13 @@ export const settingStyles = StyleSheet.create({
         fontSize: 16,
     },
     title: {
-        fontSize: 40,
+        fontSize: 60,
+        fontWeight: 'bold',
         textAlign: 'center',
-        margin: 10,
+        marginBottom: 30,
+        color: '#1B1A26',
+        fontFamily: 'lucida grande',
+        lineHeight: 80,
     },
     typesContainer:{
         color: 'white',

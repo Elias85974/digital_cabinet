@@ -1,20 +1,18 @@
 import React from 'react';
 import {Pressable, Text, Alert, StyleSheet, TouchableOpacity} from 'react-native';
-import {AuthContext} from "../../context/AuthContext";
-import {Ionicons} from "@expo/vector-icons";
+import {AntDesign, Ionicons} from "@expo/vector-icons";
 
-const LogoutButton = ({navigation}) => {
-    const {signOut} = React.useContext(AuthContext);
 
-    const handleSignOut = () => {
-        signOut()
-        navigation.navigate("Index")
+const HomesButton = ({navigation}) => {
+
+    const handleGoBack = () => {
+        navigation.navigate('House');
     }
 
     return (
-        <><TouchableOpacity onPress={handleSignOut}  style={styles.logoutButton}>
-            <Ionicons name="log-out-outline" size={24} color="white" />
-            <Text style={styles.logoutText}> Logout</Text>
+        <><TouchableOpacity onPress={handleGoBack}  style={styles.logoutButton}>
+            <AntDesign name="home" size={24} color="white" />
+            {/*<Text style={styles.logoutText}>Homes</Text>*/}
         </TouchableOpacity>
         </>
     );
@@ -32,7 +30,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,
-        flexDirection: 'row',
     },
     logoutText: {
         color: '#F2EFE9',
@@ -40,4 +37,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LogoutButton;
+export default HomesButton;

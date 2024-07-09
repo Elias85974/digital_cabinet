@@ -15,6 +15,7 @@ import {InventoryApi, ProductsApi} from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
+import GoBackButton from "../NavBar/GoBackButton";
 
 export default function AddProduct({navigation}) {
     const [products, setProducts] = useState([]);
@@ -125,7 +126,8 @@ export default function AddProduct({navigation}) {
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
-                    <Text style={styles.title}>Add products!</Text>
+                        <GoBackButton navigation={navigation}/>
+                        <Text style={styles.title}>Add products!</Text>
                     <View style={styles.addProd}>
                         <Text style={styles.info}>Select a Product</Text>
 
@@ -230,8 +232,7 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 20,
-        marginBottom: 40,
+        marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,

@@ -16,6 +16,7 @@ import {CategoriesApi, ProductsApi} from "../../Api";
 import ModalAlert from "../Contents/ModalAlert";
 import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../NavBar/NavBar";
+import GoBackButton from "../NavBar/GoBackButton";
 
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
@@ -161,7 +162,8 @@ export default function RegisterProduct({navigation}) {
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
-                    <Text style={styles.title}>Products</Text>
+                        <GoBackButton navigation={navigation}/>
+                        <Text style={styles.title}>Register your Product</Text>
                     <View style={styles.createprod}>
                         <Text style={styles.info}>Please fill in all fields to create your product</Text>
 
@@ -270,8 +272,7 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 30,
-        marginBottom: 50,
+        marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,

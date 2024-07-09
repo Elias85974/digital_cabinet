@@ -2,6 +2,7 @@ import React, {useState } from 'react';
 import {View, ScrollView, TextInput, Pressable, StyleSheet, Text, SafeAreaView} from 'react-native';
 import {UsersApi} from '../../Api';
 import ModalAlert from "../Contents/ModalAlert";
+import GoBackButton from "../NavBar/GoBackButton";
 
 export default function RegisterPage({navigation}) {
     let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: '', edad: '', telefono: ''});
@@ -52,6 +53,7 @@ export default function RegisterPage({navigation}) {
                 <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
+                    <GoBackButton navigation={navigation}/>
                     <Text style={styles.title}>Sign Up</Text>
                     <View style={styles.signInCont}>
                         <Text style={styles.info}>Please fill in all fields to create your user</Text>
@@ -143,7 +145,6 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 20,
         marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',

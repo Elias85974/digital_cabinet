@@ -6,6 +6,7 @@ import {useIsFocused} from "@react-navigation/native";
 import {AuthContext} from "../../context/AuthContext";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
+import GoBackButton from "../NavBar/GoBackButton";
 
 // User Component
 const User = ({ user, onEdit, onDelete }) => (
@@ -29,13 +30,19 @@ const HouseUsersPageDelete = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
 
+    const [houseName, setHouseName] = useState('');
 
     useEffect(() => {
+        const loadHouseName = async () => {
+            const name = await AsyncStorage.getItem('houseName');
+            setHouseName(name);
+        }
         if (isFocused) {
             getHouseUsers().then(r => console.log("Users loaded")).catch(e => console.log("Error loading users"));
-
         }
-    }, [ isFocused ]);
+        loadHouseName();
+    }, [isFocused]);
+
 
     const getHouseUsers = async () => {
         try {
@@ -52,6 +59,7 @@ const HouseUsersPageDelete = ({ navigation }) => {
             setUsers([]);
         }
     }
+
     //idem para esto
     const handleDelete = async (userId) => {
         // Make a DELETE request to delete the user
@@ -72,13 +80,14 @@ const HouseUsersPageDelete = ({ navigation }) => {
         // Update the users list
         await getHouseUsers();
     };
+
     return (
     <View style={styles.container}>
         <SafeAreaView style={StyleSheet.absoluteFill}>
             <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
             <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
-
-            <Text style={styles.title}>Digital Cabinet</Text>
+                <GoBackButton navigation={navigation}/>
+                <Text style={styles.title}>Users to delete in {houseName}</Text>
             <View style={styles.signInCont}>
                 <Text style={styles.info}>Press a user to delete it.</Text>
                 <View style={styles.logInCont}>
@@ -159,8 +168,7 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 30,
-        marginBottom: 50,
+        marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,

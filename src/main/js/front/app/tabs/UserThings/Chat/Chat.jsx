@@ -5,6 +5,7 @@ import {ChatApi} from "../../../Api";
 import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../../NavBar/NavBar";
 import {chatsStyles} from "./ChatsStyles";
+import GoBackButton from "../../NavBar/GoBackButton";
 
 export default function Chat({navigation}) {
   const [messages, setMessages] = useState([]);
@@ -57,7 +58,8 @@ export default function Chat({navigation}) {
 return (
     <View style={styles.containers}>
       <SafeAreaView style={StyleSheet.absoluteFill}>
-        <Text style={styles.title}>{chatName}</Text>
+          <GoBackButton navigation={navigation}/>
+          <Text style={styles.title}>{chatName}</Text>
         <ScrollView style={[styles.contentContainer,{height: '50%'}]} showsVerticalScrollIndicator={false}>
         <View style={[chatsStyles.container]}>
               {messages.map((msg, index) => (
@@ -112,8 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 5,
+    marginBottom: 30,
     color: '#1B1A26',
     fontFamily: 'lucida grande',
     lineHeight: 80,

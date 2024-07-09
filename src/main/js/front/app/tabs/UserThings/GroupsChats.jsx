@@ -5,7 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {inboxStyles} from "./Notification/InboxStyles";
 import NavBar from "../NavBar/NavBar";
-import {chatsStyles} from "./Chat/ChatsStyles"; // Asegúrate de importar tu función getChats
+import {chatsStyles} from "./Chat/ChatsStyles";
+import GoBackButton from "../NavBar/GoBackButton"; // Asegúrate de importar tu función getChats
 
 export default function GroupsChats({ navigation }) {
     const [chats, setChats] = useState([]);
@@ -33,7 +34,8 @@ export default function GroupsChats({ navigation }) {
         <View style={chatsStyles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-                    <Text style={chatsStyles.title}>Chats</Text>
+                        <GoBackButton navigation={navigation}/>
+                        <Text style={chatsStyles.title}>Chats</Text>
                     <View style={chatsStyles.contentWishList}>
                         {chats.map((chat, index) => (
                             <View style={chatsStyles.card} key={index}>

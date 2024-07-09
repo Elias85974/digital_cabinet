@@ -1,5 +1,5 @@
 import React from 'react';
-import {Pressable, Text, Alert, StyleSheet, TouchableOpacity} from 'react-native';
+import {Pressable, Text, Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Ionicons} from "@expo/vector-icons";
 
 
@@ -10,17 +10,19 @@ const GoBackButton = ({navigation}) => {
     }
 
     return (
-        <><TouchableOpacity onPress={handleGoBack}  style={styles.logoutButton}>
-            <Ionicons name="arrow-back-outline" size={24} color="white" />
-            {/*<Text style={styles.logoutText}>Go Back</Text>*/}
-        </TouchableOpacity>
-        </>
+        <><View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+            <TouchableOpacity onPress={handleGoBack}  style={styles.logoutButton}>
+                <Ionicons name="arrow-back-outline" size={24} color="white" />
+                {/*<Text style={styles.logoutText}>Go Back</Text>*/}
+            </TouchableOpacity>
+        </View></>
     );
 }
 
 const styles = StyleSheet.create({
     logoutButton: {
-        margin: 10,
+        marginLeft: 25,
+        marginTop: 25,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 3, // Add border

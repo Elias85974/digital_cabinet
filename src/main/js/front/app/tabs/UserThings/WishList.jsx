@@ -13,6 +13,7 @@ import {
 import { WishlistApi} from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NavBar from "../NavBar/NavBar";
+import GoBackButton from "../NavBar/GoBackButton";
 
 export default function WishList({navigation}) {
     const [wishList, setWishList] = useState([]);
@@ -111,30 +112,31 @@ export default function WishList({navigation}) {
                     </Modal>
 
                     <View>
-                    <Text style={styles.title}>WishList</Text>
-                    <View style={styles.contentWishList}>
-                        <View style={styles.checklist}>
-                            {wishList.map((item, index) => (
-                                <View key={item.id} style={styles.item}>
-                                    <TouchableOpacity style={styles.checkbox} onPress={() => handleCheck(index)}>
-                                        {item.checked && <View style={styles.check} />}
-                                    </TouchableOpacity>
-                                    <Text style={styles.label}>{item.productName}</Text>
-                                </View>
-                            ))}
-                        </View>
-                        <View >
-                            <Pressable style={styles.link} onPress={handleAddProduct}>
-                                <Text style={{color: 'white', fontSize: 16}}>Add Product</Text>
-                            </Pressable>
-                        </View>
-                        <View >
-                            <Pressable style={styles.link} onPress={handleUpdate}>
-                                <Text style={{color: 'white', fontSize: 16}}>Update WishList</Text>
-                            </Pressable>
+                            <GoBackButton navigation={navigation}/>
+                            <Text style={styles.title}>WishList</Text>
+                        <View style={styles.contentWishList}>
+                            <View style={styles.checklist}>
+                                {wishList.map((item, index) => (
+                                    <View key={item.id} style={styles.item}>
+                                        <TouchableOpacity style={styles.checkbox} onPress={() => handleCheck(index)}>
+                                            {item.checked && <View style={styles.check} />}
+                                        </TouchableOpacity>
+                                        <Text style={styles.label}>{item.productName}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                            <View >
+                                <Pressable style={styles.link} onPress={handleAddProduct}>
+                                    <Text style={{color: 'white', fontSize: 16}}>Add Product</Text>
+                                </Pressable>
+                            </View>
+                            <View >
+                                <Pressable style={styles.link} onPress={handleUpdate}>
+                                    <Text style={{color: 'white', fontSize: 16}}>Update WishList</Text>
+                                </Pressable>
+                            </View>
                         </View>
                     </View>
-                </View>
                 </ScrollView>
             </SafeAreaView>
             <NavBar navigation={navigation}/>
@@ -214,8 +216,7 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 30,
-        marginBottom: 50,
+        marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,

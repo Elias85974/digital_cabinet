@@ -49,7 +49,6 @@ export default function PieChartComponent({navigation}){
 
     const isFocused = useIsFocused();
 
-
     useEffect(() => {
         if (isFocused) {
             getTotalData();

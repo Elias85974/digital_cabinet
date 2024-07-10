@@ -1,16 +1,22 @@
 import React from 'react';
 import {Pressable, Text, Alert, StyleSheet, TouchableOpacity} from 'react-native';
 import {AntDesign, Ionicons} from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const HomesButton = ({navigation}) => {
 
-    const handleGoBack = () => {
-        navigation.navigate('House');
+    const handleGoBack = async() => {
+        const houseId = await AsyncStorage.getItem('houseId');
+        if (houseId) {
+            navigation.navigate('House');
+        } else {
+            navigation.navigate('Homes');
+        }
     }
 
     return (
-        <><TouchableOpacity onPress={handleGoBack}  style={styles.logoutButton}>
+        <><TouchableOpacity onPress={async() => handleGoBack}  style={styles.logoutButton}>
             <AntDesign name="home" size={24} color="white" />
             {/*<Text style={styles.logoutText}>Homes</Text>*/}
         </TouchableOpacity>

@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.inventory.Inventory;
 import org.austral.ing.lab1.model.inventory.product.Product;
-import org.austral.ing.lab1.object.ProductInfo;
+import org.austral.ing.lab1.object.jsonparsable.ProductInfo;
 import org.austral.ing.lab1.repository.houses.Houses;
 import org.austral.ing.lab1.repository.inventories.Inventories;
 import org.austral.ing.lab1.repository.inventories.products.Products;

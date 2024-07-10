@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { inboxStyles } from './InboxStyles';
 import {useIsFocused} from "@react-navigation/native";
 import {FlatList, TouchableOpacity, View, Text} from "react-native";

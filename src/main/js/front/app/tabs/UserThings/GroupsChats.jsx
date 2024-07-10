@@ -21,8 +21,7 @@ export default function GroupsChats({ navigation }) {
 
     const getGroupChats = async () => {
         try {
-            const userId = await AsyncStorage.getItem('userId');
-            const chats = await ChatApi.getChats(userId);
+            const chats = await ChatApi.getChats(navigation);
             setChats(chats);
             console.log("Chats:", chats);
         } catch (error) {
@@ -41,7 +40,8 @@ export default function GroupsChats({ navigation }) {
                             <View style={chatsStyles.card} key={index}>
                                 <Text style={chatsStyles.info}
                                       onPress={async () => {
-                                          navigation.navigate('Chat', {chatId: chat.id});
+                                          navigation.navigate('Chat');
+                                          await AsyncStorage.setItem('chatId', chat.chatId.toString());
                                           await AsyncStorage.setItem('chatName', chat.chatName);
                                       }}>
                                     {chat.chatName}

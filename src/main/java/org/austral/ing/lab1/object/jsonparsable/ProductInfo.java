@@ -1,4 +1,4 @@
-package org.austral.ing.lab1.object;
+package org.austral.ing.lab1.object.jsonparsable;
 
 import org.austral.ing.lab1.model.inventory.product.Product;
 

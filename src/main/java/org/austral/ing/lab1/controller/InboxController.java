@@ -1,7 +1,8 @@
 package org.austral.ing.lab1.controller;
 
 import com.google.gson.Gson;
-import org.austral.ing.lab1.object.ExpirationInfo;
+import org.austral.ing.lab1.object.jsonparsable.ExpirationInfo;
+import org.austral.ing.lab1.repository.chats.Chats;
 import org.austral.ing.lab1.repository.inboxes.ChatNotifications;
 import org.austral.ing.lab1.repository.inboxes.HouseInvitations;
 import org.austral.ing.lab1.repository.inboxes.NearExpirations;
@@ -64,13 +65,13 @@ public class InboxController {
         // Route to get the chat notifications of a user
         Spark.get("/inbox/getChatNotifications", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
-            ChatNotifications chatNotifications = new ChatNotifications(entityManager);
+            Chats chatNotifications = new Chats(entityManager);
             try {
                 Long userId = Long.parseLong(req.headers("UserId"));
-                List<Map<String, Object>> inboxMessage = chatNotifications.getChatNotifications(userId);
+                String chatsNotifications = gson.toJson(chatNotifications.getNotifications(userId));
                 resp.status(200);
                 resp.type("application/json");
-                return gson.toJson(inboxMessage);
+                return chatsNotifications;
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());

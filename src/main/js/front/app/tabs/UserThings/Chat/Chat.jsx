@@ -11,6 +11,7 @@ export default function Chat({navigation}) {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState('');
+  const [chatId, setChatId] = useState('');
   const isFocused = useIsFocused();
 
   const [chatName, setChatName] = useState('');
@@ -26,6 +27,7 @@ export default function Chat({navigation}) {
       loadMessages().then(() => {
         console.log('Messages loaded');
         loadChatName();
+
       }, e => console.error('Error loading messages', e));
     } else {
       loadChatName();
@@ -33,20 +35,22 @@ export default function Chat({navigation}) {
   }, [isFocused]);
 
   const loadMessages = async() => {
-    let newUserId = userId;
-    if (userId === '') {
-      newUserId = await AsyncStorage.getItem('userId');
-      setUserId(newUserId);
+    let newChatId = chatId;
+    if (chatId === '') {
+      newChatId = await AsyncStorage.getItem('chatId');
+      setChatId(newChatId);
     }
-    const messages = await ChatApi.getMessages(chatId, navigation);
+    if (userId === '') {
+      setUserId(await AsyncStorage.getItem('userId'));
+    }
+    const messages = await ChatApi.getMessages(newChatId, navigation);
     console.log(messages);
     setMessages(messages);
   }
 
   const handleSendMessage = async(message) => {
-    console.log(userId);
     if (message.length > 0) {
-      const chatId = await AsyncStorage.getItem('chatId');
+      console.log("Hello there");
       await ChatApi.sendMessage(chatId, message, navigation);
       setMessage('');
       await loadMessages();

@@ -1,6 +1,6 @@
 package org.austral.ing.lab1.controller;
 
-import org.austral.ing.lab1.object.Token;
+import org.austral.ing.lab1.object.jsonparsable.Token;
 import spark.Spark;
 
 import java.security.SecureRandom;

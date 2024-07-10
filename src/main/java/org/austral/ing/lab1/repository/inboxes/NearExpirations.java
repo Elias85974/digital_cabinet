@@ -3,7 +3,7 @@ package org.austral.ing.lab1.repository.inboxes;
 import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.inventory.Stock;
 import org.austral.ing.lab1.model.user.User;
-import org.austral.ing.lab1.object.ExpirationInfo;
+import org.austral.ing.lab1.object.jsonparsable.ExpirationInfo;
 import org.austral.ing.lab1.repository.users.Users;
 
 import javax.persistence.EntityManager;

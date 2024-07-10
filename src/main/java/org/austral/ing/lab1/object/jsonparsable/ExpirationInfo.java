@@ -1,4 +1,4 @@
-package org.austral.ing.lab1.object;
+package org.austral.ing.lab1.object.jsonparsable;
 
 public class ExpirationInfo {
     private final Long houseId;
@@ -14,6 +14,11 @@ public class ExpirationInfo {
     }
 
     public String asJson() {
-        return "{\"houseId\":" + houseId + ",\"productName\":\"" + productName + "\",\"daysLeft\":" + daysLeft + "}";
+        return "{" +
+                "\"houseId\":" + houseId + "," +
+                "\"houseName\":\"" + houseName + "\"," +
+                "\"productName\":\"" + productName + "\"," +
+                "\"daysLeft\":" + daysLeft +
+                "}";
     }
 }

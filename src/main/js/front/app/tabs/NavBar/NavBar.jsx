@@ -6,7 +6,7 @@ import SettingsButton from "./SettingsButton";
 import WishlistButton from "./WishlistButton";
 import HomesButton from "./HomesButton";
 import {useIsFocused} from "@react-navigation/native";
-import {ChatApi, InboxApi} from "../../Api";
+import {InboxApi} from "../../Api";
 
 const NavBar = ({ navigation }) => {
     const [hasNewMessage, setHasNewMessage] = useState(false);
@@ -34,12 +34,8 @@ const NavBar = ({ navigation }) => {
 
 
     const checkForNewMessages = async () => {
-        const chats = await ChatApi.getChats(navigation);
-        let newMessageCount = 0;
-        for (let chat of chats) {
-            const messages = await ChatApi.getMessages(chat.id, navigation);
-            newMessageCount += messages.length;
-        }
+        const chats = await InboxApi.getChatNotifications(navigation);
+        let newMessageCount = chats.length;
         if (newMessageCount > messageCount) {
             setHasNewMessage(true);
             setMessageCount(newMessageCount);
@@ -51,10 +47,10 @@ const NavBar = ({ navigation }) => {
         // Obtén cada tipo de notificación
         const houseInvitations = await InboxApi.getUsersHouseInvitations(navigation);
         const nearExpirations = await InboxApi.getNearExpirationStocks(navigation);
-        // agregar cuando este terminado const chatNotifications = await getChatNotifications(userId);
+        const chatNotifications = await InboxApi.getChatNotifications(navigation);
 
         // Suma las longitudes de cada tipo de notificación
-        const totalNotifications = houseInvitations.length + nearExpirations.length // + chatNotifications.length;
+        const totalNotifications = houseInvitations.length + nearExpirations.length + chatNotifications.length;
 
         // Si el total de notificaciones es mayor que el conteo de notificaciones actual, actualiza el estado
         if (totalNotifications > notificationCount) {

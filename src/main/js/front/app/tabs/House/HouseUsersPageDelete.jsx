@@ -26,7 +26,6 @@ const HouseUsersPageDelete = ({ navigation }) => {
     const [users, setUsers] = useState([]);
     const [inviteEmail, setInviteEmail] = useState('');
     const isFocused = useIsFocused();
-    const userId = AsyncStorage.getItem('userId');
 
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
@@ -70,10 +69,11 @@ const HouseUsersPageDelete = ({ navigation }) => {
         await HousesApi.deleteUserFromHouse(houseId, userId, navigation);
         setModalMessage("User deleted successfully"); // Muestra el modal en lugar de un alert
         setModalVisible(true);
-        setTimeout(() => {
+        setTimeout(async() => {
             setModalVisible(false);
             // Si el usuario eliminado es el usuario actual, navega a la página de Homes
             if (userId === currentUserId) {
+                await AsyncStorage.removeItem('houseId');
                 navigation.navigate('Homes');
             }
         }, 1500);
@@ -108,7 +108,7 @@ const HouseUsersPageDelete = ({ navigation }) => {
             <p></p>
             <View style={styles.deleteUsers}>
                 <Pressable style={{alignSelf:'center'}} onPress={ async () => {
-                    await handleDelete(userId);
+                    await handleDelete(await AsyncStorage.getItem('userId'));
                 }}>
                     <Text style={styles.linkdel}>
                         <AntDesign name="deleteuser" size={24} color="white" /> Leave {houseName}

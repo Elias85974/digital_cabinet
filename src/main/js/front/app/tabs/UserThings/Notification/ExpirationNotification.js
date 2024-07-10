@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import { inboxStyles } from './InboxStyles';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {FlatList, Pressable, Text, TouchableOpacity, View} from "react-native";
+import {FlatList, Text, TouchableOpacity, View} from "react-native";
 import {InboxApi} from "../../../Api";
 import Collapsible from "react-native-collapsible";
 
@@ -39,17 +39,15 @@ export function ExpirationNotification({ navigation, setExpirationsLength }) {
                                 <View style={inboxStyles.statusInd}></View>
                                 <View style={inboxStyles.right}>
                                     <View style={inboxStyles.textWrap}>
-                                        <Text style={inboxStyles.textContent}>
-                                            Your {item.productName} is expiring in {item.daysLeft} days, check
-                                            your {item.houseName}'s cabinet!
-                                        </Text>
-                                        <TouchableOpacity style={[inboxStyles.primaryCta, {backgroundColor: "green"}]}
+                                        <TouchableOpacity style={[inboxStyles.primaryCta, {backgroundColor: "white"}]}
                                                           onPress={async () => {
                                                               await AsyncStorage.setItem('houseId', item.houseId.toString());
                                                               navigation.navigate("House");
                                                           }}>
-                                            <Text style={inboxStyles.buttonText}>{item.houseName}'s digital
-                                                cabinet</Text>
+                                            <Text style={inboxStyles.textContent}>
+                                                Your {item.productName} is expiring in {item.daysLeft} days, check
+                                                your {item.houseName}'s cabinet!
+                                            </Text>
                                         </TouchableOpacity>
                                         <Text style={inboxStyles.time}>1 minute</Text>
                                     </View>

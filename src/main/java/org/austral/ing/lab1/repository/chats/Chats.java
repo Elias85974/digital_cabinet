@@ -5,7 +5,7 @@ import org.austral.ing.lab1.model.chat.Message;
 import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.notification.ChatNotification;
 import org.austral.ing.lab1.model.user.User;
-import org.austral.ing.lab1.object.MessageInfo;
+import org.austral.ing.lab1.object.jsonparsable.MessageInfo;
 import org.austral.ing.lab1.repository.houses.Houses;
 import org.austral.ing.lab1.repository.users.Users;
 import org.jetbrains.annotations.NotNull;
@@ -56,13 +56,19 @@ public class Chats {
         tx.commit();
     }
 
-    public List<ChatNotification> getNotifications(Long userId) {
+    public List<MessageInfo> getNotifications(Long userId) {
         EntityTransaction tx = entityManager.getTransaction();
         tx.begin();
-        TypedQuery<ChatNotification> query = entityManager.createQuery(
-                "SELECT n FROM ChatNotification n WHERE n.inbox_user.usuario_ID = :userId", ChatNotification.class);
+        TypedQuery<MessageInfo> query = entityManager.createQuery(
+                "SELECT new org.austral.ing.lab1.object.jsonparsable.MessageInfo(" +
+                        "n.lastMessage.chat.chatId, " +
+                        "n.lastMessage.sender.nombre, " +
+                        "n.lastMessage.content, " +
+                        "n.lastMessage.chat.chatName, " +
+                        "n.unreadMessages) " +
+                        "FROM ChatNotification n WHERE n.inbox_user.usuario_ID = :userId", MessageInfo.class);
         query.setParameter("userId", userId);
-        List<ChatNotification> notifications = query.getResultList();
+        List<MessageInfo> notifications = query.getResultList();
         tx.commit();
         return notifications;
     }

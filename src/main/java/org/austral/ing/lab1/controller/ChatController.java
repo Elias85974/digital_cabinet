@@ -56,13 +56,13 @@ public class ChatController {
         });
 
         // Route to send a message to a chat
-        Spark.post("/chat/:chatId/messages", "application/json", (req, resp) -> {
+        Spark.post("/chat/:chatId/messages/:message", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Chats chatsRepo = new Chats(entityManager);
             try {
                 Long chatId = Long.parseLong(req.params("chatId"));
                 Long userId = Long.parseLong(req.headers("UserId"));
-                String message = req.body();
+                String message = req.params("message");
                 chatsRepo.sendMessage(chatId, userId, message);
                 resp.type("application/json");
                 resp.status(201);
@@ -71,27 +71,6 @@ public class ChatController {
                 resp.status(500);
                 System.out.println(e.getMessage());
                 return "An error occurred while sending the message, please try again";
-            } finally {
-                entityManager.close();
-            }
-        });
-
-        // Route to get the chats notifications of a user
-        Spark.get("/chat/user/notifications", (req, resp) -> {
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Chats chatsRepo = new Chats(entityManager);
-            try {
-                EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
-                Long userId = Long.parseLong(req.headers("UserId"));
-                String notificationsJson = gson.toJson(chatsRepo.getNotifications(userId));
-                tx.commit();
-                resp.type("application/json");
-                return notificationsJson;
-            } catch (Exception e) {
-                resp.status(500);
-                System.out.println(e.getMessage());
-                return "An error occurred while getting the notifications of the user, please try again";
             } finally {
                 entityManager.close();
             }

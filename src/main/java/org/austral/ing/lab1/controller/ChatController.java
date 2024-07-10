@@ -64,7 +64,7 @@ public class ChatController {
                 Long userId = Long.parseLong(req.headers("UserId"));
                 String message = req.params("message");
                 chatsRepo.sendMessage(chatId, userId, message);
-                resp.type("application/json");
+                resp.type("message");
                 resp.status(201);
                 return "Message sent successfully";
             } catch (Exception e) {

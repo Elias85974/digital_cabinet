@@ -23,7 +23,6 @@ import java.util.Optional;
 public class InventoryController {
     private final Gson gson = new Gson();
     private final EntityManagerFactory entityManagerFactory;
-
     public InventoryController(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
@@ -125,6 +124,7 @@ public class InventoryController {
             Houses houses = new Houses(entityManager);
             Products products = new Products(entityManager);
             Inventories inventories = new Inventories(entityManager);
+            resp.type("message");
             try {
                 final String houseId = req.params("houseId");
                 JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
@@ -171,6 +171,7 @@ public class InventoryController {
         Spark.post("/houses/:houseId/inventory/addLowStock", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Inventories inventoriesRepo = new Inventories(entityManager);
+            resp.type("message");
             try {
                 Long houseId = Long.parseLong(req.params("houseId"));
                 JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
@@ -205,6 +206,7 @@ public class InventoryController {
 
                 inventoriesRepo.reduceStock(houseId, productId, quantity);
 
+                resp.type("message");
                 resp.status(200);
                 return "Stock reduced successfully";
             } catch (Exception e) {

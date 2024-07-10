@@ -45,10 +45,20 @@ export const postFetch = async (postData, url, errorMessage, navigation) => {
         });
         console.log(response);
         await validateResponse(response, navigation);
-        return await response.text();
+        return await returnResponse(response);
     } catch (error) {
         console.error(errorMessage, error);
         throw error;
+    }
+}
+
+const returnResponse = async(response) => {
+    const contentType = response.headers.get('Content-Type');
+    console.log(contentType);
+    if (contentType && contentType.includes('application/json')) {
+        return await response.json(); // If JSON, parse it
+    } else {
+        return await response.text(); // Otherwise, return as text
     }
 }
 

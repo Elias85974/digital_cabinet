@@ -41,7 +41,7 @@ public class CategoryController {
         });
 
         // Route to create a new category
-        Spark.put("/categories", "application/json", (req, resp) -> {
+        Spark.post("/categories", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Categories categoriesRepo = new Categories(entityManager);
             try {

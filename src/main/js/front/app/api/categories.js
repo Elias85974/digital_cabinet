@@ -7,5 +7,5 @@ export const getCategories = async (navigation) => {
 
 // Function to create a new category
 export const createCategory = async (categoryData, navigation) => {
-    return await FetchApi.putFetch(categoryData, '/categories', 'Failed to create category:', navigation);
+    return await FetchApi.postFetch(categoryData, '/categories', 'Failed to create category:', navigation);
 }

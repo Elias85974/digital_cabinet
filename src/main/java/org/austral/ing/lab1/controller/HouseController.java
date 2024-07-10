@@ -124,6 +124,7 @@ public class HouseController {
             usersRepo = new Users(entityManager);
             housesRepo = new Houses(entityManager);
             HouseInvitations houseInvitationsRepo = new HouseInvitations(entityManager);
+            resp.type("message");
             try {
                 JsonObject invitationJson = new Gson().fromJson(req.body(), JsonObject.class);
 

@@ -86,8 +86,8 @@ export default function House({navigation}) {
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-                        <GoBackButton navigation={navigation}/>
-                        <Text style={styles.title}>Welcome to {houseName}!</Text>
+                    <GoBackButton navigation={navigation}/>
+                    <Text style={styles.title}>Welcome to {houseName}!</Text>
                     <View style={styles.logInCont}>
                         <Text style={styles.info}>Select a Category</Text>
                         <View style={styles.container2}>
@@ -100,7 +100,11 @@ export default function House({navigation}) {
                                     value={query}
                                     placeholder="Search category"
                                 />
+                                <Pressable onPress={navigation.navigate('All Products')}>
+                                    <Text style={styles.circleText}>All Products</Text>
+                                </Pressable>
                             </View>
+
                             <FlatList
                                 data={suggestions}
                                 renderItem={renderItem}

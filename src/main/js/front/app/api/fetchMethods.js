@@ -1,12 +1,6 @@
 import { API_URL } from '../constants';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-let myNavigation = null;
-
-export function setNavigation(navigation) {
-    myNavigation = navigation;
-}
-
 export const putFetch = async (putData, url, errorMessage, navigation) => {
     try {
         const userId = await AsyncStorage.getItem('userId');

@@ -17,7 +17,6 @@ import FilterModal from "../../Contents/FilterModal";
 import NavBar from "../../NavBar/NavBar";
 
 export default function LowOnStockProducts({navigation}) {
-    FetchApi.setNavigation(navigation);
     const [products, setProducts] = useState([]);
     const [modalVisible2, setModalVisible2] = useState(false);
     const [modalVisible3, setModalVisible3] = useState(false);

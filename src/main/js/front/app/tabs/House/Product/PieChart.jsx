@@ -183,11 +183,6 @@ export default function PieChart({navigation}){
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                     <GoBackButton navigation={navigation}/>
                     <Text style={styles.title}>Inventory Value by Categories</Text>
-
-                    <View style={styles.signInCont}>
-                        <Text style={styles.info}>Total expense: ${total.toFixed(2)}</Text>
-                    </View>
-
                     <View style={styles.input}>
                         <FlatList
                             data={categories}
@@ -200,7 +195,9 @@ export default function PieChart({navigation}){
                             )}
                         />
                     </View>
-
+                    <View style={styles.signInCont}>
+                        <Text style={styles.info}>Total expense: ${total.toFixed(2)}</Text>
+                    </View>
                     <View style={{width: '75%',alignSelf: 'center', marginTop:5}}>
                         <Pie data={chartData} />
                     </View>
@@ -289,7 +286,7 @@ const styles = StyleSheet.create({
     },
     signInCont: {
         backgroundColor: '#4B5940',
-        padding: 5,
+        padding: 10,
         borderRadius: 20,
         width: 400,
         alignSelf: 'center',

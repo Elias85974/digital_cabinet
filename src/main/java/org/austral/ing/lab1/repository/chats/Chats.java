@@ -118,9 +118,9 @@ public class Chats {
         }
     }
 
-    public List<Map<String, String>> getChats(Long userId) {
-        Map<String, String> chatInfo;
-        List<Map<String, String>> chatsInfo = new ArrayList<>();
+    public List<Map<String, Object>> getChats(Long userId) {
+        Map<String, Object> chatInfo;
+        List<Map<String, Object>> chatsInfo = new ArrayList<>();
         Users usersRepo = new Users(entityManager);
         User user = usersRepo.findById(userId).orElseThrow();
         List<House> houses = user.getHouses();
@@ -128,8 +128,9 @@ public class Chats {
         for (House house: houses) {
             chatInfo = new HashMap<>();
             houseChat = house.getChat();
-            chatInfo.put("chatId", houseChat.getChatId().toString());
+            chatInfo.put("chatId", houseChat.getChatId());
             chatInfo.put("chatName", houseChat.getChatName());
+            chatInfo.put("hasMessages", houseChat.hasMessages());
             chatsInfo.add(chatInfo);
         }
         return chatsInfo;

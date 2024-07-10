@@ -59,4 +59,8 @@ public class Chat {
     public void setHouse(House house) {
         this.house = house;
     }
+
+    public boolean hasMessages() {
+        return !messages.isEmpty();
+    }
 }

@@ -30,7 +30,12 @@ export default function PieChart({navigation}){
         'rgba(255, 159, 64, 0.2)',
         'rgba(199, 199, 199, 0.2)',
         'rgba(83, 102, 255, 0.2)',
+        'rgba(255, 69, 0, 0.2)',
+        'rgba(60, 179, 113, 0.2)',
+        'rgba(123, 104, 238, 0.2)',
+        'rgba(244, 164, 96, 0.2)'
     ];
+
     const borderColors = [
         'rgba(255, 99, 132, 1)',
         'rgba(54, 162, 235, 1)',
@@ -38,8 +43,12 @@ export default function PieChart({navigation}){
         'rgba(75, 192, 192, 1)',
         'rgba(153, 102, 255, 1)',
         'rgba(255, 159, 64, 1)',
-        'rgba(199, 199, 199, 1)',
+        'rgba(11, 125, 128, 1)',
         'rgba(83, 102, 255, 1)',
+        'rgba(255, 69, 0, 1)',
+        'rgba(60, 179, 113, 1)',
+        'rgba(123, 104, 238, 1)',
+        'rgba(244, 164, 96, 1)'
     ];
 
     const [chartData, setChartData] = useState({

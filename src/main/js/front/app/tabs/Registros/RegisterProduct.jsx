@@ -141,15 +141,15 @@ export default function RegisterProduct({navigation}) {
     const handleCreateProduct = async() => {
         try {
             if (newProduct.nombre && newProduct.marca && newProduct.tipoDeCantidad && newProduct.categoryId) {
-                ProductsApi.createProduct(newProduct, navigation).then(r =>
-                        setModalMessage("Product created successfully!"), // Muestra el modal en lugar de un alert
-                    setModalVisible(true),
-                );
+                ProductsApi.createProduct(newProduct, navigation).then(r => {
+                    setModalMessage("Product created successfully!"); // Muestra el modal en lugar de un alert
+                    setModalVisible(true)
+                });
                 setTimeout(() => {
                     setModalVisible(false);
                     // Navega a la siguiente página después de un retraso
                     navigation.navigate('House');
-                }, 5000);
+                }, 2500);
             } else {
                 setModalMessage("Please fill in all fields."); // Muestra el modal en lugar de un alert
                 setModalVisible(true);

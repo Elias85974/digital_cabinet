@@ -65,8 +65,8 @@ return (
         <View style={[chatsStyles.container]}>
               {messages.map((msg, index) => (
                   <View key={index} style={msg.senderId === userId ? styles.userMessage : styles.otherMessage}>
-                    <p>{msg.senderId === userId ? '' : msg.sender + ":"} {msg.message}</p>
-                  </View>
+                    <Text style={styles.messageText}>{msg.senderId === userId ? '' : msg.sender + ":"} {msg.message}</Text>
+                </View>
               ))}
 
 
@@ -111,6 +111,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  messageText: {
+
+    flexWrap: 'wrap',
+  },
   title: {
     fontSize: 60,
     fontWeight: 'bold',
@@ -121,6 +125,7 @@ const styles = StyleSheet.create({
     lineHeight: 80,
   },
   userMessage: {
+    width: '80%',
     alignSelf: 'flex-end',
     backgroundColor: '#d1f5d3',
     padding: 10,
@@ -128,6 +133,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   otherMessage: {
+    width: '80%',
     alignSelf: 'flex-start',
     backgroundColor: '#f1f0f0',
     padding: 10,

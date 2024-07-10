@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import {View, Text, Button, SafeAreaView, ScrollView, StyleSheet, Pressable} from 'react-native';
-import {ChatApi, InboxApi} from "../../Api";
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ChatApi} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
-import {inboxStyles} from "./Notification/InboxStyles";
 import NavBar from "../NavBar/NavBar";
 import {chatsStyles} from "./Chat/ChatsStyles";
 import GoBackButton from "../NavBar/GoBackButton";
-import {getMessages} from "../../api/chat"; // Asegúrate de importar tu función getChats
 
 export default function GroupsChats({ navigation }) {
     const [chats, setChats] = useState([]);
+    const [chatHasMessages, setChatHasMessages] = useState([]);
+
+    const [key, setKey] = useState(0);
 
     const isFocused = useIsFocused();
 
@@ -18,27 +19,31 @@ export default function GroupsChats({ navigation }) {
         if (isFocused){
             getGroupChats();
         }
-    }, [isFocused]);
+    }, [isFocused, key]);
 
     const getGroupChats = async () => {
         try {
-            const chats = await ChatApi.getChats(navigation);
+            let chats = await ChatApi.getChats(navigation);
+            const hasMessages = chats.map(chat => chat.hasMessages);
+            setChatHasMessages(oldState => [...oldState, ...hasMessages]);
+
             setChats(chats);
             console.log("Chats:", chats);
+            setKey(oldKey => oldKey + 1)
         } catch (error) {
             console.log("Error getting chats:", error);
         }
     }
 
     return (
-        <View style={chatsStyles.container}>
+        <View style={chatsStyles.container} key={key}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                         <GoBackButton navigation={navigation}/>
                         <Text style={chatsStyles.title}>Chats</Text>
                     <View style={chatsStyles.contentWishList}>
                         {chats.map((chat, index) => (
-                            <View style={ chatsStyles.card} key={index}>
+                            <View style={ chat.hasMessages ? chatsStyles.cardMessages : chatsStyles.card} key={index}>
                                 <Text style={chatsStyles.info}
                                       onPress={async () => {
                                           navigation.navigate('Chat');

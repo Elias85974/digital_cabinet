@@ -37,13 +37,17 @@ export default function GroupsChats({ navigation }) {
     const [messageCount, setMessageCount] = useState(0);
 
     const checkForNewMessages = async (chatId) => {
-        const messages = await getMessages(chatId, navigation);
-        let newMessageCount = messages.length;
-        if (newMessageCount > messageCount) {
-            setHasNewMessage(true);
-            setMessageCount(newMessageCount);
+        const chats = await InboxApi.getChatNotifications(navigation);
+        for (let chat of chats) {
+            if (chat.chatId === chatId) {
+                setHasNewMessage(true);
+                setMessageCount(chats.length);
+                console.log('newMessageCount', chat.length);
+            }
+            setHasNewMessage(false);
         }
-        console.log('newMessageCount', newMessageCount);
+
+
     }
 
     return (

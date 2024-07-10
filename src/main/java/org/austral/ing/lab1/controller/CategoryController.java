@@ -52,7 +52,7 @@ public class CategoryController {
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
-                return "The category was created successfully";
+                return category.asJson();
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());

@@ -123,8 +123,9 @@ export default function RegisterProduct({navigation}) {
         } else {
             // Si la categoría no existe, créala
             const createdCategory = await CategoriesApi.createCategory({nombre: formattedCategoryName}, navigation);
+            console.log('createdCategory:', createdCategory);
             setCategories([...categories, createdCategory]);
-            setNewProduct({...newProduct, categoryId: createdCategory.id});
+            setNewProduct({...newProduct, categoryId: createdCategory.categoria_ID});
             setQuery('');
         }
         setSuggestions([]);
@@ -134,7 +135,7 @@ export default function RegisterProduct({navigation}) {
     const handleKeyPress = (e) => {
         if (e.nativeEvent.key === "Enter") {
             handleCreateCategory(query);
-            //setQuery(""); // Establece la categoría recién creada como la categoría seleccionada
+            setQuery(''); // Establece la categoría recién creada como la categoría seleccionada
         }
     };
 

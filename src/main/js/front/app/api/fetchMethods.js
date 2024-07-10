@@ -62,7 +62,7 @@ export const getFetch = async (url, errorMessage, navigation) => {
         const response = await fetch(`${API_URL + url}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'applicationsdasdsa/json',
+                'Content-Type': 'application/json',
                 'UserId': userId,
                 'Token': token,
             },

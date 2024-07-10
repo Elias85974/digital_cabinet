@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {View, Text, Button, SafeAreaView, ScrollView, StyleSheet, Pressable} from 'react-native';
-import {ChatApi} from "../../Api";
+import {ChatApi, InboxApi} from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {inboxStyles} from "./Notification/InboxStyles";
 import NavBar from "../NavBar/NavBar";
 import {chatsStyles} from "./Chat/ChatsStyles";
-import GoBackButton from "../NavBar/GoBackButton"; // Asegúrate de importar tu función getChats
+import GoBackButton from "../NavBar/GoBackButton";
+import {getMessages} from "../../api/chat"; // Asegúrate de importar tu función getChats
 
 export default function GroupsChats({ navigation }) {
     const [chats, setChats] = useState([]);
@@ -22,11 +23,27 @@ export default function GroupsChats({ navigation }) {
     const getGroupChats = async () => {
         try {
             const chats = await ChatApi.getChats(navigation);
+            for (let chat of chats) {
+                await checkForNewMessages(chat.chatId);
+            }
             setChats(chats);
             console.log("Chats:", chats);
         } catch (error) {
             console.log("Error getting chats:", error);
         }
+    }
+
+    const [hasNewMessage, setHasNewMessage] = useState(false);
+    const [messageCount, setMessageCount] = useState(0);
+
+    const checkForNewMessages = async (chatId) => {
+        const messages = await getMessages(chatId, navigation);
+        let newMessageCount = messages.length;
+        if (newMessageCount > messageCount) {
+            setHasNewMessage(true);
+            setMessageCount(newMessageCount);
+        }
+        console.log('newMessageCount', newMessageCount);
     }
 
     return (
@@ -37,7 +54,7 @@ export default function GroupsChats({ navigation }) {
                         <Text style={chatsStyles.title}>Chats</Text>
                     <View style={chatsStyles.contentWishList}>
                         {chats.map((chat, index) => (
-                            <View style={chatsStyles.card} key={index}>
+                            <View style={ hasNewMessage ? chatsStyles.cardMessages :chatsStyles.card} key={index}>
                                 <Text style={chatsStyles.info}
                                       onPress={async () => {
                                           navigation.navigate('Chat');

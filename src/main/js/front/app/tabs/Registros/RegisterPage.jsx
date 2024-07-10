@@ -24,7 +24,10 @@ export default function RegisterPage({navigation}) {
         } else if (field === 'telefono') {
             // Format phone number for the 'telefono' field
             value = formatPhoneNumber(value);
-        } else {
+        } else if (field === 'password') {
+            // Do nothing for the 'password' field
+        }
+        else {
             // Capitalize the first letter for other fields
             value = capitalizeFirstLetter(value);
         }
@@ -116,7 +119,7 @@ export default function RegisterPage({navigation}) {
                                    onChangeText={(value) => handleInputChange('edad', value)}
                         />
                         <TextInput style={styles.input}
-                                   placeholder="Teléfono"
+                                   placeholder="Teléfono: XX XXXX XXXX"
                                    value={newUser.telefono}
                                    onChangeText={(value) => handleInputChange('telefono', value)}
                         />

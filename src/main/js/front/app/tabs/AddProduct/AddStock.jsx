@@ -70,10 +70,25 @@ export default function AddProduct({navigation}) {
         if (type === 'product') {
             setSelectedProduct(value);
         } else if (type === 'quantity') {
-            setQuantity(Number(value));
+            setQuantity(value);
         }
         else if (type === 'expiration') {
-            setExpiration(value);
+            // Remove all non-numeric characters
+            const numericValue = value.replace(/[^0-9]/g, '');
+
+            // Add slashes after the day and month
+            let formattedValue = numericValue;
+            if (numericValue.length >= 2) {
+                formattedValue = `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
+            }
+            if (numericValue.length >= 4) {
+                formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(5)}`;
+            }
+
+            // Limit the length to 10 characters (DD/MM/YYYY)
+            formattedValue = formattedValue.slice(0, 10);
+
+            setExpiration(formattedValue);
         }
         else if (type === 'lowStockIndicator') {
             setLowStockIndicator(value);

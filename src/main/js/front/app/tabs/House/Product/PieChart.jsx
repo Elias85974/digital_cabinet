@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Pie} from 'react-chartjs-2';
 import {ArcElement, Chart, Legend, Tooltip} from 'chart.js';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getInventoryValueByCategory, getProductsFromHouseAndCategory} from '../../../api/piechart';
+import {getInventoryValueByCategory} from '../../../api/piechart';
+import {getProductsFromHouseAndCategory} from '../../../api/inventory';
 import {
     FlatList,
     SafeAreaView,
@@ -15,10 +16,11 @@ import {
 } from "react-native";
 import NavBar from "../../NavBar/NavBar";
 import {useIsFocused} from "@react-navigation/native";
+import GoBackButton from "../../NavBar/GoBackButton";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
-export default function PieChartComponent({navigation}){
+export default function PieChart({navigation}){
     const chartColors = [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -177,9 +179,9 @@ export default function PieChartComponent({navigation}){
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
+                    <GoBackButton navigation={navigation}/>
                     <Text style={styles.title}>Inventory Value by Category</Text>
-                    <View style={styles.picker}>
-                        <Text style={styles.label}>Select Category:</Text>
+                    <View>
                         <TextInput
                             style={styles.input}
                             value={query}
@@ -188,20 +190,22 @@ export default function PieChartComponent({navigation}){
                         />
                         <FlatList
                             data={suggestions}
+                            numColumns={6}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
                                 <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
-                                    <Text>{item.nombre}</Text>
+                                    <Text style={styles.cat}>{item.nombre}</Text>
                                 </TouchableOpacity>
                             )}
                         />
                     </View>
-
-                    <View style={styles.info}>
-                        <Text style={styles.label}>Total expense: ${total.toFixed(2)}</Text>
-                    </View>
-                    <View style={{width: '35%', alignSelf: 'center', marginTop:5}}>
-                        <Pie data={chartData} />
+                    <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                        <View>
+                            <Text style={styles.info}>Total expense: ${total.toFixed(2)}</Text>
+                        </View>
+                        <View style={{height: '75%', alignSelf: 'center', marginTop:5}}>
+                            <Pie data={chartData} />
+                        </View>
                     </View>
                 </ScrollView>
             </SafeAreaView>
@@ -212,21 +216,19 @@ export default function PieChartComponent({navigation}){
 }
 
 const styles = StyleSheet.create({
-    pickerContainer: {
-        marginVertical: 20,
-        marginHorizontal: "auto",
-    },
-    picker:{
-        width: '50%',
-        alignSelf: 'center',
-        backgroundColor: '#717336',
-        borderColor: '#5d5e24',
-        borderWidth: 2,
-    },
     label: {
         fontSize: 16,
         marginBottom: 10,
         textAlign: 'center',
+    },
+    cat: {
+        fontSize: 16,
+        fontFamily: 'lucida grande',
+        color: 'white',
+        margin: 5,
+        flex: 1, // Asegura que el elemento ocupe to do el espacio disponible
+        justifyContent: 'center', // Centra el texto verticalmente
+        alignItems: 'center', // Centra el texto horizontalmente
     },
     chartContainer: {
         marginVertical: 20,
@@ -257,21 +259,22 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     input: {
+        flex: 1,
         height: 40,
+        width: 200,
         margin: 12,
         borderWidth: 1,
-        color: 'white',
-        backgroundColor: '#4B5940',
         padding: 10,
-        justifyContent: 'center',
-        alignContent: 'center',
+        color: 'white',
+        backgroundColor: '#3b0317',
+        borderRadius: 30,
+        borderStyle: undefined,
     },
     title: {
         fontSize: 60,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 30,
-        marginBottom: 50,
+        marginBottom: 30,
         color: '#1B1A26',
         fontFamily: 'lucida grande',
         lineHeight: 80,

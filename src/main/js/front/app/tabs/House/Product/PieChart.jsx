@@ -61,23 +61,6 @@ export default function PieChart({navigation}){
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
-    const handleInputChangeCat = (text) => {
-        setQuery(text);
-
-        if (text === '') {
-            setSuggestions([]);
-        } else {
-            const regex = new RegExp(`${text.trim()}`, 'i');
-            setSuggestions(categories.filter(category => category.nombre.search(regex) >= 0));
-        }
-    };
-
-    const handleSuggestionPress = (suggestion) => {
-        setQuery(suggestion.nombre);
-        setSuggestions([]);
-        handleInputChange('category', suggestion.nombre);
-    };
-
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -96,6 +79,25 @@ export default function PieChart({navigation}){
             getDataFromCategory(value); // This function should fetch data for the selected category
         }
     };
+
+    const handleInputChangeCat = (text) => {
+        setQuery(text);
+
+        if (text === '') {
+            setSuggestions(categories);
+        } else {
+            const regex = new RegExp(`${text.trim()}`, 'i');
+            setSuggestions(categories.filter(category => category.nombre.search(regex) >= 0));
+        }
+    };
+
+    const handleSuggestionPress = (suggestion) => {
+        setQuery(suggestion.nombre);
+        setSuggestions([]);
+        console.log('Selected category:', suggestion.nombre)
+        handleInputChange('category', suggestion.nombre);
+    };
+
 
     const getDataFromCategory = async (selectedCategory) => {
         const houseId = await AsyncStorage.getItem('houseId');
@@ -180,32 +182,27 @@ export default function PieChart({navigation}){
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                     <GoBackButton navigation={navigation}/>
-                    <Text style={styles.title}>Inventory Value by Category</Text>
-                    <View>
-                        <TextInput
-                            style={styles.input}
-                            value={query}
-                            onChangeText={handleInputChangeCat}
-                            placeholder="Select a category"
-                        />
+                    <Text style={styles.title}>Inventory Value by Categories</Text>
+
+                    <View style={styles.signInCont}>
+                        <Text style={styles.info}>Total expense: ${total.toFixed(2)}</Text>
+                    </View>
+
+                    <View style={styles.input}>
                         <FlatList
-                            data={suggestions}
+                            data={categories}
                             numColumns={6}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
-                                <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
-                                    <Text style={styles.cat}>{item.nombre}</Text>
+                                <TouchableOpacity onPress={() => handleInputChange('category', item)}>
+                                    <Text style={styles.cat}> {item} </Text>
                                 </TouchableOpacity>
                             )}
                         />
                     </View>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-                        <View>
-                            <Text style={styles.info}>Total expense: ${total.toFixed(2)}</Text>
-                        </View>
-                        <View style={{height: '75%', alignSelf: 'center', marginTop:5}}>
-                            <Pie data={chartData} />
-                        </View>
+
+                    <View style={{width: '75%',alignSelf: 'center', marginTop:5}}>
+                        <Pie data={chartData} />
                     </View>
                 </ScrollView>
             </SafeAreaView>
@@ -260,8 +257,6 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        height: 40,
-        width: 200,
         margin: 12,
         borderWidth: 1,
         padding: 10,
@@ -294,7 +289,7 @@ const styles = StyleSheet.create({
     },
     signInCont: {
         backgroundColor: '#4B5940',
-        padding: 20,
+        padding: 5,
         borderRadius: 20,
         width: 400,
         alignSelf: 'center',

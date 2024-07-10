@@ -1,12 +1,18 @@
 import React from 'react';
 import {Pressable, Text, Alert, StyleSheet, TouchableOpacity} from 'react-native';
 import {AntDesign, Ionicons} from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const HomesButton = ({navigation}) => {
 
     const handleGoBack = () => {
-        navigation.navigate('House');
+        const houseId = AsyncStorage.getItem('houseId');
+        if (houseId) {
+            navigation.navigate('House');
+        } else {
+            navigation.navigate('Homes');
+        }
     }
 
     return (

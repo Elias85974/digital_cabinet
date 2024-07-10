@@ -70,10 +70,11 @@ const HouseUsersPageDelete = ({ navigation }) => {
         await HousesApi.deleteUserFromHouse(houseId, userId, navigation);
         setModalMessage("User deleted successfully"); // Muestra el modal en lugar de un alert
         setModalVisible(true);
-        setTimeout(() => {
+        setTimeout(async () => {
             setModalVisible(false);
             // Si el usuario eliminado es el usuario actual, navega a la página de Homes
             if (userId === currentUserId) {
+                await AsyncStorage.removeItem('houseId');
                 navigation.navigate('Homes');
             }
         }, 1500);

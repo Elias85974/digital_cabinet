@@ -43,6 +43,7 @@ export default function PieChartComponent({navigation}){
 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -121,6 +122,10 @@ export default function PieChartComponent({navigation}){
                             }],
                         };
                         setChartData(newChartData);
+                        // After calculating newChartData, calculate total expense
+                        const totalExpense = values.reduce((acc, currentValue) => acc + currentValue, 0);
+                        setTotal(totalExpense); // Update total state
+
                     } else {
                         console.error('Expected an array but received:', response);
                     }
@@ -170,6 +175,10 @@ export default function PieChartComponent({navigation}){
                         }],
                     };
                     setChartData(totalChartData);
+                    // After calculating totalChartData, calculate total expense
+                    const totalExpense = values.reduce((acc, currentValue) => acc + currentValue, 0);
+                    setTotal(totalExpense); // Update total state
+
                 } else {
                     console.error('Invalid response:', response);
                 }
@@ -180,6 +189,7 @@ export default function PieChartComponent({navigation}){
             console.error('Error fetching inventory value by category:', error);
         }
     };
+
 
 
     return (
@@ -198,9 +208,12 @@ export default function PieChartComponent({navigation}){
                             ))}
                             <Picker.Item label="Total Values" value="totalValues" />
                         </Picker>
-                    </View>
+                </View>
                     <View style={{width: '35%', alignSelf: 'center'}}>
                         <Pie data={chartData} />
+                    </View>
+                    <View style={styles.info}>
+                        <Text style={styles.label}>Total expense: ${total.toFixed(2)}</Text>
                     </View>
                 </ScrollView>
             </SafeAreaView>

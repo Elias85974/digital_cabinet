@@ -56,10 +56,10 @@ const NavBar = ({ navigation }) => {
         // Obtén cada tipo de notificación
         const houseInvitations = await getUsersHouseInvitations(userId);
         const nearExpirations = await getNearExpirationStocks(userId);
-        const chatNotifications = await getChatNotifications(userId);
+        // agregar cuando este terminado const chatNotifications = await getChatNotifications(userId);
 
         // Suma las longitudes de cada tipo de notificación
-        const totalNotifications = houseInvitations.length + nearExpirations.length + chatNotifications.length;
+        const totalNotifications = houseInvitations.length + nearExpirations.length // + chatNotifications.length;
 
         // Si el total de notificaciones es mayor que el conteo de notificaciones actual, actualiza el estado
         if (totalNotifications > notificationCount) {

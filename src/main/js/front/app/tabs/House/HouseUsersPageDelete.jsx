@@ -47,9 +47,8 @@ const HouseUsersPageDelete = ({ navigation }) => {
 
     const getHouseUsers = async () => {
         try {
-            const userId = await AsyncStorage.getItem('userId');
             const houseId = await AsyncStorage.getItem('houseId');
-            const houseUsers = await HousesApi.getUsersOfAHouse(houseId, userId);
+            const houseUsers = await HousesApi.getUsersOfAHouse(houseId, navigation);
             if (Array.isArray(houseUsers)) {
                 setUsers(houseUsers);
             } else {
@@ -68,7 +67,7 @@ const HouseUsersPageDelete = ({ navigation }) => {
         const houseId = await AsyncStorage.getItem('houseId');
         const currentUserId = await AsyncStorage.getItem('userId'); // Obtén el userId del usuario actual
 
-        await HousesApi.deleteUserFromHouse(houseId, userId);
+        await HousesApi.deleteUserFromHouse(houseId, userId, navigation);
         setModalMessage("User deleted successfully"); // Muestra el modal en lugar de un alert
         setModalVisible(true);
         setTimeout(() => {

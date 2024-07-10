@@ -19,11 +19,11 @@ public class ChatController {
     public void init() {
 
         // Route to get the chats of a user
-        Spark.get("/chat/:userId", (req, resp) -> {
+        Spark.get("/chats/user", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Chats chatsRepo = new Chats(entityManager);
             try {
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
                 String chatsJson = gson.toJson(chatsRepo.getChats(userId));
                 resp.type("application/json");
                 return chatsJson;
@@ -36,14 +36,13 @@ public class ChatController {
             }
         });
 
-
         // Route to get the messages of a chat
-        Spark.get("/chat/:chatId/messages/:userId", (req, resp) -> {
+        Spark.get("/chat/:chatId/messages", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Chats chatsRepo = new Chats(entityManager);
             try {
                 Long chatId = Long.parseLong(req.params("chatId"));
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
                 String messagesJson = gson.toJson(chatsRepo.getMessages(chatId, userId));
                 resp.type("application/json");
                 return messagesJson;
@@ -57,12 +56,12 @@ public class ChatController {
         });
 
         // Route to send a message to a chat
-        Spark.post("/chat/:chatId/messages/:userId", "application/json", (req, resp) -> {
+        Spark.post("/chat/:chatId/messages", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Chats chatsRepo = new Chats(entityManager);
             try {
                 Long chatId = Long.parseLong(req.params("chatId"));
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
                 String message = req.body();
                 chatsRepo.sendMessage(chatId, userId, message);
                 resp.type("application/json");
@@ -78,13 +77,13 @@ public class ChatController {
         });
 
         // Route to get the chats notifications of a user
-        Spark.get("/chat/:userId/notifications", (req, resp) -> {
+        Spark.get("/chat/user/notifications", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Chats chatsRepo = new Chats(entityManager);
             try {
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
-                Long userId = Long.parseLong(req.params("userId"));
+                Long userId = Long.parseLong(req.headers("UserId"));
                 String notificationsJson = gson.toJson(chatsRepo.getNotifications(userId));
                 tx.commit();
                 resp.type("application/json");

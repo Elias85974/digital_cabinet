@@ -74,7 +74,7 @@ export default function RegisterProduct({navigation}) {
 
 
     const fetchCategories = async () => {
-        const fetchedCategories = await CategoriesApi.getCategories();
+        const fetchedCategories = await CategoriesApi.getCategories(navigation);
         setCategories(fetchedCategories);
     };
 
@@ -89,7 +89,7 @@ export default function RegisterProduct({navigation}) {
     };
 
     const handleCategoryChange = async () => {
-        const createdCategory = await CategoriesApi.createCategory({nombre: newCategory});
+        const createdCategory = await CategoriesApi.createCategory({nombre: newCategory}, navigation);
         setCategories([...categories, createdCategory]);
         setNewProduct({...newProduct, categoryId: createdCategory.id});
         setShowNewCategoryInput(false);
@@ -122,7 +122,7 @@ export default function RegisterProduct({navigation}) {
             });
         } else {
             // Si la categoría no existe, créala
-            const createdCategory = await CategoriesApi.createCategory({nombre: formattedCategoryName});
+            const createdCategory = await CategoriesApi.createCategory({nombre: formattedCategoryName}, navigation);
             setCategories([...categories, createdCategory]);
             setNewProduct({...newProduct, categoryId: createdCategory.id});
             setQuery('');
@@ -141,7 +141,7 @@ export default function RegisterProduct({navigation}) {
     const handleCreateProduct = async() => {
         try {
             if (newProduct.nombre && newProduct.marca && newProduct.tipoDeCantidad && newProduct.categoryId) {
-                ProductsApi.createProduct(newProduct).then(r =>
+                ProductsApi.createProduct(newProduct, navigation).then(r =>
                         setModalMessage("Product created successfully!"), // Muestra el modal en lugar de un alert
                     setModalVisible(true),
                 );

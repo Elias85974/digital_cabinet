@@ -58,7 +58,7 @@ export default function AddProduct({navigation}) {
 
     const fetchProducts = async () => {
         try {
-            const fetchedProducts = await ProductsApi.getAllProducts();
+            const fetchedProducts = await ProductsApi.getAllProducts(navigation);
             setProducts(fetchedProducts);
             console.log('fetchedProducts:', fetchedProducts)
         } catch (error) {
@@ -106,7 +106,7 @@ export default function AddProduct({navigation}) {
                 const stockUpdate = {productId: selectedProduct,
                     quantity: quantity, expiration: expiration, lowStockIndicator: lowStockIndicator, price: price};
                 console.log('stockUpdate:', stockUpdate);
-                await InventoryApi.updateHouseInventory(houseId, stockUpdate);
+                await InventoryApi.updateHouseInventory(houseId, stockUpdate, navigation);
                 setModalMessage("Inventory updated successfully!"); // Muestra el modal en lugar de un alert
                 setModalVisible(true);
             }

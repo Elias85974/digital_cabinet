@@ -33,8 +33,7 @@ export default function WishList({navigation}) {
 
     const loadWishList = async () => {
         try {
-            const userId = await AsyncStorage.getItem('userId');
-            const list = await WishlistApi.getWishList(userId);
+            const list = await WishlistApi.getWishList(navigation);
             console.log(list);
             setWishList(list);
         } catch (error){
@@ -49,8 +48,7 @@ export default function WishList({navigation}) {
     const handleSubmit = async () => {
         if (newProduct.length > 0) {
             console.log(newProduct);
-            const userId = await AsyncStorage.getItem('userId');
-            await WishlistApi.addProductToWishList(newProduct, userId);
+            await WishlistApi.addProductToWishList(newProduct, navigation);
             await loadWishList();
             setModalVisible(false);
             setNewProduct('');
@@ -72,9 +70,8 @@ export default function WishList({navigation}) {
     }
 
     const handleUpdate = async () => {
-        const userId = await AsyncStorage.getItem('userId');
         console.log(selectedItems)
-        await WishlistApi.deleteProductsFromWishList(selectedItems, userId);
+        await WishlistApi.deleteProductsFromWishList(selectedItems, navigation);
         setSelectedItems([]);
         await loadWishList();
     }

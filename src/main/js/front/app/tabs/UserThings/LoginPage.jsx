@@ -24,7 +24,7 @@ export default function LoginPage({navigation}) {
             if (user.mail && user.password) {
                 const response = await UsersApi.loginUser(user); // Assume loginUser returns a promise
                 if (response) { // Boolean indicating success of login
-                    signIn("", response.email);
+                    signIn(response.token, response.email);
                     setIsLoggedIn(true);
 
                     // Save user ID to AsyncStorage

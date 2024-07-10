@@ -23,7 +23,7 @@ public class UserController {
     public void init() {
 
         // Route to create a user
-        Spark.post("/users", "application/json", (req, resp) -> {
+        Spark.post("/register", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);
             try {
@@ -55,6 +55,7 @@ public class UserController {
 
                 if (foundUserOptional.isEmpty()) {
                     resp.status(404);
+                    resp.type("message");
                     return "Invalid user or password";
                 }
 
@@ -68,6 +69,7 @@ public class UserController {
                     //jsonResponse.addProperty("token", token);
                     jsonResponse.addProperty("email", foundUser.getMail()); // Correo electrónico del usuario
                     jsonResponse.addProperty("userId", foundUser.getUsuario_ID()); // ID del usuario
+                    jsonResponse.addProperty("token", TokenValidator.addNewToken(foundUser.getUsuario_ID()));
 
                     // Establecer el encabezado Content-Type
                     resp.type("application/json");
@@ -91,7 +93,25 @@ public class UserController {
             }
         });
 
-        // Route to get the id of a user by mail
+        // Route to remove the token of a user that wants to log out
+        Spark.delete("/logout", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            try {
+                Long userId = Long.parseLong(req.headers("UserId"));
+
+                TokenValidator.removeToken(userId);
+                resp.status(200);
+                return "User logged out successfully";
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while logging out, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        // Route to get the id of a user by mail (unused for now)
         Spark.get("/user/email/:email", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);
@@ -134,11 +154,11 @@ public class UserController {
         });
 
         // Route to get the houses of a given user
-        Spark.get("/user/:userId/houses", (req, resp) -> {
+        Spark.get("/users/user/getHouses", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);
             try {
-                final String userId = req.params("userId");
+                final String userId = req.headers("UserId");
                 Optional<User> user = users.findById(Long.parseLong(userId));
 
                 if (user.isEmpty()) {

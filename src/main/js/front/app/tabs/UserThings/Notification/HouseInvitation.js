@@ -18,29 +18,25 @@ export function HouseInvitation({ navigation, setInvitationsLength }) {
     }, [isFocused]);
 
     const loadInvitations = async () => {
-        const userId = await AsyncStorage.getItem('userId');
-        const houseInvitations = await InboxApi.getUsersHouseInvitations(userId);
+        const houseInvitations = await InboxApi.getUsersHouseInvitations(navigation);
         console.log(houseInvitations);
         setInvitations(houseInvitations);
         setInvitationsLength(houseInvitations.length);
     }
 
     const handleAccept = async (houseId) => {
-        const userId = await AsyncStorage.getItem('userId');
-        const invitation = {userId: userId, houseId: houseId.toString(), isAccepted: true};
-        try {
-            await HousesApi.processInvitations(invitation);
-            await loadInvitations();
-        } catch (error) {
-            console.error('Failed to process invitation:', error);
-        }
+        const invitation = {houseId: houseId.toString(), isAccepted: true};
+        await processInvitation(invitation);
     }
 
     const handleReject = async (houseId) => {
-        const userId = await AsyncStorage.getItem('userId');
-        const invitation = {userId: userId, houseId: houseId.toString(), isAccepted: false};
+        const invitation = {houseId: houseId.toString(), isAccepted: false};
+        await processInvitation(invitation);
+    }
+
+    const processInvitation = async (invitation) => {
         try {
-            await HousesApi.processInvitations(invitation);
+            await HousesApi.processInvitation(invitation, navigation);
             await loadInvitations();
         } catch (error) {
             console.error('Failed to process invitation:', error);

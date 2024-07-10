@@ -80,11 +80,11 @@ public class Houses {
         tx.commit();
     }
 
-    public void inviteUser(String userId, String invitedUserEmail, Long houseId, Users usersRepo) {
+    public void inviteUser(Long userId, String invitedUserEmail, Long houseId, Users usersRepo) {
         EntityTransaction tx = entityManager.getTransaction();
         tx.begin();
 
-        Optional<User> invitingUserOptional = usersRepo.findById(Long.parseLong(userId));
+        Optional<User> invitingUserOptional = usersRepo.findById(userId);
         Optional<User> invitedUserOptional = usersRepo.findByEmail(invitedUserEmail);
         Optional<House> houseOptional = findById(houseId);
 

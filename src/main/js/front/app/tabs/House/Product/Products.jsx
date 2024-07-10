@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Modal, TextInput, Pressable, FlatList, SafeAreaView, ScrollView,} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {InventoryApi,} from "../../../Api";
+import {FetchApi, InventoryApi,} from "../../../Api";
 import ModalAlert from "../../Contents/ModalAlert";
 import NavBar from "../../NavBar/NavBar";
 import {FontAwesome} from "@expo/vector-icons";
@@ -51,7 +51,7 @@ export default function Product({navigation}) {
         try {
             const category = await AsyncStorage.getItem('categoryName');
             const houseId = await AsyncStorage.getItem('houseId');
-            const products = await InventoryApi.getProductsFromHouseAndCategory(houseId, category);
+            const products = await InventoryApi.getProductsFromHouseAndCategory(houseId, category, navigation);
             console.log('productos cargados',products);
 
             setReduceProduct(products);
@@ -75,14 +75,14 @@ export default function Product({navigation}) {
         const houseId = await AsyncStorage.getItem('houseId');
         // Call your API method here to reduce the stock
         // After successful reduction, close the modal and reset the quantity to reduce
-        await InventoryApi.reduceStock(houseId, selectedProduct.product.producto_ID, quantityToReduce);
+        await InventoryApi.reduceStock(houseId, selectedProduct.product.producto_ID, quantityToReduce, navigation);
         setModalVisible3(false);
         setModalVisible2(false); // Close both modals
         setQuantityToReduce('');
         setRefreshKey(oldKey => oldKey + 1);
 
         const category = await AsyncStorage.getItem('category');
-        const reduceProd = await InventoryApi.getProductsFromHouseAndCategory(houseId, category);
+        const reduceProd = await InventoryApi.getProductsFromHouseAndCategory(houseId, category, navigation);
         setSuggestions(reduceProd)
         console.log('reduceProd con getProdHC:', reduceProd);
         //navigation.navigate('Product'); // ni siquiera con navigate me cansé estoy hace 5 horas con esto,

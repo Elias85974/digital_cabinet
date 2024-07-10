@@ -43,7 +43,7 @@ public class ProductController {
         });
 
         // Route to create a product and link it with the needed category
-        Spark.post("/products/:categoryId", "application/json", (req, resp) -> {
+        Spark.put("/products/:categoryId", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
             Categories categoriesRepo = new Categories(entityManager);
@@ -61,7 +61,7 @@ public class ProductController {
                 resp.type("application/json");
                 resp.status(201);
                 tx.commit();
-                return product.asJson();
+                return "Product created";
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());

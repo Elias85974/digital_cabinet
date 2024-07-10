@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {UsersApi} from "../Api";
 
 export const AuthContext = createContext({
     userToken: null,
@@ -40,8 +41,12 @@ export function AuthProvider({ children }) {
 
     const signOut = async () => {
         try {
+            await UsersApi.logoutUser();
             await AsyncStorage.removeItem('userToken');
+            await AsyncStorage.removeItem('email');
+            await AsyncStorage.removeItem('userId');
             setUserToken(null);
+            setEmail(null);
         } catch (e) {
             console.error('Failed to remove token', e);
         }

@@ -21,8 +21,7 @@ export default function Homes({navigation}) {
 
     const getHouses = async () => {
         try {
-            const userId = await AsyncStorage.getItem('userId');
-            const userHouses = await UsersApi.getUserHouses(userId);
+            const userHouses = await UsersApi.getUserHouses(navigation);
 
             setHouses(userHouses);
         } catch (error) {

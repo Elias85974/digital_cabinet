@@ -169,16 +169,16 @@ export default function RegisterProduct({navigation}) {
                         <GoBackButton navigation={navigation}/>
                         <Text style={styles.title}>Register your Product</Text>
                     <View style={styles.createprod}>
-                        <Text style={styles.info}>Please fill in all fields to create your product</Text>
+                        <Text style={styles.info}>Please fill in all the fields to create your product:</Text>
 
                         <TextInput style={styles.input}
-                                   placeholder="Nombre"
+                                   placeholder="Product name"
                                    value={newProduct.nombre}
                                    onChangeText={(value) => handleInputChange('nombre', value)}
                         />
 
                         <TextInput style={styles.input}
-                                   placeholder="Marca"
+                                   placeholder="Product brand"
                                    value={newProduct.marca}
                                    onChangeText={(value) => handleInputChange('marca', value)}
                         />

@@ -48,9 +48,35 @@ export default function AddProduct({navigation}) {
     };
 
 
-    const isValidDate = (date) => {
-        return /^(\d{2}\/\d{2}\/\d{4})$/.test(date);
-    }
+    const isValidDate = (dateStr) => {
+        // Check if date format is DD/MM/YYYY
+        if (!/^(\d{2}\/\d{2}\/\d{4})$/.test(dateStr)) {
+            return false;
+        }
+
+        // Parse the date from the string
+        const parts = dateStr.split('/');
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Month is 0-based
+        const year = parseInt(parts[2], 10);
+        const inputDate = new Date(year, month, day);
+
+        // Check if date is valid
+        if (inputDate.getFullYear() !== year || inputDate.getMonth() !== month || inputDate.getDate() !== day) {
+            return false;
+        }
+
+        // Get today's date with time reset to 00:00:00
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Check if the input date is earlier than today
+        if (inputDate < today) {
+            return false;
+        }
+
+        return true;
+    };
 
     useEffect(() => {
         fetchProducts();
@@ -66,28 +92,26 @@ export default function AddProduct({navigation}) {
         }
     }
 
+    const formatDate = (value) => {
+        // Remove all non-digit characters
+        const cleaned = value.replace(/\D+/g, '');
+        // Split the cleaned string into parts for day, month, and year
+        const day = cleaned.slice(0, 2);
+        const month = cleaned.slice(2, 4);
+        const year = cleaned.slice(4, 8);
+
+        // Reassemble the parts with slashes between them
+        return `${day}${month.length ? '/' : ''}${month}${year.length ? '/' : ''}${year}`;
+    };
+
     const handleChanges = (value, type) => {
         if (type === 'product') {
             setSelectedProduct(value);
         } else if (type === 'quantity') {
-            setQuantity(value);
+            setQuantity(Number(value));
         }
         else if (type === 'expiration') {
-            // Remove all non-numeric characters
-            const numericValue = value.replace(/[^0-9]/g, '');
-
-            // Add slashes after the day and month
-            let formattedValue = numericValue;
-            if (numericValue.length >= 2) {
-                formattedValue = `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
-            }
-            if (numericValue.length >= 4) {
-                formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(5)}`;
-            }
-
-            // Limit the length to 10 characters (DD/MM/YYYY)
-            formattedValue = formattedValue.slice(0, 10);
-
+            const formattedValue = formatDate(value);
             setExpiration(formattedValue);
         }
         else if (type === 'lowStockIndicator') {

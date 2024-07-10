@@ -19,11 +19,30 @@ export default function RegisterPage({navigation}) {
 
     const handleInputChange = (field, value) => {
         if (field === 'mail') {
+            // Convert email to lowercase
             value = value.toLowerCase();
+        } else if (field === 'telefono') {
+            // Format phone number for the 'telefono' field
+            value = formatPhoneNumber(value);
         } else {
+            // Capitalize the first letter for other fields
             value = capitalizeFirstLetter(value);
         }
+        // Update the newUser state with the formatted value
         setNewUser({...newUser, [field]: value});
+    };
+
+    const formatPhoneNumber = (input) => {
+        // Remove any non-numeric characters
+        const digits = input.replace(/\D/g, '');
+
+        // Assuming the format XX XXXX XXXX, slice the digits and format
+        if (digits.length === 10) {
+            return `${digits.slice(0, 2)} ${digits.slice(2, 6)} ${digits.slice(6)}`;
+        }
+
+        // Return the original input if it doesn't match the expected length
+        return input;
     };
 
     const handleCreateUser = async () => {
@@ -32,6 +51,11 @@ export default function RegisterPage({navigation}) {
                 && newUser.edad && newUser.telefono && newUser.password) {
                 if (!isEmail(newUser.mail)) {
                     setModalMessage("Incorrect email format. Please try again."); // Muestra el modal en lugar de un alert
+                    setModalVisible(true);
+                } else if (!isValidPhoneNumber(newUser.telefono)) {
+                    setModalMessage("Invalid phone number format. Expected format: XX XXXX XXXX");                    setModalVisible(true);
+                } else if(newUser.edad < 12) {
+                    setModalMessage("You are too young to have an account.");
                     setModalVisible(true);
                 } else {
                     await UsersApi.createUser(newUser);
@@ -55,6 +79,11 @@ export default function RegisterPage({navigation}) {
             console.log("Error creating user:", error);
         }
     };
+
+    const isValidPhoneNumber = (phoneNumber) => {
+        const pattern = /\d{2} \d{4} \d{4}$/; // New pattern for +12 3456 7890 format
+        return pattern.test(phoneNumber);
+};
 
     return (
         <View style={styles.container}>

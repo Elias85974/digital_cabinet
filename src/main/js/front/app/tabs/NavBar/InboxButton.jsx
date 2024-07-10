@@ -1,20 +1,28 @@
-import React from 'react';
-import {Pressable, Text, Alert, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Pressable, Text, Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Ionicons} from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {getInboxSize} from "../../api/inbox";
 
 
-const InboxButton = ({navigation}) => {
+const InboxButton = ({navigation, hasNewNotification}) => {
 
     const handleGoBack = () => {
         navigation.navigate('Inbox');
     }
 
     return (
-        <><TouchableOpacity onPress={handleGoBack}  style={styles.chatButton}>
-            <Ionicons name="mail-outline" size={24} color="white" />
-            {/*<Text style={styles.logoutText}>Inbox</Text>*/}
-        </TouchableOpacity>
+        <>
+            <TouchableOpacity onPress={handleGoBack}  style={styles.chatButton}>
+                <Ionicons
+                    name={hasNewNotification ? "mail" : "mail-outline"}
+                    size={24}
+                    color="white"
+                />
+                {/*<Text style={styles.logoutText}>Inbox</Text>*/}
+            </TouchableOpacity>
         </>
+
     );
 }
 

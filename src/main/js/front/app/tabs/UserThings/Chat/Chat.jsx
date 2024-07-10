@@ -74,7 +74,7 @@ return (
         </ScrollView>
         <View style={[styles.container]}>
           <TextInput
-                style={{borderRadius: 100,height: 50, borderColor: 'gray', borderWidth: 1, width: '80%', color: 'white', backgroundColor: '#3b0317',}}
+                style={{borderRadius: 10,padding:10,height: 50, borderColor: 'gray', borderWidth: 1, width: '80%', color: 'white', backgroundColor: '#3b0317',}}
                 onChangeText={setMessage}
                 value={message}
                 multiline={true}

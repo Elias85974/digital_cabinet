@@ -18,7 +18,12 @@ export default function RegisterPage({navigation}) {
     }
 
     const handleInputChange = (field, value) => {
-        setNewUser({...newUser, [field]: capitalizeFirstLetter(value)});
+        if (field === 'mail') {
+            value = value.toLowerCase();
+        } else {
+            value = capitalizeFirstLetter(value);
+        }
+        setNewUser({...newUser, [field]: value});
     };
 
     const handleCreateUser = async () => {

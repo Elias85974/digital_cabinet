@@ -95,27 +95,27 @@ export default function RegisterPage({navigation}) {
                     <View style={styles.signInCont}>
                         <Text style={styles.info}>Please fill in all fields to create your user</Text>
                         <TextInput style={styles.input}
-                                   placeholder="Mail"
+                                   placeholder="E-Mail"
                                    value={newUser.mail}
                                    onChangeText={(value) => handleInputChange('mail', value)}
                         />
                         <TextInput style={styles.input}
-                                   placeholder="Nombre"
+                                   placeholder="Name"
                                    value={newUser.nombre}
                                    onChangeText={(value) => handleInputChange('nombre', value)}
                         />
                         <TextInput style={styles.input}
-                                   placeholder="Apellido"
+                                   placeholder="Surname"
                                    value={newUser.apellido}
                                    onChangeText={(value) => handleInputChange('apellido', value)}
                         />
                         <TextInput style={styles.input}
-                                   placeholder="Edad"
+                                   placeholder="Age"
                                    value={newUser.edad}
                                    onChangeText={(value) => handleInputChange('edad', value)}
                         />
                         <TextInput style={styles.input}
-                                   placeholder="Teléfono: XX XXXX XXXX"
+                                   placeholder="Phone number XX XXXX XXXX"
                                    value={newUser.telefono}
                                    onChangeText={(value) => handleInputChange('telefono', value)}
                         />

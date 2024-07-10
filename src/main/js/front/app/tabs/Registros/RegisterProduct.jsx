@@ -10,13 +10,15 @@ import {
     FlatList,
     SafeAreaView
 } from "react-native";
-import Picker from 'react-native-picker-select';
 
 import {CategoriesApi, ProductsApi} from "../../Api";
 import ModalAlert from "../Contents/ModalAlert";
 import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
+import CustomHover from "../Contents/CustomHover"
+
+
 
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
@@ -33,6 +35,7 @@ export default function RegisterProduct({navigation}) {
     const [suggestions, setSuggestions] = useState([]);
 
     const [selectedQuantityType, setSelectedQuantityType] = useState('');
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleQuantityTypePress = (type) => {
         setSelectedQuantityType(type);
@@ -171,13 +174,13 @@ export default function RegisterProduct({navigation}) {
                         <Text style={styles.info}>Please fill in all the fields to create your product:</Text>
 
                         <TextInput style={styles.input}
-                                   placeholder="Product name"
+                                   placeholder="Name"
                                    value={newProduct.nombre}
                                    onChangeText={(value) => handleInputChange('nombre', value)}
                         />
 
                         <TextInput style={styles.input}
-                                   placeholder="Product brand"
+                                   placeholder="Brand"
                                    value={newProduct.marca}
                                    onChangeText={(value) => handleInputChange('marca', value)}
                         />
@@ -204,13 +207,23 @@ export default function RegisterProduct({navigation}) {
                             ))}
                         </View>
 
-                        <TextInput
-                            style={styles.input}
-                            value={query}
-                            onChangeText={handleInputChangeCat}
-                            onKeyPress={handleKeyPress}
-                            placeholder="Select a category"
-                        />
+                        <View
+                            onStartShouldSetResponder={() => true}
+                            onResponderGrant={() => setIsHovered(true)}
+                            onResponderRelease={() => setIsHovered(false)}
+                        >
+                            <TextInput
+                                style={styles.input}
+                                placeholder={'Select a Category'}
+                                value={query}
+                                onChangeText={handleInputChangeCat}
+                                onKeyPress={handleKeyPress}
+                            />
+                            {isHovered &&
+                                <Text style={styles.quantityTypeButtonText}>
+                                    Pressing enter creates the category, then you will need to search for it again and select it.
+                                </Text>}
+                        </View>
                         <FlatList
                             data={suggestions}
                             numColumns={6}

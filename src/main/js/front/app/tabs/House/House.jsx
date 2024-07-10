@@ -100,8 +100,8 @@ export default function House({navigation}) {
                                     value={query}
                                     placeholder="Search category"
                                 />
-                                <Pressable onPress={navigation.navigate('All Products')}>
-                                    <Text style={styles.circleText}>All Products</Text>
+                                <Pressable onPress={() => navigation.navigate('All Products')}>
+                                    <Text style={styles.allProds}>All Products</Text>
                                 </Pressable>
                             </View>
 
@@ -251,6 +251,10 @@ const styles = StyleSheet.create({
     circleText: {
         color: 'white',
         fontSize: 25,
+    },
+    allProds: {
+        color: 'white',
+        fontSize: 15,
     },
     input: {
         height: 40,

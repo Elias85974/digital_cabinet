@@ -29,6 +29,8 @@ export default function AllProducts({navigation}) {
 
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantityToAdd, setQuantityToAdd] = useState('');
+    const [quantityToReduce, setQuantityToReduce] = useState('');
+
     const [refreshKey, setRefreshKey] = useState(0);
 
     const [query, setQuery] = useState('');

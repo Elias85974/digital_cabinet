@@ -50,7 +50,6 @@ export default function Chat({navigation}) {
 
   const handleSendMessage = async(message) => {
     if (message.length > 0) {
-      console.log("Hello there");
       await ChatApi.sendMessage(chatId, message, navigation);
       setMessage('');
       await loadMessages();
@@ -66,7 +65,7 @@ return (
         <View style={[chatsStyles.container]}>
               {messages.map((msg, index) => (
                   <View key={index} style={msg.senderId === userId ? styles.userMessage : styles.otherMessage}>
-                    <Text>{msg.senderId === userId ? '' : msg.sender + ":"} {msg.message}</Text>
+                    <p>{msg.senderId === userId ? '' : msg.sender + ":"} {msg.message}</p>
                   </View>
               ))}
 

@@ -11,7 +11,6 @@ import {getMessages} from "../../api/chat"; // Asegúrate de importar tu funció
 
 export default function GroupsChats({ navigation }) {
     const [chats, setChats] = useState([]);
-    const [chatsWithUnreadMessages, setChatsWithUnreadMessages] = useState([]);
 
     const isFocused = useIsFocused();
 
@@ -24,30 +23,11 @@ export default function GroupsChats({ navigation }) {
     const getGroupChats = async () => {
         try {
             const chats = await ChatApi.getChats(navigation);
-            const newChatsWithUnreadMessages = [];
-            for (let chat of chats) {
-                if (await checkForNewMessages(chat.chatId)) {
-                    newChatsWithUnreadMessages.push(chat.chatId);
-                }
-            }
             setChats(chats);
-            setChatsWithUnreadMessages(newChatsWithUnreadMessages);
             console.log("Chats:", chats);
         } catch (error) {
             console.log("Error getting chats:", error);
         }
-    }
-
-
-
-    const checkForNewMessages = async (chatId) => {
-        const chats = await InboxApi.getChatNotifications(navigation);
-        for (let chat of chats) {
-            if (chat.chatId === chatId) {
-                return chat.unreadMessages > 0;
-            }
-        }
-        return false;
     }
 
     return (
@@ -58,7 +38,7 @@ export default function GroupsChats({ navigation }) {
                         <Text style={chatsStyles.title}>Chats</Text>
                     <View style={chatsStyles.contentWishList}>
                         {chats.map((chat, index) => (
-                            <View style={ chatsWithUnreadMessages.includes(chat.chatId) ? chatsStyles.cardMessages : chatsStyles.card} key={index}>
+                            <View style={ chatsStyles.card} key={index}>
                                 <Text style={chatsStyles.info}
                                       onPress={async () => {
                                           navigation.navigate('Chat');

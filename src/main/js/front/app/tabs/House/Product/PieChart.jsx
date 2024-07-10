@@ -89,8 +89,8 @@ export default function PieChartComponent({navigation}){
                         const totalValue = dataArray.reduce((acc, item) => acc + item.value, 0);
                         // Calculate percentages and update labels with percentages
                         const categoriesWithPercentages = dataArray.map((item) => {
-                            const percentage = ((item.value / totalValue) * 100).toFixed(2);
-                            return `${item.product} (${percentage}%)`;
+                            //const percentage = ((item.value / totalValue) * 100).toFixed(2);
+                            return `${item.product}`;
                         });
                         const values = dataArray.map((item) => item.value);
                         const newChartData = {
@@ -160,8 +160,8 @@ export default function PieChartComponent({navigation}){
                     }));
                     const totalValue = totalData.reduce((acc, item) => acc + item.value, 0);
                     const categoriesWithPercentages = totalData.map(item => {
-                        const percentage = ((item.value / totalValue) * 100).toFixed(2);
-                        return `${item.category} (${percentage}%)`;
+                        //const percentage = ((item.value / totalValue) * 100).toFixed(2);
+                        return `${item.category} `;
                     });
                     const values = totalData.map(item => item.value);
                     const totalChartData = {
@@ -209,11 +209,11 @@ export default function PieChartComponent({navigation}){
                             <Picker.Item label="Total Values" value="totalValues" />
                         </Picker>
                 </View>
-                    <View style={{width: '35%', alignSelf: 'center'}}>
-                        <Pie data={chartData} />
-                    </View>
                     <View style={styles.info}>
                         <Text style={styles.label}>Total expense: ${total.toFixed(2)}</Text>
+                    </View>
+                    <View style={{width: '35%', alignSelf: 'center', marginTop:5}}>
+                        <Pie data={chartData} />
                     </View>
                 </ScrollView>
             </SafeAreaView>

@@ -3,7 +3,17 @@ import {Pie} from 'react-chartjs-2';
 import {ArcElement, Chart, Legend, Tooltip} from 'chart.js';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getInventoryValueByCategory, getProductsFromHouseAndCategory} from '../../../api/piechart';
-import {FlatList, Picker, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+    FlatList,
+    Picker,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from "react-native";
 import NavBar from "../../NavBar/NavBar";
 import {useIsFocused} from "@react-navigation/native";
 
@@ -46,6 +56,26 @@ export default function PieChartComponent({navigation}){
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [total, setTotal] = useState(0);
+
+    const [query, setQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+
+    const handleInputChangeCat = (text) => {
+        setQuery(text);
+
+        if (text === '') {
+            setSuggestions([]);
+        } else {
+            const regex = new RegExp(`${text.trim()}`, 'i');
+            setSuggestions(categories.filter(category => category.nombre.search(regex) >= 0));
+        }
+    };
+
+    const handleSuggestionPress = (suggestion) => {
+        setQuery(suggestion.nombre);
+        setSuggestions([]);
+        handleInputChange('category', suggestion.nombre);
+    };
 
     const isFocused = useIsFocused();
 
@@ -151,12 +181,18 @@ export default function PieChartComponent({navigation}){
                     <Text style={styles.title}>Inventory Value by Category</Text>
                     <View style={styles.picker}>
                         <Text style={styles.label}>Select Category:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={query}
+                            onChangeText={handleInputChangeCat}
+                            placeholder="Select a category"
+                        />
                         <FlatList
-                            data={categories}
+                            data={suggestions}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
-                                <TouchableOpacity onPress={() => handleInputChange('category', item)}>
-                                    <Text>{item}</Text>
+                                <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
+                                    <Text>{item.nombre}</Text>
                                 </TouchableOpacity>
                             )}
                         />

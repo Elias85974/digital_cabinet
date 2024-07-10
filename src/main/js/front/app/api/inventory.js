@@ -15,6 +15,11 @@ export const getLowOnStockProducts = async (houseId, navigation) => {
     return await FetchApi.getFetch(`/houses/${houseId}/inventory/lowOnStock`, 'Failed to get low on stock products:', navigation);
 }
 
+// Function that gets the list of products of a house
+export const getStockProducts = async (houseId, navigation) => {
+    return await FetchApi.getFetch(`/houses/${houseId}/inventory/stock`, 'Failed to get stock products:', navigation);
+}
+
 // Function to add stock to a house
 export const updateHouseInventory = async (houseId, stockData, navigation) => {
     return await FetchApi.postFetch(stockData, `/houses/${houseId}/inventory`, 'Failed to update house inventory:', navigation);

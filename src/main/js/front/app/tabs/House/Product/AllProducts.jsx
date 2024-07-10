@@ -17,17 +17,15 @@ import FilterModal from "../../Contents/FilterModal";
 import NavBar from "../../NavBar/NavBar";
 import {FontAwesome} from "@expo/vector-icons";
 import GoBackButton from "../../NavBar/GoBackButton";
-import AddStockModal from "../../Contents/Stock/AddStockModal";
-import TupleStock from "../../Contents/Stock/TupleStock";
+import {getStockProducts} from "../../../api/inventory";
 import ProductInfoModal from "../../Contents/Stock/ProductInfoModal";
 import SearchBar from "../../Contents/SearchBar";
 
-export default function LowOnStockProducts({navigation}) {
+export default function AllProducts({navigation}) {
     const [products, setProducts] = useState([]);
     const [modalProductInfo, setModalProductInfo] = useState(false);
     const [modalAdd, setModalAdd] = useState(false);
     const [modalReduce, setModalReduce] = useState(false);
-
 
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantityToAdd, setQuantityToAdd] = useState('');
@@ -42,13 +40,13 @@ export default function LowOnStockProducts({navigation}) {
         getProducts();
     }, [refreshKey]);
 
-     const getProducts = async () => {
+    const getProducts = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
-            const stock = await InventoryApi.getLowOnStockProducts(houseId, navigation);
+            const stock = await InventoryApi.getStockProducts(houseId, navigation);
             console.log("getProducts?",stock);
             setProducts(stock);
-            setSuggestions(stock)
+            setSuggestions(stock);
         } catch (error) {
             console.log("Error getting products:", error);
         }
@@ -69,12 +67,12 @@ export default function LowOnStockProducts({navigation}) {
         setQuery(suggestion.product.nombre);
         setSuggestions([]);
         setSelectedProduct(suggestion);
-        setModalProductInfo(true);
+        setModalVisible2(true);
     };
 
 
     const handleFilteredProducts = (filteredProducts) => {
-        console.log("Filtered products in lowstock:", filteredProducts);
+        console.log("Filtered products in stock:", filteredProducts);
         setFilteredProducts(filteredProducts);
     }
 
@@ -96,55 +94,49 @@ export default function LowOnStockProducts({navigation}) {
     return (
         <View style={styles.container} key={refreshKey}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                    <View>
-                        <GoBackButton navigation={navigation}/>
-                        <Text style={styles.title}>Low on Stock Products</Text>
-                        <View style={styles.container2}>
+                <View>
+                    <GoBackButton navigation={navigation}/>
+                    <Text style={styles.title}>All Products</Text>
+                    <View style={styles.container2}>
 
-                            <SearchBar
-                                styles={styles}
-                                handleInputChange={handleInputChange}
-                                query={query}
-                                products={products}
-                                handleFilteredProducts={handleFilteredProducts}
-                            />
-
-                            <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-                                <FlatList
-                                    data={filteredProducts.length > 0 ? filteredProducts : products}
-                                    renderItem={renderItem}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    numColumns={2}
-                                />
-                            </ScrollView>
-                        </View>
-
-                        <ProductInfoModal
-                            updateProducts={updateProducts}
-
-                            modalProductInfo={modalProductInfo}
-                            setModalProductInfo={setModalProductInfo}
-
-                            selectedProduct={selectedProduct}
-
-                            setModalReduce={setModalReduce}
-                            modalReduce={modalReduce}
-
-                            setModalAdd={setModalAdd}
-                            modalAdd={modalAdd}
-
-                            setQuantityToReduce={setQuantityToReduce}
-                            quantityToReduce={quantityToReduce}
-
-                            setQuantityToAdd={setQuantityToAdd}
-                            quantityToAdd={quantityToAdd}
-
+                        <SearchBar
                             styles={styles}
-                            refreshKey={refreshKey}
-                            setRefreshKey={setRefreshKey}
+                            handleInputChange={handleInputChange}
+                            query={query}
+                            products={products}
+                            handleFilteredProducts={handleFilteredProducts}
                         />
 
+                        <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
+                            <FlatList
+                                data={filteredProducts.length > 0 ? filteredProducts : products}
+                                renderItem={renderItem}
+                                keyExtractor={(item, index) => index.toString()}
+                                numColumns={2}
+                            />
+                        </ScrollView>
                     </View>
+
+                    <ProductInfoModal
+                        updateProducts={updateProducts}
+
+                        modalProductInfo={modalProductInfo}
+                        setModalProductInfo={setModalProductInfo}
+                        selectedProduct={selectedProduct}
+                        setModalReduce={setModalReduce}
+                        modalReduce={modalReduce}
+                        setModalAdd={setModalAdd}
+                        modalAdd={modalAdd}
+                        setQuantityToReduce={setQuantityToReduce}
+                        quantityToReduce={quantityToReduce}
+                        setQuantityToAdd={setQuantityToAdd}
+                        quantityToAdd={quantityToAdd}
+                        styles={styles}
+                        refreshKey={refreshKey}
+                        setRefreshKey={setRefreshKey}
+                    />
+
+                </View>
             </SafeAreaView>
             <NavBar navigation={navigation}/>
         </View>

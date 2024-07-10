@@ -42,7 +42,7 @@ export default function FilterModal(props) {
     }
 
     function compareCant(a, b) {
-        return a.totalQuantity - b.totalQuantity;
+        return b.totalQuantity - a.totalQuantity;
     }
 
     const sortByQuantity = (products, order) => {
@@ -83,7 +83,6 @@ export default function FilterModal(props) {
 
     const applyFilters = (filtersToApply) => {
         let newFilteredProducts = [...props.products];
-
 
         newFilteredProducts = sortByQuantity(newFilteredProducts, filtersToApply.totalQuantity);
         newFilteredProducts = sortByExpiry(newFilteredProducts, filtersToApply.expiry);
@@ -188,7 +187,11 @@ const styles = StyleSheet.create({
         width: '45%',
         margin: 12,
         borderWidth: 1,
+        backgroundColor: '#3b0317',
         padding: 10,
+        borderRadius: 5,
+        color: '#F2EFE9',
+        fontSize: 16,
     },
     button: {
         backgroundColor: '#3b0317',

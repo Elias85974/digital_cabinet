@@ -5,6 +5,7 @@ import org.austral.ing.lab1.model.inventory.Inventory;
 import org.austral.ing.lab1.model.inventory.product.Product;
 import org.austral.ing.lab1.model.inventory.Stock;
 import org.austral.ing.lab1.object.jsonparsable.ProductInfo;
+import org.austral.ing.lab1.object.jsonparsable.ProductTotalInfo;
 import org.austral.ing.lab1.repository.houses.LivesIns;
 
 import javax.persistence.EntityManager;
@@ -204,6 +205,66 @@ public class Inventories {
         }
 
         return lowOnStockProducts;
+    }
+
+    public List<ProductTotalInfo> getStockProducts(Long houseId) {
+        // Get the house
+        House house = entityManager.find(House.class, houseId);
+
+        // Get the inventory of the house
+        Inventory inventory = house.getInventario();
+
+        // Get the stocks of the inventory
+        List<Stock> stocks = inventory.getStocks();
+
+        // Create a map to store the total quantity of each product
+        Map<Product, Long> productQuantities = new HashMap<>();
+
+        // Create a map to store the nearest expiration date of each product
+        Map<Product, Date> productExpirationDates = new HashMap<>();
+
+        // Create a map to store the low stock limit of each product
+        Map<Product, Long> productLowStockLimits = new HashMap<>();
+
+        // Create a map to store the total value of each product
+        Map<Product, Double> productTotalValues = new HashMap<>();
+
+        // Iterate over the stocks
+        for (Stock stock : stocks) {
+            Product product = stock.getProduct();
+            Long quantity = stock.getCantidadVencimiento();
+            Date expirationDate = stock.getExpirationDate();
+            Long lowStockIndicator = stock.getLowStockIndicator();
+
+            // Update the total quantity of the product
+            productQuantities.put(product, productQuantities.getOrDefault(product, 0L) + quantity);
+
+            // Update the nearest expiration date of the product
+            if (!productExpirationDates.containsKey(product) || productExpirationDates.get(product).after(expirationDate)) {
+                productExpirationDates.put(product, expirationDate);
+            }
+
+            // Update the low stock limit of the product
+            productLowStockLimits.put(product, lowStockIndicator);
+
+            // Update the total value of the product
+            productTotalValues.put(product, productTotalValues.getOrDefault(product, 0.0) + stock.getPrice() * quantity);
+        }
+
+        // Create a list to store the products that are low on stock
+        List<ProductTotalInfo> stockProducts = new ArrayList<>();
+
+        // Iterate over the products
+        for (Product product : productQuantities.keySet()) {
+            // Calculate the average price of the product
+            double averagePrice = productQuantities.get(product) > 0 ? productTotalValues.get(product) / productQuantities.get(product) : 0;
+
+            // Add the product to the list of low on stock products
+            stockProducts.add(new ProductTotalInfo(product, productQuantities.get(product), productExpirationDates.get(product),productLowStockLimits.get(product) , averagePrice));
+
+        }
+
+        return stockProducts;
     }
 
     // Add stock to the last added stock of the product

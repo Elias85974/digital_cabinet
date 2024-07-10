@@ -6,6 +6,7 @@ import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.inventory.Inventory;
 import org.austral.ing.lab1.model.inventory.product.Product;
 import org.austral.ing.lab1.object.jsonparsable.ProductInfo;
+import org.austral.ing.lab1.object.jsonparsable.ProductTotalInfo;
 import org.austral.ing.lab1.repository.houses.Houses;
 import org.austral.ing.lab1.repository.inventories.Inventories;
 import org.austral.ing.lab1.repository.inventories.products.Products;
@@ -99,6 +100,35 @@ public class InventoryController {
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
                 List<ProductInfo> products = inventoriesRepo.getLowOnStockProducts(houseId);
+                tx.commit();
+
+                if (products != null) {
+                    resp.status(200);
+                    resp.type("application/json");
+                    return gson.toJson(products);
+                } else {
+                    resp.status(404);
+                    return "House not found";
+                }
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the products, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        // Route to get the products on stock from the inventory of a house
+        Spark.get("/houses/:houseId/inventory/stock", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Inventories inventoriesRepo = new Inventories(entityManager);
+            try {
+                Long houseId = Long.parseLong(req.params("houseId"));
+
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                List<ProductTotalInfo> products = inventoriesRepo.getStockProducts(houseId);
                 tx.commit();
 
                 if (products != null) {

@@ -5,10 +5,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {getInboxSize} from "../../api/inbox";
 
 
-const InboxButton = ({navigation, hasNewNotification}) => {
+const InboxButton = ({navigation, hasNewNotification, openInbox}) => {
 
     const handleGoBack = () => {
         navigation.navigate('Inbox');
+        openInbox();
     }
 
     return (

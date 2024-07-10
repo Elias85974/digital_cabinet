@@ -61,16 +61,24 @@ const NavBar = ({ navigation }) => {
         console.log('totalNotifications', totalNotifications);
     }
 
+    const openMessage = () => {
+        setHasNewMessage(false);
+    }
+
+    const openInbox = () => {
+        setHasNewNotification(false);
+    }
+
     return (
     <View style={styles.bottom}>
         <View style={styles.navBar}>
             <WishlistButton navigation={navigation}/>
 
-            <ChatButton navigation={navigation} hasNewMessage={hasNewMessage}/>
+            <ChatButton navigation={navigation} hasNewMessage={hasNewMessage} openMessage={openMessage}/>
 
             <HomesButton navigation={navigation}/>
 
-            <InboxButton navigation={navigation} hasNewNotification={hasNewNotification}/>
+            <InboxButton navigation={navigation} hasNewNotification={hasNewNotification} openInbox={openInbox}/>
 
             <SettingsButton navigation={navigation}/>
         </View>

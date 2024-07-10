@@ -3,10 +3,11 @@ import {Pressable, Text, Alert, StyleSheet, TouchableOpacity, View} from 'react-
 import {Ionicons} from "@expo/vector-icons";
 
 
-const ChatButton = ({navigation, hasNewMessage}) => {
+const ChatButton = ({navigation, hasNewMessage, openMessage}) => {
 
     const handleGoBack = () => {
         navigation.navigate('GroupsChats');
+        openMessage();
     }
 
     return (

@@ -14,25 +14,31 @@ import SearchBar from "../../Contents/SearchBar";
 
 
 export default function ByCategory({navigation}) {
-    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [products, setProducts] = useState([]);
+
     const [modalProductInfo, setModalProductInfo] = useState(false);
-    const [modalReduce, setModalReduce] = useState(false);
     const [modalAdd, setModalAdd] = useState(false);
+    const [modalReduce, setModalReduce] = useState(false);
+
 
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [quantityToAdd, setQuantityToAdd] = useState('');
     const [quantityToReduce, setQuantityToReduce] = useState('');
+
     const [refreshKey, setRefreshKey] = useState(0);
+
+    const [query, setQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const isFocused = useIsFocused();
 
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
 
-    const [query, setQuery] = useState('');
-    const [suggestions, setSuggestions] = useState([]);
-
     const [categoryName, setCategoryName] = useState('')
-
     const [reduceProduct, setReduceProduct] = useState([]);
+
 
     useEffect(() => {
         if (isFocused) {
@@ -59,12 +65,10 @@ export default function ByCategory({navigation}) {
             const products = await InventoryApi.getProductsFromHouseAndCategory(houseId, category, navigation);
             console.log('productos cargados',products);
 
-            setReduceProduct(products);
-            setFilteredProducts(products);
+            setProducts(products);
+            setSuggestions(products);
             console.log('reduce Products:', setReduceProduct(products));
-            if (query === '') {
-                setSuggestions(products); // Initialize suggestions with the fetched products only if query is empty
-            }
+
         } catch (error) {
             console.log("Error getting products:", error);
         }
@@ -74,19 +78,25 @@ export default function ByCategory({navigation}) {
         setQuery(text);
 
         if (text === '') {
-            setSuggestions(filteredProducts);
+            setSuggestions(products);
         } else {
             const regex = new RegExp(`${text.trim()}`, 'i');
-            setSuggestions(filteredProducts.filter(product => product.product.nombre.search(regex) >= 0));
+            setSuggestions(products.filter(product => product.product.nombre.search(regex) >= 0));
         }
     };
 
     const handleSuggestionPress = (suggestion) => {
         setQuery(suggestion.product.nombre);
+        setSuggestions([]);
         setSelectedProduct(suggestion);
         setModalProductInfo(true);
-        setQuery('');
+        setQuery(''); //esto no esta en el otro
     };
+
+    const handleFilteredProducts = (filteredProducts) => {
+        console.log("Filtered products in stock:", filteredProducts);
+        setFilteredProducts(filteredProducts);
+    }
 
     // Define la función de actualización
     const updateProducts = (updatedProducts) => {
@@ -119,7 +129,7 @@ export default function ByCategory({navigation}) {
                         />
                         <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                             <FlatList
-                                data={suggestions}
+                                data={filteredProducts.length > 0 ? filteredProducts : products}
                                 renderItem={renderItem}
                                 keyExtractor={(item, index) => index.toString()}
                                 numColumns={2}
@@ -128,17 +138,25 @@ export default function ByCategory({navigation}) {
                     </View>
 
                     <ProductInfoModal
+                        updateProducts={updateProducts}
+
                         modalProductInfo={modalProductInfo}
                         setModalProductInfo={setModalProductInfo}
+
                         selectedProduct={selectedProduct}
+
                         setModalReduce={setModalReduce}
                         modalReduce={modalReduce}
+
                         setModalAdd={setModalAdd}
                         modalAdd={modalAdd}
+
                         setQuantityToReduce={setQuantityToReduce}
                         quantityToReduce={quantityToReduce}
+
                         setQuantityToAdd={setQuantityToAdd}
                         quantityToAdd={quantityToAdd}
+
                         styles={styles}
                         refreshKey={refreshKey}
                         setRefreshKey={setRefreshKey}

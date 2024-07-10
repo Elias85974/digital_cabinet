@@ -24,6 +24,7 @@ import SearchBar from "../../Contents/SearchBar";
 
 export default function LowOnStockProducts({navigation}) {
     const [products, setProducts] = useState([]);
+
     const [modalProductInfo, setModalProductInfo] = useState(false);
     const [modalAdd, setModalAdd] = useState(false);
     const [modalReduce, setModalReduce] = useState(false);
@@ -31,6 +32,8 @@ export default function LowOnStockProducts({navigation}) {
 
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantityToAdd, setQuantityToAdd] = useState('');
+    const [quantityToReduce, setQuantityToReduce] = useState('');
+
     const [refreshKey, setRefreshKey] = useState(0);
 
     const [query, setQuery] = useState('');
@@ -100,7 +103,6 @@ export default function LowOnStockProducts({navigation}) {
                         <GoBackButton navigation={navigation}/>
                         <Text style={styles.title}>Low on Stock Products</Text>
                         <View style={styles.container2}>
-
                             <SearchBar
                                 styles={styles}
                                 handleInputChange={handleInputChange}

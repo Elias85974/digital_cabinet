@@ -38,8 +38,7 @@ export default function Chat({navigation}) {
       newUserId = await AsyncStorage.getItem('userId');
       setUserId(newUserId);
     }
-    const chatId = await AsyncStorage.getItem('chatId');
-    const messages = await ChatApi.getMessages(chatId, newUserId);
+    const messages = await ChatApi.getMessages(chatId, navigation);
     console.log(messages);
     setMessages(messages);
   }
@@ -47,9 +46,8 @@ export default function Chat({navigation}) {
   const handleSendMessage = async(message) => {
     console.log(userId);
     if (message.length > 0) {
-      const newUserId = await AsyncStorage.getItem('userId');
       const chatId = await AsyncStorage.getItem('chatId');
-      await ChatApi.sendMessage(chatId, newUserId, message);
+      await ChatApi.sendMessage(chatId, message, navigation);
       setMessage('');
       await loadMessages();
     }

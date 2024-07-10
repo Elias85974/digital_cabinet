@@ -19,7 +19,6 @@ public class Application {
         new UserController(entityManagerFactory).init();
         new HouseController(entityManagerFactory).init();
         new InventoryController(entityManagerFactory).init();
-        new TokenController();
         new WishListController(entityManagerFactory).init();
         new InboxController(entityManagerFactory).init();
         new ProductController(entityManagerFactory).init();

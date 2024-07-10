@@ -5,10 +5,8 @@ import InboxButton from "./InboxButton";
 import SettingsButton from "./SettingsButton";
 import WishlistButton from "./WishlistButton";
 import HomesButton from "./HomesButton";
-import {getChatNotifications, getChats, getMessages} from "../../api/chat";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getInboxSize, getNearExpirationStocks, getUsersHouseInvitations} from "../../api/inbox";
 import {useIsFocused} from "@react-navigation/native";
+import {ChatApi, InboxApi} from "../../Api";
 
 const NavBar = ({ navigation }) => {
     const [hasNewMessage, setHasNewMessage] = useState(false);
@@ -36,11 +34,10 @@ const NavBar = ({ navigation }) => {
 
 
     const checkForNewMessages = async () => {
-        const userId = await AsyncStorage.getItem('userId');
-        const chats = await getChats(userId);
+        const chats = await ChatApi.getChats(navigation);
         let newMessageCount = 0;
         for (let chat of chats) {
-            const messages = await getMessages(chat.id, userId);
+            const messages = await ChatApi.getMessages(chat.id, navigation);
             newMessageCount += messages.length;
         }
         if (newMessageCount > messageCount) {
@@ -51,11 +48,9 @@ const NavBar = ({ navigation }) => {
     }
 
     const checkForNewNotifications = async () => {
-        const userId = await AsyncStorage.getItem('userId');
-
         // Obtén cada tipo de notificación
-        const houseInvitations = await getUsersHouseInvitations(userId);
-        const nearExpirations = await getNearExpirationStocks(userId);
+        const houseInvitations = await InboxApi.getUsersHouseInvitations(navigation);
+        const nearExpirations = await InboxApi.getNearExpirationStocks(navigation);
         // agregar cuando este terminado const chatNotifications = await getChatNotifications(userId);
 
         // Suma las longitudes de cada tipo de notificación

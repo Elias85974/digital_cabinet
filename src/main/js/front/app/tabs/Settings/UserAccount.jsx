@@ -31,8 +31,7 @@ export function UserAccount({ navigation }) {
     };
 
     const handleSave = async () => {
-        const userId = await AsyncStorage.getItem('userId');
-        await UsersApi.editUser(userId, userData);
+        await UsersApi.editUser(userData, navigation);
         // Aquí puedes agregar código para manejar lo que sucede después de que los datos del usuario se guardan exitosamente
     };
 

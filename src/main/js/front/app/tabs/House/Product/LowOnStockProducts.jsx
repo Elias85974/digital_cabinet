@@ -72,7 +72,7 @@ export default function LowOnStockProducts({navigation}) {
         setQuantityToAdd('');
         setRefreshKey(oldKey => oldKey + 1);
 
-        const stock = await InventoryApi.getLowOnStockProducts(houseId);
+        const stock = await InventoryApi.getLowOnStockProducts(houseId, navigation);
         setProducts(stock)
         setSuggestions(stock)
         setFilteredProducts(stock)

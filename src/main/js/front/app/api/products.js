@@ -1,4 +1,3 @@
-import { API_URL } from '../constants';
 import {FetchApi} from "../Api";
 
 // Function to get all the existing products from the database

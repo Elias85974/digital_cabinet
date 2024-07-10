@@ -136,7 +136,7 @@ export default function PieChart({navigation}){
         try {
             const houseId = await AsyncStorage.getItem('houseId');
             if (houseId) {
-                const inventoryValueResponse = await getInventoryValueByCategory(houseId);
+                const inventoryValueResponse = await getInventoryValueByCategory(houseId, navigation);
                 let fetchedCategories = Object.keys(inventoryValueResponse);
                 fetchedCategories.unshift('Total Values'); // Agrega 'Total Values' al inicio del array
                 setCategories(fetchedCategories);
@@ -151,7 +151,7 @@ export default function PieChart({navigation}){
         const houseId = await AsyncStorage.getItem('houseId');
         if (!houseId) return;
         try {
-            const response = await getInventoryValueByCategory(houseId);
+            const response = await getInventoryValueByCategory(houseId, navigation);
             if (response && typeof response === 'object') {
                 const totalData = Object.entries(response).map(([category, value]) => ({ category, value }));
                 const labels = totalData.map(item => item.category);
@@ -182,7 +182,8 @@ export default function PieChart({navigation}){
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                     <GoBackButton navigation={navigation}/>
-                    <Text style={styles.title}>Inventory Value by Categories</Text>
+                    <Text style={styles.title}>Inventory Value {selectedCategory === 'Total Values' ? '' : `for ${selectedCategory}`}
+                    </Text>
                     <View style={styles.input}>
                         <FlatList
                             data={categories}

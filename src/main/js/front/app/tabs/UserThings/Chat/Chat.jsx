@@ -66,7 +66,7 @@ return (
         <View style={[chatsStyles.container]}>
               {messages.map((msg, index) => (
                   <View key={index} style={msg.senderId === userId ? styles.userMessage : styles.otherMessage}>
-                    <Text>{msg.senderId === userId ? 'You' : msg.sender}: {msg.message}</Text>
+                    <Text>{msg.senderId === userId ? '' : msg.sender + ":"} {msg.message}</Text>
                   </View>
               ))}
 

@@ -57,15 +57,14 @@ public class Inventories {
         double totalValue = 0.0;
         for (Stock s : sameProductStocks) {
             totalQuantity += s.getCantidadVencimiento();
-            totalValue += s.getPrice() * s.getCantidadVencimiento();
+            totalValue += s.getPrice();
             if (nearestExpirationDate == null || s.getExpirationDate().before(nearestExpirationDate)) {
                 nearestExpirationDate = s.getExpirationDate();
             }
         }
-        double averagePrice = totalQuantity > 0 ? totalValue / totalQuantity : 0;
 
         // Create a new ProductInfo object with the calculated values
-        return new ProductInfo(product, totalQuantity, nearestExpirationDate, averagePrice);
+        return new ProductInfo(product, totalQuantity, nearestExpirationDate, totalValue);
     }
 
     public Inventory persist(Inventory inventory) {
@@ -250,7 +249,7 @@ public class Inventories {
         for (Stock stock : stocks) {
             Product product = stock.getProduct();
             String category = product.getCategory().getNombre();
-            double value = stock.getPrice() * stock.getCantidadVencimiento();
+            double value = stock.getPrice();
 
             // Update the total value of the category
             valueByCategory.put(category, valueByCategory.getOrDefault(category, 0.0) + value);

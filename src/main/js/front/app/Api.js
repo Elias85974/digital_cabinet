@@ -1,7 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const API_URL = 'http://localhost:4321'; // Replace this with your actual backend URL
-
 // Api.js
 import * as UsersApi from './api/users';
 import * as HousesApi from './api/houses';

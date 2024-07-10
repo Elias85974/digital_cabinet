@@ -163,6 +163,9 @@ export default function Product({navigation}) {
                                     <Pressable onPress={() => setModalVisible3(true)}>
                                         <Text style={styles.link}>Reduce Stock</Text>
                                     </Pressable>
+                                    <Pressable onPress={() => navigation.navigate('AddStock')}>
+                                        <Text style={styles.link}>Add Stock</Text>
+                                    </Pressable>
                                     <Pressable onPress={() => setModalVisible2(false)} >
                                         <Text style={styles.link}>Cerrar</Text>
                                     </Pressable>

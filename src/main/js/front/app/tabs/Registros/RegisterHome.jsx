@@ -20,7 +20,7 @@ export default function RegisterHome({navigation}) {
     //!! chequear mas de 1 palabra como se hace!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
 
     const capitalizeFirstLetter = (string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
     const handleInputChange = (field, value) => {

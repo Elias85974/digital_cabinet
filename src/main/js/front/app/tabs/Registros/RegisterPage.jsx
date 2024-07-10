@@ -18,14 +18,10 @@ export default function RegisterPage({navigation}) {
     }
 
     const handleInputChange = (field, value) => {
-        if (field === 'mail') {
-            // Convert email to lowercase
-            value = value.toLowerCase();
+        if (field === 'mail' || field === 'password') {
         } else if (field === 'telefono') {
             // Format phone number for the 'telefono' field
             value = formatPhoneNumber(value);
-        } else if (field === 'password') {
-            // Do nothing for the 'password' field
         }
         else {
             // Capitalize the first letter for other fields
@@ -86,7 +82,7 @@ export default function RegisterPage({navigation}) {
     const isValidPhoneNumber = (phoneNumber) => {
         const pattern = /\d{2} \d{4} \d{4}$/; // New pattern for +12 3456 7890 format
         return pattern.test(phoneNumber);
-};
+    };
 
     return (
         <View style={styles.container}>

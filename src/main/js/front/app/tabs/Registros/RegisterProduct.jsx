@@ -83,8 +83,6 @@ export default function RegisterProduct({navigation}) {
     }
 
     const handleInputChange = (field, value) => {
-        // console.log(`handleInputChange called with field: ${field} and value: ${value}`);
-
         setNewProduct({...newProduct, [field]: capitalizeFirstLetter(value)});
     };
 

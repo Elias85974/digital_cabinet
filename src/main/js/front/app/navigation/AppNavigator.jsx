@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Index from '../index.js';
-import LoginPage from "../tabs/UserThings/LoginPage";
+import LoginPage from "../tabs/UserThings/Login/LoginPage";
 
 
 const Stack = createStackNavigator();

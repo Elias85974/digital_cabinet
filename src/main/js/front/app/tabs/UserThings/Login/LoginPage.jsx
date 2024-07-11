@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import {TextInput, View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView} from "react-native";
-import {UsersApi} from "../../Api";
-import {AuthContext} from "../../context/AuthContext";
+import {UsersApi} from "../../../Api";
+import {AuthContext} from "../../../context/AuthContext";
 import React from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ModalAlert from "../Contents/ModalAlert";
+import ModalAlert from "../../Contents/ModalAlert";
 
 export default function LoginPage({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)

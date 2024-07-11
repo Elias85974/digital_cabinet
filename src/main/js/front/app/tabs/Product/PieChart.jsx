@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Pie} from 'react-chartjs-2';
 import {ArcElement, Chart, Legend, Tooltip} from 'chart.js';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getInventoryValueByCategory} from '../../../api/piechart';
-import {getProductsFromHouseAndCategory} from '../../../api/inventory';
+import {getInventoryValueByCategory} from '../../api/piechart';
+import {getProductsFromHouseAndCategory} from '../../api/inventory';
 import {
     FlatList,
     SafeAreaView,
@@ -14,9 +14,9 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-import NavBar from "../../NavBar/NavBar";
+import NavBar from "../NavBar/NavBar";
 import {useIsFocused} from "@react-navigation/native";
-import GoBackButton from "../../NavBar/GoBackButton";
+import GoBackButton from "../NavBar/GoBackButton";
 
 Chart.register(ArcElement, Tooltip, Legend);
 

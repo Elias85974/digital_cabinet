@@ -1,30 +1,29 @@
 import React, {useEffect, useState} from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    Modal,
-    TextInput,
-    Pressable,
-    FlatList,
-    SafeAreaView,
-    ScrollView
-} from 'react-native';
+import {StyleSheet, Text, View, Modal, TextInput, Pressable, FlatList, SafeAreaView, ScrollView,} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {InventoryApi} from "../../../Api";
-import NavBar from "../../NavBar/NavBar";
-import GoBackButton from "../../NavBar/GoBackButton";
-import ProductInfoModal from "../../Contents/Stock/ProductInfoModal";
-import SearchBar from "../../Contents/SearchBar";
+import {FetchApi, InventoryApi,} from "../../Api";
+import ModalAlert from "../Contents/ModalAlert";
+import NavBar from "../NavBar/NavBar";
+import {FontAwesome} from "@expo/vector-icons";
+import GoBackButton from "../NavBar/GoBackButton";
+import ReduceStockModal from "../Contents/Stock/ReduceStockModal";
+import TupleStock from "../Contents/Stock/TupleStock";
+import ProductInfoModal from "../Contents/Stock/ProductInfoModal";
+import SearchBar from "../Contents/SearchBar";
 
-export default function AllProducts({navigation}) {
+
+export default function ByCategory({navigation}) {
     const [products, setProducts] = useState([]);
+
     const [modalProductInfo, setModalProductInfo] = useState(false);
     const [modalAdd, setModalAdd] = useState(false);
     const [modalReduce, setModalReduce] = useState(false);
 
+
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [quantityToAdd, setQuantityToAdd] = useState('');
+    const [quantityToReduce, setQuantityToReduce] = useState('');
 
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -32,21 +31,47 @@ export default function AllProducts({navigation}) {
     const [suggestions, setSuggestions] = useState([]);
 
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const isFocused = useIsFocused();
 
-    const [currentPage, setCurrentPage] = useState('allProds');
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+
+    const [categoryName, setCategoryName] = useState('')
+    const [reduceProduct, setReduceProduct] = useState([]);
+
+    const [currentPage, setCurrentPage] = useState('ByCategory');
+
 
 
     useEffect(() => {
-        getProducts();
-    }, [refreshKey]);
+        if (isFocused) {
+            const fetchProds = async () => {
+                const newProds = await getProducts().then(r => {
+                    console.log("Products loaded");
+                }).catch(e => console.log("Error loading products"));
+                setReduceProduct(newProds);
+            }
+            const loadCategoryName = async () => {
+                const name = await AsyncStorage.getItem('categoryName');
+                setCategoryName(name);
+            }
+            fetchProds();
+            loadCategoryName();
+        }
+        console.log('refresh key puto cambiate', refreshKey)
+    }, [isFocused, refreshKey]);
 
     const getProducts = async () => {
         try {
+            const category = await AsyncStorage.getItem('categoryName');
             const houseId = await AsyncStorage.getItem('houseId');
-            const stock = await InventoryApi.getStockProducts(houseId, navigation);
-            console.log("getProducts?",stock);
-            setProducts(stock);
-            setSuggestions(stock);
+            const products = await InventoryApi.getProductsFromHouseAndCategory(houseId, category, navigation);
+            console.log('productos cargados',products);
+
+            setProducts(products);
+            setSuggestions(products);
+            console.log('reduce Products:', setReduceProduct(products));
+
         } catch (error) {
             console.log("Error getting products:", error);
         }
@@ -68,8 +93,8 @@ export default function AllProducts({navigation}) {
         setSuggestions([]);
         setSelectedProduct(suggestion);
         setModalProductInfo(true);
+        setQuery(''); //esto no esta en el otro
     };
-
 
     const handleFilteredProducts = (filteredProducts) => {
         console.log("Filtered products in stock:", filteredProducts);
@@ -96,9 +121,8 @@ export default function AllProducts({navigation}) {
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <View>
                     <GoBackButton navigation={navigation}/>
-                    <Text style={styles.title}>All Products</Text>
+                    <Text style={styles.title}>Products in {categoryName}</Text>
                     <View style={styles.container2}>
-
                         <SearchBar
                             styles={styles}
                             handleInputChange={handleInputChange}
@@ -106,7 +130,6 @@ export default function AllProducts({navigation}) {
                             products={products}
                             handleFilteredProducts={handleFilteredProducts}
                         />
-
                         <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                             <FlatList
                                 data={filteredProducts.length > 0 ? filteredProducts : products}
@@ -129,9 +152,11 @@ export default function AllProducts({navigation}) {
                         navigation={navigation}
                     />
 
+                    <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 </View>
             </SafeAreaView>
             <NavBar navigation={navigation}/>
+
         </View>
     );
 }
@@ -142,6 +167,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    title: {
+        fontSize: 60,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
+        color: '#1B1A26',
+        fontFamily: 'lucida grande',
+        lineHeight: 80,
     },
     container2: {
         flex: 1,
@@ -192,7 +226,6 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     input: {
-        flex: 1,
         height: 40,
         width: 200,
         margin: 12,
@@ -223,14 +256,5 @@ const styles = StyleSheet.create({
     },
     linksContainer: {
         marginTop: 20,
-    },
-    title: {
-        fontSize: 60,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 30,
-        color: '#1B1A26',
-        fontFamily: 'lucida grande',
-        lineHeight: 80,
     },
 });

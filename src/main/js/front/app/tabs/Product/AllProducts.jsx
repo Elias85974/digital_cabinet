@@ -12,23 +12,19 @@ import {
 } from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {InventoryApi} from "../../../Api";
-import NavBar from "../../NavBar/NavBar";
-import GoBackButton from "../../NavBar/GoBackButton";
-import ProductInfoModal from "../../Contents/Stock/ProductInfoModal";
-import SearchBar from "../../Contents/SearchBar";
+import {InventoryApi} from "../../Api";
+import NavBar from "../NavBar/NavBar";
+import GoBackButton from "../NavBar/GoBackButton";
+import ProductInfoModal from "../Contents/Stock/ProductInfoModal";
+import SearchBar from "../Contents/SearchBar";
 
-export default function LowOnStockProducts({navigation}) {
+export default function AllProducts({navigation}) {
     const [products, setProducts] = useState([]);
-
     const [modalProductInfo, setModalProductInfo] = useState(false);
     const [modalAdd, setModalAdd] = useState(false);
     const [modalReduce, setModalReduce] = useState(false);
 
-
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [quantityToAdd, setQuantityToAdd] = useState('');
-    const [quantityToReduce, setQuantityToReduce] = useState('');
 
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -37,22 +33,20 @@ export default function LowOnStockProducts({navigation}) {
 
     const [filteredProducts, setFilteredProducts] = useState([]);
 
-    const [currentPage, setCurrentPage] = useState('lowStock');
+    const [currentPage, setCurrentPage] = useState('allProds');
 
 
     useEffect(() => {
         getProducts();
     }, [refreshKey]);
 
-     const getProducts = async () => {
+    const getProducts = async () => {
         try {
             const houseId = await AsyncStorage.getItem('houseId');
-            const stock = await InventoryApi.getLowOnStockProducts(houseId, navigation);
+            const stock = await InventoryApi.getStockProducts(houseId, navigation);
             console.log("getProducts?",stock);
             setProducts(stock);
-            setSuggestions(stock)
-            setModalReduce(false);
-            setModalAdd(false);
+            setSuggestions(stock);
         } catch (error) {
             console.log("Error getting products:", error);
         }
@@ -78,14 +72,13 @@ export default function LowOnStockProducts({navigation}) {
 
 
     const handleFilteredProducts = (filteredProducts) => {
-        console.log("Filtered products in lowstock:", filteredProducts);
+        console.log("Filtered products in stock:", filteredProducts);
         setFilteredProducts(filteredProducts);
     }
 
     // Define la función de actualización
     const updateProducts = (updatedProducts) => {
         setProducts(updatedProducts);
-        navigation.navigate('LowOnStock', {key: refreshKey});
     }
 
     const renderItem = ({ item }) => {
@@ -101,41 +94,42 @@ export default function LowOnStockProducts({navigation}) {
     return (
         <View style={styles.container} key={refreshKey}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
-                    <View>
-                        <GoBackButton navigation={navigation}/>
-                        <Text style={styles.title}>Low on Stock Products</Text>
-                        <View style={styles.container2}>
-                            <SearchBar
-                                styles={styles}
-                                handleInputChange={handleInputChange}
-                                query={query}
-                                products={products}
-                                handleFilteredProducts={handleFilteredProducts}
-                            />
+                <View>
+                    <GoBackButton navigation={navigation}/>
+                    <Text style={styles.title}>All Products</Text>
+                    <View style={styles.container2}>
 
-                            <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-                                <FlatList
-                                    data={filteredProducts.length > 0 ? filteredProducts : products}
-                                    renderItem={renderItem}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    numColumns={2}
-                                />
-                            </ScrollView>
-                        </View>
-
-                        <ProductInfoModal
-                            updateProducts={updateProducts}
-                            currentPage={currentPage}
-                            setModalProductInfo={setModalProductInfo}
-                            modalProductInfo={modalProductInfo}
-                            selectedProduct={selectedProduct}
-                            modalReduce={modalReduce}
-                            modalAdd={modalAdd}
+                        <SearchBar
                             styles={styles}
-                            navigation={navigation}
+                            handleInputChange={handleInputChange}
+                            query={query}
+                            products={products}
+                            handleFilteredProducts={handleFilteredProducts}
                         />
 
+                        <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
+                            <FlatList
+                                data={filteredProducts.length > 0 ? filteredProducts : products}
+                                renderItem={renderItem}
+                                keyExtractor={(item, index) => index.toString()}
+                                numColumns={2}
+                            />
+                        </ScrollView>
                     </View>
+
+                    <ProductInfoModal
+                        updateProducts={updateProducts}
+                        currentPage={currentPage}
+                        setModalProductInfo={setModalProductInfo}
+                        modalProductInfo={modalProductInfo}
+                        selectedProduct={selectedProduct}
+                        modalReduce={modalReduce}
+                        modalAdd={modalAdd}
+                        styles={styles}
+                        navigation={navigation}
+                    />
+
+                </View>
             </SafeAreaView>
             <NavBar navigation={navigation}/>
         </View>

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View, SafeAreaView, ScrollView} from 'react-native';
-import { HouseInvitation } from './Notification/HouseInvitation';
-import { ExpirationNotification } from "./Notification/ExpirationNotification";
-import {inboxStyles} from "./Notification/InboxStyles";
+import { HouseInvitation } from './HouseInvitation';
+import { ExpirationNotification } from "./ExpirationNotification";
+import {inboxStyles} from "./InboxStyles";
 import {useIsFocused} from "@react-navigation/native";
-import NavBar from "../NavBar/NavBar";
-import {ChatNotification} from "./Notification/ChatNotification";
-import GoBackButton from "../NavBar/GoBackButton";
+import NavBar from "../../NavBar/NavBar";
+import {ChatNotification} from "./ChatNotification";
+import GoBackButton from "../../NavBar/GoBackButton";
 
 export default function Inbox({navigation}) {
     const [invitationsLength, setInvitationsLength] = useState(0);

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {ChatApi} from "../../Api";
+import {ChatApi} from "../../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
-import NavBar from "../NavBar/NavBar";
-import {chatsStyles} from "./Chat/ChatsStyles";
-import GoBackButton from "../NavBar/GoBackButton";
+import NavBar from "../../NavBar/NavBar";
+import {chatsStyles} from "./ChatsStyles";
+import GoBackButton from "../../NavBar/GoBackButton";
 
 export default function GroupsChats({ navigation }) {
     const [chats, setChats] = useState([]);

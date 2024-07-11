@@ -14,6 +14,7 @@ public class GoogleAuthService {
     private final JWTVerifier verifier;
     private final Users usersRepository;
 
+
     public GoogleAuthService(Users usersRepository) {
         Algorithm algorithm = Algorithm.HMAC256(CLIENT_SECRET);
         verifier = JWT.require(algorithm)

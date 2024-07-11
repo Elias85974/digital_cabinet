@@ -12,12 +12,9 @@ import {
 } from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {FetchApi, InventoryApi} from "../../../Api";
-import FilterModal from "../../Contents/FilterModal";
+import {InventoryApi} from "../../../Api";
 import NavBar from "../../NavBar/NavBar";
-import {FontAwesome} from "@expo/vector-icons";
 import GoBackButton from "../../NavBar/GoBackButton";
-import {getStockProducts} from "../../../api/inventory";
 import ProductInfoModal from "../../Contents/Stock/ProductInfoModal";
 import SearchBar from "../../Contents/SearchBar";
 
@@ -28,8 +25,6 @@ export default function AllProducts({navigation}) {
     const [modalReduce, setModalReduce] = useState(false);
 
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [quantityToAdd, setQuantityToAdd] = useState('');
-    const [quantityToReduce, setQuantityToReduce] = useState('');
 
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -37,6 +32,9 @@ export default function AllProducts({navigation}) {
     const [suggestions, setSuggestions] = useState([]);
 
     const [filteredProducts, setFilteredProducts] = useState([]);
+
+    const [currentPage, setCurrentPage] = useState('allProds');
+
 
     useEffect(() => {
         getProducts();
@@ -69,7 +67,7 @@ export default function AllProducts({navigation}) {
         setQuery(suggestion.product.nombre);
         setSuggestions([]);
         setSelectedProduct(suggestion);
-        setModalVisible2(true);
+        setModalProductInfo(true);
     };
 
 
@@ -121,21 +119,14 @@ export default function AllProducts({navigation}) {
 
                     <ProductInfoModal
                         updateProducts={updateProducts}
-
-                        modalProductInfo={modalProductInfo}
+                        currentPage={currentPage}
                         setModalProductInfo={setModalProductInfo}
+                        modalProductInfo={modalProductInfo}
                         selectedProduct={selectedProduct}
-                        setModalReduce={setModalReduce}
                         modalReduce={modalReduce}
-                        setModalAdd={setModalAdd}
                         modalAdd={modalAdd}
-                        setQuantityToReduce={setQuantityToReduce}
-                        quantityToReduce={quantityToReduce}
-                        setQuantityToAdd={setQuantityToAdd}
-                        quantityToAdd={quantityToAdd}
                         styles={styles}
-                        refreshKey={refreshKey}
-                        setRefreshKey={setRefreshKey}
+                        navigation={navigation}
                     />
 
                 </View>

@@ -128,8 +128,8 @@ public class InventoryController {
 
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
-                List<ProductTotalInfo> products = inventoriesRepo.getStockProducts(houseId);
                 tx.commit();
+                List<ProductTotalInfo> products = inventoriesRepo.getStockProducts(houseId);
 
                 if (products != null) {
                     resp.status(200);

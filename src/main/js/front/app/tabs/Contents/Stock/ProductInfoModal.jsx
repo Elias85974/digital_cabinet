@@ -1,23 +1,27 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, Modal, Pressable } from 'react-native';
 import TupleStock from './TupleStock';
 
 const ProductInfoModal = ({updateProducts,
     modalProductInfo,
-    setModalProductInfo,
     selectedProduct,
-    setModalReduce,
     modalReduce,
-    setModalAdd,
-    modalAdd,
-    setQuantityToReduce,
-    quantityToReduce,
-    setQuantityToAdd,
-    quantityToAdd,
-    styles,
-    refreshKey,
-    setRefreshKey
+    modalAdd, setModalProductInfo,
+    styles, currentPage,
+    navigation
+
 }) => {
+
+    useEffect(() => {
+        setModalAdd(false)
+        setModalReduce(false)
+    }, []);
+
+    //const [modalProductInfo1, setModalProductInfo] = useState(true);
+    const [modalAdd1, setModalAdd] = useState(false);
+    const [modalReduce1, setModalReduce] = useState(false);
+
+
     return (
         <Modal
             animationType="slide"
@@ -35,10 +39,14 @@ const ProductInfoModal = ({updateProducts,
                     <Text style={styles.modalText}>Próximo a vencer en: {new Date(selectedProduct?.nearestExpirationDate).toLocaleDateString()}</Text>
 
                     <View style={styles.linksContainer}>
-                        <Pressable onPress={() => setModalReduce(true)}>
+                        <Pressable onPress={() => {
+                            setModalReduce(true)
+                        }}>
                             <Text style={styles.link}>Reduce Stock</Text>
                         </Pressable>
-                        <Pressable onPress={() => setModalAdd(true)}>
+                        <Pressable onPress={() => {
+                            setModalAdd(true)
+                        }}>
                             <Text style={styles.link}>Add Stock</Text>
                         </Pressable>
                         <Pressable onPress={() => setModalProductInfo(false)} >
@@ -47,20 +55,16 @@ const ProductInfoModal = ({updateProducts,
                     </View>
 
                     <TupleStock
+                        currentPage={currentPage}
                         updateProducts={updateProducts}
-
-                        modalVisibleReduce={modalReduce}
-                        setModalVisibleReduce={setModalReduce}
-                        modalVisibleAdd={modalAdd}
-                        setModalVisibleAdd={setModalAdd}
+                        navigation={navigation}
+                        setModalAdd={setModalAdd}
+                        setModalProductInfo={setModalProductInfo}
+                        setModalReduce={setModalReduce}
+                        modalVisibleReduce={modalReduce1}
+                        modalVisibleAdd={modalAdd1}
                         selectedProduct={selectedProduct}
-                        setQuantityToReduce={setQuantityToReduce}
-                        quantityToReduce={quantityToReduce}
-                        setQuantityToAdd={setQuantityToAdd}
-                        quantityToAdd={quantityToAdd}
                         styles={styles}
-                        refreshKey={refreshKey}
-                        setRefreshKey={setRefreshKey}
                     />
 
                 </View>

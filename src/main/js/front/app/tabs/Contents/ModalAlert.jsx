@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
 
 export default function ModalAlert({ message, isVisible, onClose }) {

@@ -39,6 +39,9 @@ export default function ByCategory({navigation}) {
     const [categoryName, setCategoryName] = useState('')
     const [reduceProduct, setReduceProduct] = useState([]);
 
+    const [currentPage, setCurrentPage] = useState('ByCategory');
+
+
 
     useEffect(() => {
         if (isFocused) {
@@ -139,27 +142,14 @@ export default function ByCategory({navigation}) {
 
                     <ProductInfoModal
                         updateProducts={updateProducts}
-
-                        modalProductInfo={modalProductInfo}
+                        currentPage={currentPage}
                         setModalProductInfo={setModalProductInfo}
-
+                        modalProductInfo={modalProductInfo}
                         selectedProduct={selectedProduct}
-
-                        setModalReduce={setModalReduce}
                         modalReduce={modalReduce}
-
-                        setModalAdd={setModalAdd}
                         modalAdd={modalAdd}
-
-                        setQuantityToReduce={setQuantityToReduce}
-                        quantityToReduce={quantityToReduce}
-
-                        setQuantityToAdd={setQuantityToAdd}
-                        quantityToAdd={quantityToAdd}
-
                         styles={styles}
-                        refreshKey={refreshKey}
-                        setRefreshKey={setRefreshKey}
+                        navigation={navigation}
                     />
 
                     <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />

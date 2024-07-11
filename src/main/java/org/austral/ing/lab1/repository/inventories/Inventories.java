@@ -195,7 +195,7 @@ public class Inventories {
         // Iterate over the products
         for (Product product : productQuantities.keySet()) {
             // Check if the total quantity of the product is lower than the low stock limit
-            if (productQuantities.get(product) < productLowStockLimits.get(product)) {
+            if (productQuantities.get(product) <= productLowStockLimits.get(product)) {
                 // Calculate the average price of the product
                 double averagePrice = productQuantities.get(product) > 0 ? productTotalValues.get(product) / productQuantities.get(product) : 0;
 
@@ -207,6 +207,7 @@ public class Inventories {
         return lowOnStockProducts;
     }
 
+    // Get all the products in stock -------> no funcaaaa puta madre
     public List<ProductTotalInfo> getStockProducts(Long houseId) {
         // Get the house
         House house = entityManager.find(House.class, houseId);
@@ -256,12 +257,14 @@ public class Inventories {
 
         // Iterate over the products
         for (Product product : productQuantities.keySet()) {
-            // Calculate the average price of the product
-            double averagePrice = productQuantities.get(product) > 0 ? productTotalValues.get(product) / productQuantities.get(product) : 0;
+            if (productQuantities.get(product) < productLowStockLimits.get(product) || productQuantities.get(product) > productLowStockLimits.get(product) || Objects.equals(productQuantities.get(product), productLowStockLimits.get(product))) {
 
-            // Add the product to the list of low on stock products
-            stockProducts.add(new ProductTotalInfo(product, productQuantities.get(product), productExpirationDates.get(product),productLowStockLimits.get(product) , averagePrice));
+                // Calculate the average price of the product
+                double averagePrice = productQuantities.get(product) > 0 ? productTotalValues.get(product) / productQuantities.get(product) : 0;
 
+                // Add the product to the list of low on stock products
+                stockProducts.add(new ProductTotalInfo(product, productQuantities.get(product), productExpirationDates.get(product), productLowStockLimits.get(product), averagePrice));
+            }
         }
 
         return stockProducts;

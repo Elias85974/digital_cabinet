@@ -2,8 +2,6 @@ package org.austral.ing.lab1;
 
 import org.austral.ing.lab1.controller.*;
 
-import org.austral.ing.lab1.repository.users.Users;
-import org.austral.ing.lab1.service.GoogleAuthService;
 import spark.HaltException;
 import spark.Spark;
 
@@ -17,17 +15,12 @@ public class Application {
         final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("lab1");
 
         Spark.port(4321);
-        // Crear una instancia de Users
-        Users usersRepository = new Users(entityManagerFactory.createEntityManager());
-
-        // Crear una instancia de GoogleAuthService
-        GoogleAuthService googleAuthService = new GoogleAuthService(usersRepository);
 
         // Pasar googleAuthService como argumento al constructor de UserController
-        new UserController(entityManagerFactory, googleAuthService).init();
+        new UserController(entityManagerFactory).init();
 
 
-//        new HouseController(entityManagerFactory).init();
+        new HouseController(entityManagerFactory).init();
         new InventoryController(entityManagerFactory).init();
         new WishListController(entityManagerFactory).init();
         new InboxController(entityManagerFactory).init();

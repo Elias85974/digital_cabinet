@@ -5,20 +5,29 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.repository.users.Users;
+import org.austral.ing.lab1.service.GoogleAuthService;
 import spark.Spark;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.Optional;
 
-public class UserController {
+public class
+UserController {
     private final Gson gson = new Gson();
     private final EntityManagerFactory entityManagerFactory;
+    private final GoogleAuthService googleAuthService;
 
-    public UserController(EntityManagerFactory entityManagerFactory) {
+
+    public UserController(EntityManagerFactory entityManagerFactory, GoogleAuthService googleAuthService) {
         this.entityManagerFactory = entityManagerFactory;
+      this.googleAuthService = googleAuthService;
     }
+
+
 
     public void init() {
 
@@ -180,6 +189,26 @@ public class UserController {
         });
 
         // Route to edit userData
+
+        // Route login google
+        Spark.post("/login/google", "application/json", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            try {
+                String idTokenString = req.body();
+                User user = googleAuthService.authenticate(idTokenString);
+                if (user == null) {
+                    resp.status(401);
+                    return "Invalid ID token.";
+                }
+                resp.type("application/json");
+                return gson.toJson(user);
+            } catch (Exception e) {
+                resp.status(500);
+                return "An error occurred while logging in with Google.";
+            } finally {
+                entityManager.close();
+            }
+        });
 
     }
 }

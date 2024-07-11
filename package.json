@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "expo": "^51.0.18",
+    "expo-google-app-auth": "^8.1.4",
+    "google-auth-library": "^9.11.0",
+    "react": "18.2.0",
+    "react-native": "0.74.3",
+    "react-native-elements": "^3.4.3"
+  },
+  "name": "digital_cabinet",
+  "version": "1.0.0",
+  "scripts": {
+    "android": "expo run:android",
+    "ios": "expo run:ios"
+  }
+}

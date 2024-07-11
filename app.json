@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "digital_cabinet",
+    "slug": "digital_cabinet",
+    "version": "1.0.0",
+    "sdkVersion": "51.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "android": {
+      "package": "com.android_expo_package"
+    }
+  }
+}

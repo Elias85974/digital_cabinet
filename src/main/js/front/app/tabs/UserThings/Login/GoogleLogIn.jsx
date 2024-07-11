@@ -8,14 +8,13 @@ export default function GoogleLogIn({navigator}) {
   async function signInWithGoogleAsync() {
     try {
       const result = await Google.logInAsync({
-        androidClientId: '<TU_ANDROID_CLIENT_ID>', // reemplaza esto con tu Android client ID
-        iosClientId: '<TU_IOS_CLIENT_ID>', // reemplaza esto con tu iOS client ID
+        clientId: '187770462616-vgo5af3u14pb8mdu95ltfrlh0f26p10g.apps.googleusercontent.com', // reemplaza esto con tu iOS client ID
         scopes: ['profile', 'email'],
       });
 
       if (result.type === 'success') {
         setUser(result.user);
-        navigator.navigate("Homes");
+        navigator.navigate('Homes');
         return result.accessToken;
       } else {
         return { cancelled: true };

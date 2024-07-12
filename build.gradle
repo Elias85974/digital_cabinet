@@ -49,4 +49,7 @@ dependencies {
     implementation 'com.google.http-client:google-http-client-jackson2:1.39.2'
     implementation 'com.auth0:java-jwt:3.18.2'
 
+    implementation 'com.sun.mail:javax.mail:1.6.2'
+
+
 }

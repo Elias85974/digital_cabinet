@@ -2,6 +2,7 @@ package org.austral.ing.lab1.repository.inboxes;
 
 import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.inventory.Stock;
+import org.austral.ing.lab1.model.notification.EmailSender;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.object.jsonparsable.ExpirationInfo;
 import org.austral.ing.lab1.repository.users.Users;
@@ -53,6 +54,13 @@ public class NearExpirations {
                         .toLocalDate();
                 long daysUntilExpiration = ChronoUnit.DAYS.between(today, expirationDate);
                 expiringStocks.add(new ExpirationInfo(house.getCasa_ID(), house.getNombre(), stock.getProduct().getNombre(), daysUntilExpiration));
+
+                // send email notification
+                EmailSender emailSender = new EmailSender(
+                    user.getMail(),
+                    "Product Expiration",
+                    "Your product " + stock.getProduct().getNombre() + " is expiring in " + daysUntilExpiration + " days.");
+                emailSender.sendEmailNotification();
             }
         }
 

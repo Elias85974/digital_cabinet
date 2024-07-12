@@ -44,7 +44,6 @@ const NavBar = ({ navigation }) => {
             setHasNewMessage(true);
             setMessageCount(newMessageCount);
         }
-        console.log('newMessageCount', newMessageCount);
     }
 
     const checkForNewNotifications = async () => {
@@ -52,8 +51,7 @@ const NavBar = ({ navigation }) => {
         const houseInvitations = await InboxApi.getUsersHouseInvitations(navigation);
         const nearExpirations = await InboxApi.getNearExpirationStocks(navigation);
         const chatNotifications = await InboxApi.getChatNotifications(navigation);
-        console.log('chatNotifications', chatNotifications);
-        AsyncStorage.setItem('chatNotifications', chatNotifications);
+        await AsyncStorage.setItem('chatNotifications', chatNotifications);
         // Suma las longitudes de cada tipo de notificación
         const totalNotifications = houseInvitations.length + nearExpirations.length + chatNotifications.length;
 

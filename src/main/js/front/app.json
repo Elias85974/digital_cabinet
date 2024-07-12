@@ -34,7 +34,6 @@
     "web": {
       "bundler": "metro",
       "favicon": "./assets/favicon.png"
-    },
-    "plugins": ["@react-native-google-signin/google-signin"]
+    }
   }
 }

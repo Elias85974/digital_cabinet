@@ -10,7 +10,7 @@ import House from "../tabs/House/House";
 import ByCategory from "../tabs/Product/ByCategory";
 import AddProduct from "../tabs/Product/AddStock";
 import WishList from "../tabs/UserThings/WishList";
-import Inbox from "../tabs/UserThings/Notification/Inbox";
+import Inbox from "../tabs/UserThings/Inbox";
 import HouseUsersPage from "../tabs/House/HouseUsersPage";
 import HouseUsersPageDelete from "../tabs/House/HouseUsersPageDelete";
 import LowOnStockProducts from "../tabs/Product/LowOnStockProducts";

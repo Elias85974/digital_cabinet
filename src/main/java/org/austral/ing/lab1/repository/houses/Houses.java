@@ -3,6 +3,7 @@ package org.austral.ing.lab1.repository.houses;
 import org.austral.ing.lab1.model.chat.Chat;
 import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.inventory.Inventory;
+import org.austral.ing.lab1.model.notification.EmailSender;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.model.house.livesIn.LivesIn;
 import org.austral.ing.lab1.model.notification.HouseInvitation;
@@ -99,6 +100,13 @@ public class Houses {
         HouseInvitation inbox = createInboxInvitation(invitingUserOptional.get(), invitedUserOptional.get(), houseOptional.get());
 
         entityManager.persist(inbox);
+
+        // mandar mail
+        EmailSender emailSender = new EmailSender(
+            invitedUserEmail,
+            "House Invitation",
+            "You have been invited to a house.");
+        emailSender.sendEmailNotification();
 
         tx.commit();
     }

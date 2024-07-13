@@ -19,6 +19,7 @@ import Chat from "../tabs/UserThings/Chat/Chat";
 import GroupsChats from "../tabs/UserThings/Chat/GroupsChats";
 import PieChart from "../tabs/Product/PieChart";
 import AllProducts from "../tabs/Product/AllProducts";
+import ScannerScreen from "../tabs/Scanner/Scanner";
 
 import Test from "../test.";
 import {NavigationContainer} from "@react-navigation/native";
@@ -47,6 +48,7 @@ function AuthNavigator() {
                 <Stack.Screen options={{headerShown: false}} name="GroupsChats" component={GroupsChats} />
                 <Stack.Screen options={{headerShown: false}} name="PieChart" component={PieChart} />
                 <Stack.Screen options={{headerShown: false}} name="All Products" component={AllProducts} />
+                <Stack.Screen options={{headerShown: false}} name="Scanner" component={ScannerScreen} />
 
             </Stack.Navigator>
     );

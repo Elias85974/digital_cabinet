@@ -29,7 +29,7 @@ public class Notifications {
             counts.put(jsonNotification + "Size", count);
         }
 
-        counts.put("expirationNotificationSize", (long) nearExpirations.getExpiringStocks(userId).size());
+        counts.put("expirationNotificationSize", (long) nearExpirations.getNearExpirationsForUser(userId).size());
         counts.put("totalSize", counts.values().stream().reduce(0L, Long::sum));
 
         return counts;

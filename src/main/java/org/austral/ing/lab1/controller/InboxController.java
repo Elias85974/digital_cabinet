@@ -3,7 +3,6 @@ package org.austral.ing.lab1.controller;
 import com.google.gson.Gson;
 import org.austral.ing.lab1.object.jsonparsable.ExpirationInfo;
 import org.austral.ing.lab1.repository.chats.Chats;
-import org.austral.ing.lab1.repository.inboxes.ChatNotifications;
 import org.austral.ing.lab1.repository.inboxes.HouseInvitations;
 import org.austral.ing.lab1.repository.inboxes.NearExpirations;
 import org.austral.ing.lab1.repository.inboxes.Notifications;
@@ -49,7 +48,7 @@ public class InboxController {
             NearExpirations expirationsRepo = new NearExpirations(entityManager);
             try {
                 Long userId = Long.parseLong(req.headers("UserId"));
-                List<ExpirationInfo> inboxMessage = expirationsRepo.getExpiringStocks(userId);
+                List<ExpirationInfo> inboxMessage = expirationsRepo.getNearExpirationsForUser(userId);
                 resp.status(200);
                 resp.type("application/json");
                 return gson.toJson(inboxMessage);

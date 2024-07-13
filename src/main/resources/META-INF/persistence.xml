@@ -15,6 +15,7 @@
         <class>org.austral.ing.lab1.model.notification.HouseInvitation</class>
         <class>org.austral.ing.lab1.model.notification.ChatNotification</class>
         <class>org.austral.ing.lab1.model.notification.HouseInvitation</class>
+        <class>org.austral.ing.lab1.model.notification.NearExpiration</class>
         <class>org.austral.ing.lab1.model.chat.Message</class>
         <class>org.austral.ing.lab1.model.chat.Chat</class>
 

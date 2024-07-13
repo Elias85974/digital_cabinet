@@ -99,6 +99,10 @@ public class Stock {
         return gson.toJson(this);
     }
 
+    public Long getInventario_ID() {
+        return inventario.getInventario_ID();
+    }
+
     public static class StockBuilder {
         private final long cantidad;
         private Product product;

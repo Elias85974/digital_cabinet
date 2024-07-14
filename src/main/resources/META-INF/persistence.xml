@@ -10,6 +10,7 @@
         <class>org.austral.ing.lab1.model.inventory.Stock</class>
         <class>org.austral.ing.lab1.model.inventory.product.Product</class>
         <class>org.austral.ing.lab1.model.inventory.product.Category</class>
+        <class>org.austral.ing.lab1.model.inventory.product.BarCode</class>
         <class>org.austral.ing.lab1.model.user.WishList</class>
         <class>org.austral.ing.lab1.model.notification.Notification</class>
         <class>org.austral.ing.lab1.model.notification.HouseInvitation</class>
@@ -26,7 +27,7 @@
             <property name="javax.persistence.jdbc.password" value=""/>
 
             <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
         </properties>
 
     </persistence-unit>

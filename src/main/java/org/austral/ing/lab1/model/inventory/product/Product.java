@@ -34,6 +34,9 @@ public class Product {
     @Expose
     private Category category;
 
+    @Column(name = "IS_VERIFIED")
+    private boolean isVerified;
+
     public Product() { }
 
     public Product(String nombre, String marca, String tipoDeCantidad, Long categoria_ID) {

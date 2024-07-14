@@ -5,7 +5,7 @@ import ModalAlert from "../Contents/ModalAlert";
 import GoBackButton from "../NavBar/GoBackButton";
 
 export default function RegisterPage({navigation}) {
-    let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: '', edad: '', telefono: ''});
+    let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: '', age: '', phone: ''});
 
     const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
@@ -47,13 +47,13 @@ export default function RegisterPage({navigation}) {
     const handleCreateUser = async () => {
         try {
             if (newUser.mail && newUser.nombre && newUser.apellido
-                && newUser.edad && newUser.telefono && newUser.password) {
+                && newUser.age && newUser.phone && newUser.password) {
                 if (!isEmail(newUser.mail)) {
                     setModalMessage("Incorrect email format. Please try again."); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
-                } else if (!isValidPhoneNumber(newUser.telefono)) {
+                } else if (!isValidPhoneNumber(newUser.phone)) {
                     setModalMessage("Invalid phone number format. Expected format: XX XXXX XXXX");                    setModalVisible(true);
-                } else if(newUser.edad < 12) {
+                } else if(newUser.age < 12) {
                     setModalMessage("You are too young to have an account.");
                     setModalVisible(true);
                 } else {
@@ -73,7 +73,7 @@ export default function RegisterPage({navigation}) {
                 setModalVisible(true);
 
             }
-            setNewUser({mail: '', nombre: '', apellido: '', password: '', edad: '', telefono: ''});
+            setNewUser({mail: '', nombre: '', apellido: '', password: '', age: '', phone: ''});
         } catch (error) {
             console.log("Error creating user:", error);
         }
@@ -111,12 +111,12 @@ export default function RegisterPage({navigation}) {
                         />
                         <TextInput style={styles.input}
                                    placeholder="Age"
-                                   value={newUser.edad}
+                                   value={newUser.age}
                                    onChangeText={(value) => handleInputChange('edad', value)}
                         />
                         <TextInput style={styles.input}
                                    placeholder="Phone number XX XXXX XXXX"
-                                   value={newUser.telefono}
+                                   value={newUser.phone}
                                    onChangeText={(value) => handleInputChange('telefono', value)}
                         />
                         <TextInput style={styles.input}

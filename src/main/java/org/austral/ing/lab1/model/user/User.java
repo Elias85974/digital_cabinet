@@ -57,6 +57,9 @@ public class User {
     @OneToMany(mappedBy = "sender")
     private List<Message> messages = new ArrayList<>();
 
+    @Column(name = "IS_ADMIN")
+    private boolean adminRole = false;
+
     public User() { }
 
     /*
@@ -116,6 +119,14 @@ public class User {
 
     public Set<LivesIn> getLivesIns() {
         return livesIns;
+    }
+
+    public boolean isAdmin() {
+        return adminRole;
+    }
+
+    public void setAdminRole(boolean adminRole) {
+        this.adminRole = adminRole;
     }
 
 

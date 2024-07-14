@@ -17,6 +17,7 @@
     "axios": "^1.6.8",
     "chart.js": "^4.4.3",
     "expo": "~50.0.14",
+    "expo-barcode-scanner": "^13.0.1",
     "expo-router": "^3.4.8",
     "expo-secure-store": "^13.0.1",
     "expo-status-bar": "~1.11.1",

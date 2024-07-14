@@ -159,6 +159,10 @@ export default function AddProduct({navigation}) {
     }
 
 
+    function handleScan() {
+        navigation.navigate('Scanner')
+    }
+
     return (
         <View style={styles.container}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
@@ -218,6 +222,9 @@ export default function AddProduct({navigation}) {
                         <View style={styles.linksContainer}>
                             <Pressable style={styles.link} onPress={handleSubmit}>
                                 <Text style={{color: 'white', fontSize: 16}}>Add Stock</Text>
+                            </Pressable>
+                            <Pressable style={styles.link} onPress={handleScan}>
+                                <Text style={{color: 'white', fontSize: 16}}>Scan a product</Text>
                             </Pressable>
                         </View>
                     </View>

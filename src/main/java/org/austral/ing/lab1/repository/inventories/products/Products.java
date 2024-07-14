@@ -48,15 +48,6 @@ public class Products {
         return entityManager.createQuery("SELECT p FROM Product p", Product.class).getResultList();
     }
 
-    public List<Product> listByCategory(String categoryName, int pageNumber, int pageSize) {
-        return entityManager
-            .createQuery("SELECT p FROM Product p JOIN Category c ON p.category.categoria_ID = c.categoria_ID WHERE c.nombre LIKE :categoryName", Product.class)
-            .setParameter("categoryName", categoryName)
-            .setFirstResult((pageNumber - 1) * pageSize)
-            .setMaxResults(pageSize)
-            .getResultList();
-    }
-
     public Product persist(Product product) {
         entityManager.persist(product);
         return product;

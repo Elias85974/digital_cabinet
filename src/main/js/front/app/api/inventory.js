@@ -34,3 +34,8 @@ export const addLowOnStockProduct = async (houseId, stockData, navigation) => {
 export const reduceStock = async (houseId, productId, quantity, navigation) => {
     return await FetchApi.postFetch({productId: productId, quantity: quantity}, `/houses/${houseId}/inventory/reduceStock`, 'Failed to reduce stock:', navigation);
 }
+
+// Route to get products by category and low on stock
+export const getProductsByCategoryAndLowOnStock = async (houseId, category, navigation) => {
+    return await FetchApi.getFetch(`/houses/${houseId}/inventory/${category}/lowOnStock`, 'Failed to get products:', navigation);
+}

@@ -9,13 +9,15 @@ public class ProductInfo {
     private Long totalQuantity;
     private Date nearestExpirationDate;
     private double price;
+    private String category; // nuevo campo
 
     // constructor, getters and setters
-    public ProductInfo(Product product, Long totalQuantity, Date nearestExpirationDate, double price) {
+    public ProductInfo(Product product, Long totalQuantity, Date nearestExpirationDate, double price, String category) {
         this.product = product;
         this.totalQuantity = totalQuantity;
         this.nearestExpirationDate = nearestExpirationDate;
         this.price = price;
+        this.category = category;
     }
 
     public Product getProduct() {
@@ -48,6 +50,14 @@ public class ProductInfo {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
 

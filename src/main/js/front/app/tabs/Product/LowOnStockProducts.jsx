@@ -27,8 +27,6 @@ export default function LowOnStockProducts({navigation}) {
 
 
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [quantityToAdd, setQuantityToAdd] = useState('');
-    const [quantityToReduce, setQuantityToReduce] = useState('');
 
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -106,6 +104,8 @@ export default function LowOnStockProducts({navigation}) {
                         <Text style={styles.title}>Low on Stock Products</Text>
                         <View style={styles.container2}>
                             <SearchBar
+                                currentPage={currentPage}
+                                navigation={navigation}
                                 styles={styles}
                                 handleInputChange={handleInputChange}
                                 query={query}

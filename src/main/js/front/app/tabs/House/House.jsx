@@ -135,7 +135,7 @@ export default function House({navigation}) {
                         <View style={styles.linksContainer}>
                             <Pressable onPress={() => navigation.navigate("LowOnStock")}>
                                 <Text style={styles.link}>
-                                    <FontAwesome5 name="cart-arrow-down" size={24} color="white" /> Low on stock products
+                                    <FontAwesome5 name="cart-arrow-down" size={24} color="white" /> Low on stock
                                 </Text>
                             </Pressable>
                             <Pressable onPress={() => navigation.navigate("AddStock")}>

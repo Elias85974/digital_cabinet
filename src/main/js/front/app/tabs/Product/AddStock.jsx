@@ -71,11 +71,7 @@ export default function AddProduct({navigation}) {
         today.setHours(0, 0, 0, 0);
 
         // Check if the input date is earlier than today
-        if (inputDate < today) {
-            return false;
-        }
-
-        return true;
+        return inputDate >= today;
     };
 
     useEffect(() => {

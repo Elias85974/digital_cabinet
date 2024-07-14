@@ -22,8 +22,6 @@ export default function ByCategory({navigation}) {
 
 
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [quantityToAdd, setQuantityToAdd] = useState('');
-    const [quantityToReduce, setQuantityToReduce] = useState('');
 
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -40,7 +38,6 @@ export default function ByCategory({navigation}) {
     const [reduceProduct, setReduceProduct] = useState([]);
 
     const [currentPage, setCurrentPage] = useState('ByCategory');
-
 
 
     useEffect(() => {
@@ -124,6 +121,8 @@ export default function ByCategory({navigation}) {
                     <Text style={styles.title}>Products in {categoryName}</Text>
                     <View style={styles.container2}>
                         <SearchBar
+                            currentPage={currentPage}
+                            navigation={navigation}
                             styles={styles}
                             handleInputChange={handleInputChange}
                             query={query}

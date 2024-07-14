@@ -100,6 +100,8 @@ export default function AllProducts({navigation}) {
                     <View style={styles.container2}>
 
                         <SearchBar
+                            currentPage={currentPage}
+                            navigation={navigation}
                             styles={styles}
                             handleInputChange={handleInputChange}
                             query={query}

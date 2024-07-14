@@ -1,6 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import { View, Modal, Text, Pressable, TextInput, Button, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Asegúrate de instalar @expo/vector-icons si aún no lo has hecho
+import { Ionicons } from '@expo/vector-icons';
+import {
+    getProductsByCategoryAndLowOnStock,
+    getProductsFromHouseAndCategory
+} from "../../api/inventory";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Asegúrate de instalar @expo/vector-icons si aún no lo has hecho
 
 export default function FilterModal(props) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -74,21 +79,42 @@ export default function FilterModal(props) {
         return products;
     }
 
-    const filterByCategory = (products, category) => {
-        if (category) {
-            return products.filter(product => product.category.nombre.toString() === category);
+    function compareByCategory(a, b) {
+        const categoryA = a.categoryName.toUpperCase(); // Ignora mayúsculas y minúsculas
+        const categoryB = b.categoryName.toUpperCase(); // Ignora mayúsculas y minúsculas
+
+        let comparison = 0;
+        if (categoryA > categoryB) {
+            comparison = 1;
+        } else if (categoryA < categoryB) {
+            comparison = -1;
         }
-        return products;
+        return comparison;
     }
 
-    const applyFilters = (filtersToApply) => {
+    const filterByCategory = async (products, category) => {
+        const houseId = await AsyncStorage.getItem('houseId');
+        let formattedText = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+
+        let currentPage = props.currentPage;
+        if (currentPage === 'ByCategory') {
+            return products;
+        } else if (currentPage === 'lowStock') {
+            return getProductsByCategoryAndLowOnStock(houseId, formattedText, props.navigation);
+        } else if (currentPage === 'allProds') {
+            return getProductsFromHouseAndCategory(houseId, formattedText, props.navigation);
+        }
+    }
+
+    const applyFilters = async (filtersToApply) => {
         let newFilteredProducts = [...props.products];
 
-        newFilteredProducts = sortByQuantity(newFilteredProducts, filtersToApply.totalQuantity);
-        newFilteredProducts = sortByExpiry(newFilteredProducts, filtersToApply.expiry);
-        newFilteredProducts = sortByAlphabetical(newFilteredProducts, filtersToApply.alphabetical);
-        newFilteredProducts = filterByCategory(newFilteredProducts, filtersToApply.category);
-
+        newFilteredProducts = await sortByQuantity(newFilteredProducts, filtersToApply.totalQuantity);
+        newFilteredProducts = await sortByExpiry(newFilteredProducts, filtersToApply.expiry);
+        newFilteredProducts = await sortByAlphabetical(newFilteredProducts, filtersToApply.alphabetical);
+        if (filtersToApply.category) {
+            newFilteredProducts = await filterByCategory(newFilteredProducts, filtersToApply.category);
+        }
         console.log('newFilteredProductsssssss', newFilteredProducts)
         setFilteredProducts(newFilteredProducts);
     }
@@ -141,15 +167,15 @@ export default function FilterModal(props) {
                                 <Text style={styles.buttonText}>    Z - A    </Text>
                             </Pressable>
                         </View>
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(text) =>  handleFilterButtonPress({ category: text })}
-                                placeholder="Category"
-                            />
-                        </View>
-
+                        {props.currentPage !== 'ByCategory' && (
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={(text) =>  handleFilterButtonPress({ category: text })}
+                                    placeholder="Category"
+                                />
+                            </View>
+                        )}
                         <Pressable style={[styles.button, {width: '90%'}]} onPress={handleClose}>
                             <Text style={styles.buttonText}>Apply</Text>
                         </Pressable>

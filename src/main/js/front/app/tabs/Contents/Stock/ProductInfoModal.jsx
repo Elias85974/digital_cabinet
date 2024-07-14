@@ -36,6 +36,7 @@ const ProductInfoModal = ({updateProducts,
                     <Text style={styles.modalText}>Producto: {selectedProduct?.product.nombre}</Text>
                     <Text style={styles.modalText}>Marca: {selectedProduct?.product.marca}</Text>
                     <Text style={styles.modalText}>Cantidad total: {selectedProduct?.totalQuantity}</Text>
+                    <Text style={styles.modalText}>Categoría: {selectedProduct?.product.category.nombre}</Text>
                     <Text style={styles.modalText}>Próximo a vencer en: {new Date(selectedProduct?.nearestExpirationDate).toLocaleDateString()}</Text>
 
                     <View style={styles.linksContainer}>

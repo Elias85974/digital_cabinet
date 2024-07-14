@@ -3,7 +3,7 @@ import { View, TextInput } from 'react-native';
 import { FontAwesome } from "@expo/vector-icons";
 import FilterModal from './FilterModal';
 
-const SearchBar = ({ styles, handleInputChange, query, products, handleFilteredProducts }) => {
+const SearchBar = ({ currentPage, navigation, styles, handleInputChange, query, products, handleFilteredProducts }) => {
     return (
         <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 3, alignItems: 'center',
             flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
@@ -14,7 +14,7 @@ const SearchBar = ({ styles, handleInputChange, query, products, handleFilteredP
                 value={query}
                 placeholder="Search product"
             />
-            <FilterModal products={products} onFilter={handleFilteredProducts} />
+            <FilterModal products={products} onFilter={handleFilteredProducts} currentPage={currentPage} navigation={navigation}/>
         </View>
     );
 

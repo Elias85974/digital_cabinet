@@ -282,5 +282,35 @@ public class InventoryController {
                 entityManager.close();
             }
         });
+
+        // Route to get products filter by category and low stock
+        Spark.get("/houses/:houseId/inventory/:category/lowOnStock", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Inventories inventoriesRepo = new Inventories(entityManager);
+            try {
+                Long houseId = Long.parseLong(req.params("houseId"));
+                String category = req.params("category");
+
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                List<ProductInfo> products = inventoriesRepo.getLowOnStockProductsByCategory(houseId, category);
+                tx.commit();
+
+                if (products != null) {
+                    resp.status(200);
+                    resp.type("application/json");
+                    return gson.toJson(products);
+                } else {
+                    resp.status(404);
+                    return "House not found";
+                }
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the products, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
     }
 }

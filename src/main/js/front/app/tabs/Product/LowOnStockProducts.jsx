@@ -57,17 +57,6 @@ export default function LowOnStockProducts({navigation}) {
         }
     }
 
-    const handleInputChange = (text) => {
-        setQuery(text);
-
-        if (text === '') {
-            setSuggestions(products);
-        } else {
-            const regex = new RegExp(`${text.trim()}`, 'i');
-            setSuggestions(products.filter(product => product.product.nombre.search(regex) >= 0));
-        }
-    };
-
     const handleSuggestionPress = (suggestion) => {
         setQuery(suggestion.product.nombre);
         setSuggestions([]);
@@ -86,6 +75,17 @@ export default function LowOnStockProducts({navigation}) {
         setProducts(updatedProducts);
         navigation.navigate('LowOnStock', {key: refreshKey});
     }
+
+    const handleSearch = (searchQuery) => {
+        setQuery(searchQuery);
+
+        if (searchQuery === '') {
+            setFilteredProducts(products);
+        } else {
+            const filtered = products.filter(product => product.product.nombre.toLowerCase().includes(searchQuery.toLowerCase()));
+            setFilteredProducts(filtered);
+        }
+    };
 
     const renderItem = ({ item }) => {
         return (
@@ -110,9 +110,9 @@ export default function LowOnStockProducts({navigation}) {
                                 <FontAwesome style={{paddingLeft:10}} name="search" size={24} color="white" />
                                 <TextInput
                                     style={styles.input}
-                                    onChangeText={handleInputChange}
                                     value={query}
                                     placeholder="Search product"
+                                    onChangeText={handleSearch}
                                 />
                                 <FilterModal products={products} onFilter={handleFilteredProducts} currentPage={currentPage} navigation={navigation}/>
                             </View>

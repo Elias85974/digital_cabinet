@@ -19,7 +19,8 @@ export default function RegisterPage({navigation}) {
 
     const handleInputChange = (field, value) => {
         if (field === 'mail' || field === 'password') {
-        } else if (field === 'telefono') {
+            value = value;
+        } else if (field === 'phone') {
             // Format phone number for the 'telefono' field
             value = formatPhoneNumber(value);
         }
@@ -52,7 +53,8 @@ export default function RegisterPage({navigation}) {
                     setModalMessage("Incorrect email format. Please try again."); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
                 } else if (!isValidPhoneNumber(newUser.phone)) {
-                    setModalMessage("Invalid phone number format. Expected format: XX XXXX XXXX");                    setModalVisible(true);
+                    setModalMessage("Invalid phone number format. Expected format: XX XXXX XXXX");
+                    setModalVisible(true);
                 } else if(newUser.age < 12) {
                     setModalMessage("You are too young to have an account.");
                     setModalVisible(true);
@@ -112,12 +114,12 @@ export default function RegisterPage({navigation}) {
                         <TextInput style={styles.input}
                                    placeholder="Age"
                                    value={newUser.age}
-                                   onChangeText={(value) => handleInputChange('edad', value)}
+                                   onChangeText={(value) => handleInputChange('age', value)}
                         />
                         <TextInput style={styles.input}
                                    placeholder="Phone number XX XXXX XXXX"
                                    value={newUser.phone}
-                                   onChangeText={(value) => handleInputChange('telefono', value)}
+                                   onChangeText={(value) => handleInputChange('phone', value)}
                         />
                         <TextInput style={styles.input}
                                      secureTextEntry={true}

@@ -35,7 +35,7 @@ public class Product {
     private Category category;
 
     @Column(name = "IS_VERIFIED")
-    private boolean isVerified;
+    private Boolean isVerified;
 
     public Product() { }
 
@@ -43,6 +43,7 @@ public class Product {
         this.nombre = nombre;
         this.marca = marca;
         this.tipoDeCantidad = tipoDeCantidad;
+        this.isVerified = null;
     }
 
     public String getNombre() {
@@ -76,7 +77,7 @@ public class Product {
         }
     }
 
-    public void setIsVerified(boolean isVerified) {
+    public void setIsVerified(Boolean isVerified) {
         this.isVerified = isVerified;
     }
 

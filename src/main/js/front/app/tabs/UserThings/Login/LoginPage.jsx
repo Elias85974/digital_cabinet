@@ -30,7 +30,14 @@ export default function LoginPage({navigation}) {
                     // Save user ID to AsyncStorage
                     await AsyncStorage.setItem('userId', response.userId);
 
-                    navigation.navigate("Homes");
+                    // Check if the user is the admin (i.e., user ID is 1)
+                    if (response.userId === '1') {
+                        // Navigate to the admin page
+                        navigation.navigate("Products Verification");
+                    } else {
+                        // Navigate to the homes page
+                        navigation.navigate("Homes");
+                    }
                 }
             }
             else {

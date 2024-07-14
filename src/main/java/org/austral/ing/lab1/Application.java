@@ -57,7 +57,7 @@ public class Application {
             if (!request.requestMethod().equals("OPTIONS")) {
                 String path = request.pathInfo();
                 // Allow requests to /users and /login and /logout to bypass authentication
-                if (!path.equals("/register") && !path.equals("/login") && !path.equals("/logout")) {
+                if (!path.equals("/register") && !path.equals("/login") && !path.equals("/google-login") && !path.equals("/logout")) {
                     TokenValidator.authenticateRequest(request, response);
                 }
             }

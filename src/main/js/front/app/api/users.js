@@ -20,6 +20,11 @@ export const loginUser = async (credentials) => {
     return await FetchApi.unauthenticatedPost(credentials, '/login', 'Failed to login user:');
 }
 
+// Function to login a Google User
+export const googleLogin = async (credential) => {
+    return await FetchApi.unauthenticatedPost({credential}, '/google-login', 'Failed to login user:');
+}
+
 // Function to log out a User
 export const logoutUser = async (navigation) => {
     await FetchApi.deleteFetch({}, `/logout`, 'Failed to logout user:', navigation);

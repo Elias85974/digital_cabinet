@@ -5,6 +5,7 @@ import {AuthContext} from "../../../context/AuthContext";
 import React from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalAlert from "../../Contents/ModalAlert";
+import GoogleLoginButton from "./GoogleLogin";
 
 export default function LoginPage({navigation}) {
     const {userToken, email} = React.useContext(AuthContext)
@@ -75,6 +76,7 @@ export default function LoginPage({navigation}) {
                                 <Text style={{color: 'white', fontSize: 16}}>Log In</Text>
                             </Pressable>
                         </View>
+                        <GoogleLoginButton />
                         <p></p>
                         <View style={styles.linksContainer}>
                             <Pressable onPress={() => navigation.navigate("RegisterPage")}>

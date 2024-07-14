@@ -14,7 +14,7 @@ public class NearExpiration extends Notification {
     @ManyToOne
     private Stock stock;
 
-    @Column(name = "DAYS_LEFT", nullable = false)
+    @Column(name = "DAYS_LEFT")
     private Long daysLeft;
 
     // getters and setters

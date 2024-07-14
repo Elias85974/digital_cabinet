@@ -50,4 +50,7 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.18.2'
 
     implementation 'org.quartz-scheduler:quartz:2.3.2'
+
+    implementation 'javax.mail:javax.mail-api:1.6.2'
+    implementation 'com.sun.mail:javax.mail:1.6.2'
 }

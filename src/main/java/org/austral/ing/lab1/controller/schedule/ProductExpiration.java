@@ -1,8 +1,10 @@
 package org.austral.ing.lab1.controller.schedule;
 
+import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.inventory.Stock;
 import org.austral.ing.lab1.model.notification.NearExpiration;
 import org.austral.ing.lab1.model.user.User;
+import org.austral.ing.lab1.object.EmailSender;
 import org.austral.ing.lab1.repository.houses.Houses;
 import org.austral.ing.lab1.repository.inboxes.NearExpirations;
 import org.quartz.*;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 
 public class ProductExpiration implements Job, NotificationJob {
@@ -68,6 +71,10 @@ public void processExpiringStocks() {
 
             // Assuming each stock is related to one house
             List<User> users = housesRepo.getHouseUsers(stock.getInventario_ID()); // Assuming House entity has getUsers method
+            Optional<House> h = housesRepo.findById(stock.getInventario_ID());
+            if (h.isEmpty()) {
+                throw new IllegalArgumentException("House not found");
+            }
 
             for (User user : users) {
                 NearExpiration notification = nearExpirationsRepo.findOrCreateByStockAndUser(stock.getId(), user.getUsuario_ID());
@@ -75,6 +82,9 @@ public void processExpiringStocks() {
                 boolean wasNew = nearExpirationsRepo.saveOrUpdate(notification);
                 if (wasNew) {
                     // Send mail to the user
+                    EmailSender.sendEmail(user.getMail(), "Product expiration notification",
+                            "Your product " + stock.getProduct().getNombre() + " is about to expire in " + daysUntilExpiration + " days. \n" +
+                                    "Please check your " + h.get().getNombre() + "'s inventory");
                 }
             }
         }

@@ -173,7 +173,7 @@ public class ProductController {
         });
 
         // Route to verify a product
-        Spark.put("/products/adminVerify", "application/json", (req, resp) -> {
+        Spark.post("/products/adminVerify", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
             try {
@@ -189,6 +189,7 @@ public class ProductController {
 
                 tx.commit();
                 resp.status(200);
+                resp.type("message");
                 return "Product verification status updated";
 
 

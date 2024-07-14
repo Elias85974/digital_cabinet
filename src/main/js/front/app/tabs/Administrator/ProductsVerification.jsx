@@ -16,9 +16,9 @@ export default function ProductsVerification({navigation}) {
     }, [isFocused]);
 
     const getProductList = async () => {
-        const prods = getUnverifiedProducts(navigation);
+        const prods = await getUnverifiedProducts(navigation);
         console.log(prods)
-        setProducts(await prods)
+        setProducts( prods)
     }
 
     const handleAccept = async (productId) => {

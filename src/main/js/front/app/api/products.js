@@ -17,5 +17,5 @@ export const getUnverifiedProducts = async (navigation) => {
 
 // Function to verify a product
 export const verifyProduct = async (isVerified, navigation) => {
-    return await FetchApi.putFetch(isVerified, `/products/adminVerify`, 'Failed to verify product:', navigation);
+    return await FetchApi.postFetch(isVerified, `/products/adminVerify`, 'Failed to verify product:', navigation);
 }

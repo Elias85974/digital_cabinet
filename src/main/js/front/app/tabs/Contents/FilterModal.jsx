@@ -9,9 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"; // Asegúr
 
 export default function FilterModal(props) {
     const [modalVisible, setModalVisible] = useState(false);
-    //const [filteredProducts, setFilteredProducts] = useState([...props.products]);
     const [filteredProducts, setFilteredProducts] = useState(Array.isArray(props.products) ? [...props.products] : []);
-    // Asumiendo que tienes un estado para tus filtros
     const [filters, setFilters] = useState({totalQuantity: null, expiry: null, alphabetical: null, category: null });
 
     const bubbleSort = (arr, comparator) => {
@@ -79,19 +77,6 @@ export default function FilterModal(props) {
         return products;
     }
 
-    function compareByCategory(a, b) {
-        const categoryA = a.categoryName.toUpperCase(); // Ignora mayúsculas y minúsculas
-        const categoryB = b.categoryName.toUpperCase(); // Ignora mayúsculas y minúsculas
-
-        let comparison = 0;
-        if (categoryA > categoryB) {
-            comparison = 1;
-        } else if (categoryA < categoryB) {
-            comparison = -1;
-        }
-        return comparison;
-    }
-
     const filterByCategory = async (products, category) => {
         const houseId = await AsyncStorage.getItem('houseId');
         let formattedText = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
@@ -118,7 +103,6 @@ export default function FilterModal(props) {
         console.log('newFilteredProductsssssss', newFilteredProducts)
         setFilteredProducts(newFilteredProducts);
     }
-
 
     return (
         <View style={styles.container}>
@@ -171,10 +155,11 @@ export default function FilterModal(props) {
                             <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
                                 <TextInput
                                     style={styles.input}
-                                    onChangeText={(text) =>  handleFilterButtonPress({ category: text })}
+                                    onChangeText={(text) =>  handleFilterButtonPress({category: text})}
                                     placeholder="Category"
                                 />
                             </View>
+
                         )}
                         <Pressable style={[styles.button, {width: '90%'}]} onPress={handleClose}>
                             <Text style={styles.buttonText}>Apply</Text>

@@ -161,8 +161,10 @@ export default function AddProduct({navigation}) {
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
-                        <GoBackButton navigation={navigation}/>
-                        <Text style={styles.title}>Add products!</Text>
+
+                    <GoBackButton navigation={navigation}/>
+                    <Text style={styles.title}>Add products!</Text>
+
                     <View style={styles.addProd}>
                         <Text style={styles.info}>Select a Product</Text>
 

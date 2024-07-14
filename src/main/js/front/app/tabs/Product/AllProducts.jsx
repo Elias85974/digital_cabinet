@@ -10,13 +10,13 @@ import {
     SafeAreaView,
     ScrollView
 } from 'react-native';
-import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {InventoryApi} from "../../Api";
 import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
 import ProductInfoModal from "../Contents/Stock/ProductInfoModal";
-import SearchBar from "../Contents/SearchBar";
+import {FontAwesome} from "@expo/vector-icons";
+import FilterModal from "../Contents/FilterModal";
 
 export default function AllProducts({navigation}) {
     const [products, setProducts] = useState([]);
@@ -99,15 +99,17 @@ export default function AllProducts({navigation}) {
                     <Text style={styles.title}>All Products</Text>
                     <View style={styles.container2}>
 
-                        <SearchBar
-                            currentPage={currentPage}
-                            navigation={navigation}
-                            styles={styles}
-                            handleInputChange={handleInputChange}
-                            query={query}
-                            products={products}
-                            handleFilteredProducts={handleFilteredProducts}
-                        />
+                        <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 3, alignItems: 'center',
+                            flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
+                            <FontAwesome style={{paddingLeft:10}} name="search" size={24} color="white" />
+                            <TextInput
+                                style={styles.input}
+                                onChangeText={handleInputChange}
+                                value={query}
+                                placeholder="Search product"
+                            />
+                            <FilterModal products={products} onFilter={handleFilteredProducts} currentPage={currentPage} navigation={navigation}/>
+                        </View>
 
                         <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                             <FlatList

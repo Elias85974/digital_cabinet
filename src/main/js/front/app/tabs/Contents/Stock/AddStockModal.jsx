@@ -32,9 +32,6 @@ const AddStockModal = ({updateProducts,
             console.error('Invalid page');
         }
 
-        /*setProducts(stock)
-        setSuggestions(stock)
-        setFilteredProducts(stock)*/ // a falta de esto se devuelve la lista, agregarlo en los otros lados
         console.log("Products loaded after adding stock", stock);
         updateProducts(stock);
         setModalProductInfo(false);

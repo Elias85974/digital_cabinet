@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Button} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import {getUnverifiedProducts, verifyProduct} from "../../api/products";
+import {HousesApi} from "../../Api";
 
 export default function ProductsVerification({navigation}) {
     const [products, setProducts] = useState([]);
@@ -10,25 +11,43 @@ export default function ProductsVerification({navigation}) {
 
     useEffect(() => {
         if (isFocused){
-            getUnverifiedProducts().then(setProducts);
+            getProductList()
         }
     }, [isFocused]);
 
-    const handleVerify = (productId, isVerified) => {
-        verifyProduct(productId, isVerified, navigation).then(() => {
-            // Refresh the list of products after verifying
-            getUnverifiedProducts().then(setProducts);
-        });
-    };
+    const getProductList = async () => {
+        const prods = getUnverifiedProducts(navigation);
+        console.log(prods)
+        setProducts(await prods)
+    }
+
+    const handleAccept = async (productId) => {
+        const verified = {productId: productId.toString(), isAccepted: true};
+        await processVerification(verified);
+    }
+
+    const handleReject = async (productId) => {
+        const verified = {productId: productId.toString(), isAccepted: false};
+        await processVerification(verified);
+    }
+
+    const processVerification = async (verified) => {
+        try {
+            await verifyProduct(verified, navigation);
+            await getProductList();
+        } catch (error) {
+            console.error('Failed to process verification:', error);
+        }
+    }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Unverified Products</Text>
             {products.map((product) => (
-                <View key={product.id} style={styles.product}>
-                    <Text style={styles.productName}>{product.name}</Text>
-                    <Button title="Accept" onPress={() => handleVerify(product.id, true)} />
-                    <Button title="Reject" onPress={() => handleVerify(product.id, false)} />
+                <View key={product.producto_ID} style={styles.product}>
+                    <Text style={styles.productName}>{product.nombre} + {product.producto_ID}</Text>
+                    <Button title="Accept" onPress={() => handleAccept(product.producto_ID)} />
+                    <Button title="Reject" onPress={() => handleReject(product.producto_ID)} />
                 </View>
             ))}
         </View>
@@ -55,6 +74,9 @@ const styles = StyleSheet.create({
     },
     productName: {
         color: 'white',
+        fontSize: 18,
+        justifyContent: 'center',
+        width: '80%',
     },
 });
 

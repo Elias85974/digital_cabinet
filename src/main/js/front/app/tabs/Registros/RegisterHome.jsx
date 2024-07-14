@@ -42,7 +42,7 @@ export default function RegisterHome({navigation}) {
                         setModalVisible(false);
                         // Navega a la siguiente página después de un retraso
                         navigation.navigate('Homes');
-                    }, 5000);
+                    }, 2500);
 
                 }
             }

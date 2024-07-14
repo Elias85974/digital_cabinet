@@ -114,7 +114,7 @@ public class Products {
         return entityManager.createQuery("SELECT p FROM Product p WHERE p.isVerified IS NULL", Product.class).getResultList();
     }
 
-    public void verifyProduct(Long productId, boolean isVerified) {
+    public void verifyProduct(Long productId, Boolean isVerified) {
         Optional<Product> productOptional = findById(productId);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();

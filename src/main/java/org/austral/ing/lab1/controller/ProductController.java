@@ -2,6 +2,7 @@ package org.austral.ing.lab1.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.austral.ing.lab1.model.inventory.product.Category;
 import org.austral.ing.lab1.model.inventory.product.Product;
 import org.austral.ing.lab1.repository.inventories.products.Categories;
@@ -151,7 +152,7 @@ public class ProductController {
         });
 
         // Route to get all the unverified products
-        Spark.get("/products/unverified", (req, resp) -> {
+        Spark.get("/productsVer", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
             try {
@@ -165,25 +166,32 @@ public class ProductController {
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());
-                return "An error occurred while getting the unverified products, please try again";
+                return "An error occurred while getting the products, please try again";
             } finally {
                 entityManager.close();
             }
         });
 
         // Route to verify a product
-        Spark.put("/products/:productId/verify", "application/json", (req, resp) -> {
+        Spark.put("/products/adminVerify", "application/json", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Products productsRepo = new Products(entityManager);
             try {
-                final Long productId = Long.valueOf(req.params("productId"));
-                final boolean isVerified = Boolean.parseBoolean(req.body());
+                JsonObject invitationJson = new Gson().fromJson(req.body(), JsonObject.class);
+
+                Long productId = invitationJson.get("productId").getAsLong();
+                boolean isAccepted = invitationJson.get("isAccepted").getAsBoolean();
+
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
-                productsRepo.verifyProduct(productId, isVerified);
+
+                productsRepo.verifyProduct(productId, isAccepted);
+
                 tx.commit();
                 resp.status(200);
                 return "Product verification status updated";
+
+
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());
@@ -192,5 +200,6 @@ public class ProductController {
                 entityManager.close();
             }
         });
+
     }
 }

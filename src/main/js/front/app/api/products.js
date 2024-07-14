@@ -12,10 +12,10 @@ export const createProduct = async (productData, navigation) => {
 
 // Function to get all the products unverified
 export const getUnverifiedProducts = async (navigation) => {
-    return await FetchApi.getFetch(`/products/unverified`, 'Failed to get unverified products:', navigation);
+    return await FetchApi.getFetch(`/productsVer`, 'Failed to get unverified products:', navigation);
 }
 
 // Function to verify a product
-export const verifyProduct = async (productId, isVerified, navigation) => {
-    return await FetchApi.putFetch({ isVerified }, `/products/${productId}/verify`, 'Failed to verify product:', navigation);
+export const verifyProduct = async (isVerified, navigation) => {
+    return await FetchApi.putFetch(isVerified, `/products/adminVerify`, 'Failed to verify product:', navigation);
 }

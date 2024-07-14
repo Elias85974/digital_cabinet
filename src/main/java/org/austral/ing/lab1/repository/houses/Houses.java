@@ -6,6 +6,7 @@ import org.austral.ing.lab1.model.inventory.Inventory;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.model.house.livesIn.LivesIn;
 import org.austral.ing.lab1.model.notification.HouseInvitation;
+import org.austral.ing.lab1.object.EmailSender;
 import org.austral.ing.lab1.repository.users.Users;
 import org.jetbrains.annotations.NotNull;
 
@@ -96,11 +97,16 @@ public class Houses {
             throw new IllegalArgumentException("Something went wrong when trying to invite the user to the house.");
         }
 
-        HouseInvitation inbox = createInboxInvitation(invitingUserOptional.get(), invitedUserOptional.get(), houseOptional.get());
+        User inviterUser = invitingUserOptional.get();
+        House house = houseOptional.get();
+        HouseInvitation inbox = createInboxInvitation(inviterUser, invitedUserOptional.get(), house);
 
         entityManager.persist(inbox);
 
         tx.commit();
+
+        String mailBody =  inviterUser.getNombre() + " has invited you to its Digital Cabinet: " + house.getNombre() +  ", check your inbox to manage the invitation!";
+        EmailSender.sendEmail(invitedUserEmail, "Digital Cabinet Invitation!!!", mailBody);
     }
 
     public void makeUserLiveInHouse(User user, House house, boolean role) {

@@ -2,6 +2,7 @@ package org.austral.ing.lab1;
 
 import org.austral.ing.lab1.controller.*;
 
+import org.austral.ing.lab1.controller.schedule.SchedulerInitializer;
 import spark.HaltException;
 import spark.Spark;
 
@@ -27,6 +28,7 @@ public class Application {
         new ProductController(entityManagerFactory).init();
         new CategoryController(entityManagerFactory).init();
         new ChatController(entityManagerFactory).init();
+        new SchedulerInitializer(entityManagerFactory).init();
 
         Spark.options("/*", (req, res) -> {
             String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");

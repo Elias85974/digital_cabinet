@@ -35,6 +35,5 @@
       "bundler": "metro",
       "favicon": "./assets/favicon.png"
     }
-
   }
 }

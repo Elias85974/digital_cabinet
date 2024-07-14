@@ -6,6 +6,7 @@ import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.model.house.livesIn.LivesIn;
 import org.austral.ing.lab1.model.notification.HouseInvitation;
+import org.austral.ing.lab1.object.EmailSender;
 import org.austral.ing.lab1.repository.houses.Houses;
 import org.austral.ing.lab1.repository.houses.LivesIns;
 import org.austral.ing.lab1.repository.inboxes.HouseInvitations;

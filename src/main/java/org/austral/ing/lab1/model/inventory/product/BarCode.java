@@ -14,7 +14,6 @@ public class BarCode {
     private Long barCodeId;
 
     @OneToOne
-    @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "PRODUCT_ID")
+    @JoinColumn(name = "PRODUCTO_ID", referencedColumnName = "PRODUCTO_ID")
     private Product product;
-
 }

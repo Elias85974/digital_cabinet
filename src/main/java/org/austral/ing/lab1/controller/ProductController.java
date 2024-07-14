@@ -149,5 +149,48 @@ public class ProductController {
                 entityManager.close();
             }
         });
+
+        // Route to get all the unverified products
+        Spark.get("/products/unverified", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+            try {
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                String productsJson = gson.toJson(productsRepo.findUnverifiedProducts());
+                tx.commit();
+                resp.type("application/json");
+                return productsJson;
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the unverified products, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        // Route to verify a product
+        Spark.put("/products/:productId/verify", "application/json", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+            try {
+                final Long productId = Long.valueOf(req.params("productId"));
+                final boolean isVerified = Boolean.parseBoolean(req.body());
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                productsRepo.verifyProduct(productId, isVerified);
+                tx.commit();
+                resp.status(200);
+                return "Product verification status updated";
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while updating the product verification status, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
     }
 }

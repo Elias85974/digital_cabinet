@@ -76,6 +76,10 @@ public class Product {
         }
     }
 
+    public void setIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -91,6 +95,8 @@ public class Product {
     public static ProductBuilder create(String nombre) {
         return new ProductBuilder(nombre);
     }
+
+
 
     public static class ProductBuilder {
         private final String nombre;

@@ -54,20 +54,59 @@ export default function Chat({navigation}) {
       }
     }
 
+    const [containerWidth, setContainerWidth] = useState(null);
+
+    const handleLayout = (event) => {
+        const {width} = event.nativeEvent.layout;
+        setContainerWidth(width);
+      };
+
+    const splitMessage = (message) => {
+      let maxLength = Math.floor(containerWidth / 10); // Adjust this number according to your needs
+      maxLength = Math.max(1, maxLength); // Ensure maxLength is at least 1
+      const words = message.split(' ');
+      let line = [];
+      let lineLength = 0;
+      const splitLines = [];
+      words.forEach(word => {
+        if (word.length > maxLength) {
+          const regex = new RegExp(`(.{1,${maxLength}})`, 'g');
+          const splitWord = word.match(regex);
+          splitLines.push(...splitWord);
+          lineLength = 0;
+          line = [];
+        } else if (lineLength + word.length > maxLength) {
+          splitLines.push(line.join(' '));
+          line = [word];
+          lineLength = word.length;
+        } else {
+          line.push(word);
+          lineLength += word.length;
+        }
+      });
+      if (line.length > 0) {
+        splitLines.push(line.join(' '));
+      }
+      return splitLines;
+    };
+
     return (
-        <View style={styles.containers}>
+        <View style={styles.containers} >
           <SafeAreaView style={StyleSheet.absoluteFill}>
               <GoBackButton navigation={navigation}/>
               <Text style={styles.title}>{chatName}</Text>
             <ScrollView style={[styles.contentContainer,{height: '50%'}]} showsVerticalScrollIndicator={false}>
-            <View style={[chatsStyles.container]}>
+
+              <View style={[chatsStyles.container]} onLayout={handleLayout}>
                   {messages.map((msg, index) => (
-                      <View key={index} style={msg.senderId === userId ? styles.userMessage : styles.otherMessage}>
-                        <Text style={styles.messageText}>{msg.senderId === userId ? '' : msg.sender + ":"} {msg.message}</Text>
-                    </View>
+                      <View  key={index} style={msg.senderId === userId ? styles.userMessage : styles.otherMessage}>
+                        {splitMessage(msg.message).map((line, lineIndex) => (
+                            <Text key={lineIndex} style={styles.messageText}>
+                              {msg.senderId === userId ? '' : msg.sender + ":"} {line}
+                            </Text>
+                        ))}
+                      </View>
                   ))}
-
-
             </View>
 
             </ScrollView>
@@ -77,7 +116,7 @@ export default function Chat({navigation}) {
                     onChangeText={setMessage}
                     value={message}
                     multiline={true}
-                    numberOfLines={5} // Ajusta este número según tus necesidades
+                    numberOfLines={50} // Ajusta este número según tus necesidades
                 />
                 <Pressable style={chatsStyles.link} onPress={() => handleSendMessage(message)}>
                   <Text style={chatsStyles.textStyle}>Send</Text>
@@ -110,7 +149,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   messageText: {
-
+    wordWrap: 'break-word', // Agrega esta línea
     flexWrap: 'wrap',
   },
   title: {
@@ -123,19 +162,27 @@ const styles = StyleSheet.create({
     lineHeight: 80,
   },
   userMessage: {
-    width: '80%',
+    maxWidth: '80%',
     alignSelf: 'flex-end',
     backgroundColor: '#d1f5d3',
     padding: 10,
     borderRadius: 10,
     margin: 5,
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+
   },
   otherMessage: {
-    width: '80%',
+    maxWidth: '80%',
     alignSelf: 'flex-start',
     backgroundColor: '#f1f0f0',
     padding: 10,
     borderRadius: 10,
     margin: 5,
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+
   },
 });

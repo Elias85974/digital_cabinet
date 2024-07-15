@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {ChatApi} from "../../../Api";
+import {ChatApi, InboxApi} from "../../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../../NavBar/NavBar";
 import {chatsStyles} from "./ChatsStyles";
 import GoBackButton from "../../NavBar/GoBackButton";
+import {getChatNotifications} from "../../../api/inbox";
 
 export default function GroupsChats({ navigation }) {
     const [chats, setChats] = useState([]);
-    const [chatHasMessages, setChatHasMessages] = useState([]);
+    const [unreadMessages, setUnreadMessages] = useState({});
 
     const [key, setKey] = useState(0);
 
@@ -23,9 +24,14 @@ export default function GroupsChats({ navigation }) {
 
     const getGroupChats = async () => {
         try {
+            let messageInfos = await getChatNotifications(navigation);
+            const unreadMessages = messageInfos.reduce((acc, messageInfo) => {
+                acc[messageInfo.chatId] = messageInfo.unreadMessages > 0;
+                return acc;
+            }, {});
+            setUnreadMessages(unreadMessages);
+
             let chats = await ChatApi.getChats(navigation);
-            const hasMessages = chats.map(chat => chat.hasMessages);
-            setChatHasMessages(oldState => [...oldState, ...hasMessages]);
 
             setChats(chats);
             setKey(oldKey => oldKey + 1)
@@ -38,16 +44,17 @@ export default function GroupsChats({ navigation }) {
         <View style={chatsStyles.container} key={key}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-                        <GoBackButton navigation={navigation}/>
-                        <Text style={chatsStyles.title}>Chats</Text>
+                    <GoBackButton navigation={navigation}/>
+                    <Text style={chatsStyles.title}>Chats</Text>
                     <View style={chatsStyles.contentWishList}>
                         {chats.map((chat, index) => (
-                            <View style={ chat.hasMessages ? chatsStyles.cardMessages : chatsStyles.card} key={index}>
+                            <View style={ unreadMessages[chat.chatId] ? chatsStyles.cardMessages : chatsStyles.card} key={index}>
                                 <Text style={chatsStyles.info}
                                       onPress={async () => {
                                           navigation.navigate('Chat');
                                           await AsyncStorage.setItem('chatId', chat.chatId.toString());
                                           await AsyncStorage.setItem('chatName', chat.chatName);
+                                          setKey(oldKey => oldKey + 1)
                                       }}>
                                     {chat.chatName}
                                 </Text>

@@ -52,7 +52,7 @@ const ProductInfoModal = ({updateProducts,
                             <Text style={styles.link}>Add Stock</Text>
                         </Pressable>
                         <Pressable onPress={() => setModalProductInfo(false)} >
-                            <Text style={styles.link}>Cerrar</Text>
+                            <Text style={styles.link}>Close</Text>
                         </Pressable>
                     </View>
 

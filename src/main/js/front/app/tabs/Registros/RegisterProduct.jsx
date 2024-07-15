@@ -89,25 +89,6 @@ export default function RegisterProduct({navigation}) {
         setNewProduct({...newProduct, [field]: capitalizeFirstLetter(value)});
     };
 
-    const handleCategoryChange = async () => {
-        const createdCategory = await CategoriesApi.createCategory({nombre: newCategory}, navigation);
-        setCategories([...categories, createdCategory]);
-        setNewProduct({...newProduct, categoryId: createdCategory.id});
-        setShowNewCategoryInput(false);
-        setNewCategory('');
-
-        /*console.log(`handleCategoryChange called with selectedCategory: ${selectedCategory}`);
-        if (selectedCategory === 'addNew') {
-            setShowNewCategoryInput(true);
-        } else {
-            setShowNewCategoryInput(false);
-            setNewProduct({...newProduct, categoryId: selectedCategory});
-        }*/
-    };
-
-    const handleNewCategoryChange = (value) => {
-        setNewCategory(value);
-    };
 
     const handleCreateCategory = async (categoryName) => {
         // Convierte la primera letra a mayúsculas
@@ -354,6 +335,7 @@ const styles = StyleSheet.create({
     quantityTypeButtonText: {
         fontSize: 16,
         color: 'black',
+        textAlign: 'center',
     },
     selectedQuantityTypeButtonText: {
         color: 'white',

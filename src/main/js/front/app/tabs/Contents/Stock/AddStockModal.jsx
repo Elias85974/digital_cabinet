@@ -36,16 +36,6 @@ const AddStockModal = ({updateProducts,
         setModalProductInfo(false);
         setQuantityToAdd('');
 
-        let stock = await getProducts();
-
-        console.log("Products loaded after adding stock", stock);
-        updateProducts(stock);
-        setModalProductInfo(false);
-        setModalAdd(false);
-        return stock;
-    }
-
-    const getProducts = async () => {
         let stock;
         const category = await AsyncStorage.getItem('categoryName');
         if (currentPage === 'allProds') {
@@ -60,6 +50,11 @@ const AddStockModal = ({updateProducts,
         } else {
             console.error('Invalid page');
         }
+
+        console.log("Products loaded after adding stock", stock);
+        updateProducts(stock);
+        setModalProductInfo(false);
+        setModalAdd(false);
         return stock;
     }
 

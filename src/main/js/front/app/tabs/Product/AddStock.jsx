@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
+import {MaterialIcons} from "@expo/vector-icons";
 
 export default function AddProduct({navigation}) {
     const [products, setProducts] = useState([]);
@@ -208,9 +209,11 @@ export default function AddProduct({navigation}) {
                             keyExtractor={(item) => item.producto_ID.toString()}
                             renderItem={({ item }) => (
                                 <TouchableOpacity
+                                    style={{flexDirection: 'row'}}
                                     onPress={() => handleSingleAndDoubleClick(item)}
                                 >
-                                    <Text style={styles.prod}>{item.nombre}</Text>
+                                    {item.product.isVerified && <MaterialIcons name="verified" size={24} color="#00FFFF" />}
+                                    <Text style={styles.prod}>  {item.nombre}</Text>
                                 </TouchableOpacity>
                             )}
                         />

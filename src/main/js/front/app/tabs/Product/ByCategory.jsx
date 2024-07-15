@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {InventoryApi,} from "../../Api";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
-import {FontAwesome} from "@expo/vector-icons";
+import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
 import GoBackButton from "../NavBar/GoBackButton";
 import ProductInfoModal from "../Contents/Stock/ProductInfoModal";
 import FilterModal from "../Contents/FilterModal";
@@ -102,14 +102,15 @@ export default function ByCategory({navigation}) {
     }
 
     const renderItem = ({ item }) => {
-        return (
-            <View style={styles.productSquare}>
-                <Pressable onPress={() => handleSuggestionPress(item)}>
-                    <Text style={styles.productText}>{item.product.nombre}</Text>
-                </Pressable>
-            </View>
-        );
-    };
+    return (
+        <View style={styles.productSquare}>
+            <Pressable style={{flexDirection: 'row'}} onPress={() => handleSuggestionPress(item)}>
+                {item.product.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+                <Text style={styles.productText}>  {item.product.nombre}</Text>
+            </Pressable>
+        </View>
+    );
+};
 
     return (
         <View style={styles.container} key={refreshKey}>

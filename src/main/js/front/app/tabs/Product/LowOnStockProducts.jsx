@@ -14,7 +14,7 @@ import {InventoryApi} from "../../Api";
 import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
 import ProductInfoModal from "../Contents/Stock/ProductInfoModal";
-import {FontAwesome} from "@expo/vector-icons";
+import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
 import FilterModal from "../Contents/FilterModal";
 
 export default function LowOnStockProducts({navigation}) {
@@ -90,8 +90,9 @@ export default function LowOnStockProducts({navigation}) {
     const renderItem = ({ item }) => {
         return (
             <View style={styles.productSquare}>
-                <Pressable onPress={() => handleSuggestionPress(item)}>
-                    <Text style={styles.productText}>{item.product.nombre}</Text>
+                <Pressable style={{flexDirection: 'row'}} onPress={() => handleSuggestionPress(item)}>
+                    {item.product.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+                    <Text style={styles.productText}>  {item.product.nombre}</Text>
                 </Pressable>
             </View>
         );

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, Modal, Pressable } from 'react-native';
 import TupleStock from './TupleStock';
+import {MaterialIcons} from "@expo/vector-icons";
 
 const ProductInfoModal = ({updateProducts,
     modalProductInfo,
@@ -33,7 +34,9 @@ const ProductInfoModal = ({updateProducts,
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalText}>Producto: {selectedProduct?.product.nombre}</Text>
+                    <Text style={styles.modalText}>
+                        {item.product.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}  Producto: {selectedProduct?.product.nombre}
+                    </Text>
                     <Text style={styles.modalText}>Marca: {selectedProduct?.product.marca}</Text>
                     <Text style={styles.modalText}>Cantidad total: {selectedProduct?.totalQuantity}</Text>
                     <Text style={styles.modalText}>Categoría: {selectedProduct?.product.category.nombre}</Text>

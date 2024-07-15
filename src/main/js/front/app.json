@@ -32,7 +32,7 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
-      "permissions": ["CAMERA"]
+      "permissions": ["android.permission.CAMERA"]
 
     },
     "web": {

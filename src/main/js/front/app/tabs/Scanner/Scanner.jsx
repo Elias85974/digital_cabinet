@@ -20,6 +20,7 @@ export default function ScannerScreen({ navigation }) {
         })();
     }, []);
 
+
     const handleBarCodeScanned = ({ type, data }) => {
         console.log('Barcode scanning callback called!');
         try {

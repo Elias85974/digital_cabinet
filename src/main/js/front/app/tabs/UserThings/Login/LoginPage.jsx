@@ -75,7 +75,6 @@ export default function LoginPage({navigation}) {
                                 <Text style={{color: 'white', fontSize: 16}}>Log In</Text>
                             </Pressable>
                         </View>
-                        <p></p>
                         <View style={styles.linksContainer}>
                             <Pressable onPress={() => navigation.navigate("RegisterPage")}>
                                 <Text style={styles.link}>Sign Up</Text>

@@ -19,7 +19,6 @@ export function ChatNotification({ navigation, setChatLength }) {
 
     const loadChatNotifications = async () => {
         const notifications = await InboxApi.getChatNotifications(navigation);
-        console.log(notifications);
         setChatNotifications(notifications);
         setChatLength(notifications.length);
     };

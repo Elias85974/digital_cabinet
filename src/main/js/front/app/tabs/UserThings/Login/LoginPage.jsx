@@ -27,11 +27,19 @@ export default function LoginPage({navigation}) {
                 if (response) { // Boolean indicating success of login
                     signIn(response.token, response.email);
                     setIsLoggedIn(true);
-
+                    console.log(response)
                     // Save user ID to AsyncStorage
                     await AsyncStorage.setItem('userId', response.userId);
 
-                    navigation.navigate("Homes");
+                    const userId = await AsyncStorage.getItem('userId');
+                    // Check if the user is the admin (i.e., user ID is 1)
+                    if (userId === '1') {
+                        // Navigate to the admin page
+                        navigation.navigate("Products Verification");
+                    } else {
+                        // Navigate to the homes page
+                        navigation.navigate("Homes"); //homes
+                    }
                 }
             }
             else {

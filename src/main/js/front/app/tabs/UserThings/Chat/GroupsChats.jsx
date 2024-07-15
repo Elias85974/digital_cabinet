@@ -19,7 +19,7 @@ export default function GroupsChats({ navigation }) {
         if (isFocused){
             getGroupChats();
         }
-    }, [isFocused, key]);
+    }, [isFocused]);
 
     const getGroupChats = async () => {
         try {
@@ -28,7 +28,6 @@ export default function GroupsChats({ navigation }) {
             setChatHasMessages(oldState => [...oldState, ...hasMessages]);
 
             setChats(chats);
-            console.log("Chats:", chats);
             setKey(oldKey => oldKey + 1)
         } catch (error) {
             console.log("Error getting chats:", error);

@@ -2,6 +2,7 @@ package org.austral.ing.lab1.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.austral.ing.lab1.model.inventory.product.Category;
 import org.austral.ing.lab1.model.inventory.product.Product;
 import org.austral.ing.lab1.repository.inventories.products.Categories;
@@ -28,7 +29,7 @@ public class ProductController {
             try {
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
-                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                Gson gson = new GsonBuilder().create(); //.excludeFieldsWithoutExposeAnnotation() le saco esto y aparece el campo isVerified
                 String productsJson = gson.toJson(productsRepo.listAll());
                 tx.commit();
                 resp.type("application/json");
@@ -149,5 +150,57 @@ public class ProductController {
                 entityManager.close();
             }
         });
+
+        // Route to get all the unverified products
+        Spark.get("/productsVer", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+            try {
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                String productsJson = gson.toJson(productsRepo.findUnverifiedProducts());
+                tx.commit();
+                resp.type("application/json");
+                return productsJson;
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the products, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        // Route to verify a product
+        Spark.post("/products/adminVerify", "application/json", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+            try {
+                JsonObject invitationJson = new Gson().fromJson(req.body(), JsonObject.class);
+
+                Long productId = invitationJson.get("productId").getAsLong();
+                boolean isAccepted = invitationJson.get("isAccepted").getAsBoolean();
+
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+
+                productsRepo.verifyProduct(productId, isAccepted);
+
+                tx.commit();
+                resp.status(200);
+                resp.type("message");
+                return "Product verification status updated";
+
+
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while updating the product verification status, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
     }
 }

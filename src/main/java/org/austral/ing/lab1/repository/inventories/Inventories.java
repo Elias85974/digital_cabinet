@@ -2,6 +2,7 @@ package org.austral.ing.lab1.repository.inventories;
 
 import org.austral.ing.lab1.model.house.House;
 import org.austral.ing.lab1.model.inventory.Inventory;
+import org.austral.ing.lab1.model.inventory.product.Category;
 import org.austral.ing.lab1.model.inventory.product.Product;
 import org.austral.ing.lab1.model.inventory.Stock;
 import org.austral.ing.lab1.object.jsonparsable.ProductInfo;
@@ -25,7 +26,7 @@ public class Inventories {
     }
 
     public List<ProductInfo> getProductsByCategory(Long inventoryId, String category) {
-    Inventory inventory = entityManager.find(Inventory.class, inventoryId);
+        Inventory inventory = entityManager.find(Inventory.class, inventoryId);
         if (inventory != null) {
             // Group the stocks by product
             Map<Product, List<Stock>> productStocksMap = inventory.getStocks().stream()
@@ -56,16 +57,18 @@ public class Inventories {
         Long totalQuantity = 0L;
         Date nearestExpirationDate = null;
         double totalValue = 0.0;
+        Long lowStockIndicator = 0L;
         for (Stock s : sameProductStocks) {
             totalQuantity += s.getCantidadVencimiento();
             totalValue += s.getPrice();
+            lowStockIndicator = s.getLowStockIndicator();
             if (nearestExpirationDate == null || s.getExpirationDate().before(nearestExpirationDate)) {
                 nearestExpirationDate = s.getExpirationDate();
             }
         }
 
         // Create a new ProductInfo object with the calculated values
-        return new ProductInfo(product, totalQuantity, nearestExpirationDate, totalValue);
+        return new ProductInfo(product, totalQuantity, nearestExpirationDate, totalValue, product.getCategory().getNombre(),lowStockIndicator);
     }
 
     public Inventory persist(Inventory inventory) {
@@ -74,8 +77,6 @@ public class Inventories {
     }
 
     public void addStockToHouse(House house, Product product, Long quantity, Date expiration, Long lowStockIndicator, double price) {
-        LivesIns livesIns = new LivesIns(entityManager);
-
         final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration)
                 .setLowStockIndicator(lowStockIndicator).setPrice(price).build();
         entityManager.persist(stock);
@@ -89,15 +90,7 @@ public class Inventories {
         entityManager.persist(stock);
         entityManager.persist(inventario);
         entityManager.persist(house);
-        /*
-        // Update all LivesIn relationships linked to the house
-        List<LivesIn> livesInsOfHouse = livesIns.getFromHouseId(house.getCasa_ID());
-        for (LivesIn livesIn : livesInsOfHouse) {
-            // Merge the LivesIn entity to persist the changes
-            entityManager.merge(livesIn);
-        }
 
-         */
     }
 
     public void reduceStock(Long houseId, Long productId, Long quantity) {
@@ -168,11 +161,15 @@ public class Inventories {
         // Create a map to store the total value of each product
         Map<Product, Double> productTotalValues = new HashMap<>();
 
+        // Create a map to store the category of each product
+        Map<Product, String> productCategories = new HashMap<>();
+
         // Iterate over the stocks
         for (Stock stock : stocks) {
             Product product = stock.getProduct();
             Long quantity = stock.getCantidadVencimiento();
             Date expirationDate = stock.getExpirationDate();
+            Category category = product.getCategory();
 
             // Update the total quantity of the product
             productQuantities.put(product, productQuantities.getOrDefault(product, 0L) + quantity);
@@ -187,6 +184,9 @@ public class Inventories {
 
             // Update the total value of the product
             productTotalValues.put(product, productTotalValues.getOrDefault(product, 0.0) + stock.getPrice() * quantity);
+
+            // Update the category of the product
+            productCategories.put(product, category.getNombre());
         }
 
         // Create a list to store the products that are low on stock
@@ -200,14 +200,14 @@ public class Inventories {
                 double averagePrice = productQuantities.get(product) > 0 ? productTotalValues.get(product) / productQuantities.get(product) : 0;
 
                 // Add the product to the list of low on stock products
-                lowOnStockProducts.add(new ProductInfo(product, productQuantities.get(product), productExpirationDates.get(product), averagePrice));
+                lowOnStockProducts.add(new ProductInfo(product, productQuantities.get(product), productExpirationDates.get(product), averagePrice, productCategories.get(product), productLowStockLimits.get(product)));
             }
         }
 
         return lowOnStockProducts;
     }
 
-    // Get all the products in stock -------> no funcaaaa puta madre
+    // Get all the products in stock
     public List<ProductTotalInfo> getStockProducts(Long houseId) {
         // Get the house
         House house = entityManager.find(House.class, houseId);
@@ -320,5 +320,21 @@ public class Inventories {
         }
 
         return valueByCategory;
+    }
+
+    // Get the products with low stock by category
+    public List<ProductInfo> getLowOnStockProductsByCategory(Long inventoryId, String category) {
+        // Obtén los productos con bajo stock como antes
+        List<ProductInfo> lowStockProducts = getLowOnStockProducts(inventoryId);
+
+        // Filtra los productos por la categoría proporcionada
+        List<ProductInfo> filteredProducts = new ArrayList<>();
+        for (ProductInfo productInfo : lowStockProducts) {
+            if (productInfo.getCategory().equals(category)) {
+                filteredProducts.add(productInfo);
+            }
+        }
+
+        return filteredProducts;
     }
 }

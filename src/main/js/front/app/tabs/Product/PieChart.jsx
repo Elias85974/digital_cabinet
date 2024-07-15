@@ -89,25 +89,6 @@ export default function PieChart({navigation}){
         }
     };
 
-    const handleInputChangeCat = (text) => {
-        setQuery(text);
-
-        if (text === '') {
-            setSuggestions(categories);
-        } else {
-            const regex = new RegExp(`${text.trim()}`, 'i');
-            setSuggestions(categories.filter(category => category.nombre.search(regex) >= 0));
-        }
-    };
-
-    const handleSuggestionPress = (suggestion) => {
-        setQuery(suggestion.nombre);
-        setSuggestions([]);
-        console.log('Selected category:', suggestion.nombre)
-        handleInputChange('category', suggestion.nombre);
-    };
-
-
     const getDataFromCategory = async (selectedCategory) => {
         const houseId = await AsyncStorage.getItem('houseId');
         if (houseId && selectedCategory) {
@@ -123,7 +104,7 @@ export default function PieChart({navigation}){
                     const chartData = {
                         labels,
                         datasets: [{
-                            label: 'Total Value',
+                            label: 'Value by Category',
                             data: values,
                             backgroundColor: chartColors,
                             borderColor: borderColors,
@@ -191,12 +172,11 @@ export default function PieChart({navigation}){
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                     <GoBackButton navigation={navigation}/>
-                    <Text style={styles.title}>Inventory Value {selectedCategory === 'Total Values' ? '' : `for ${selectedCategory}`}
-                    </Text>
+                    <Text style={styles.title}>Inventory Value {selectedCategory === 'Total Values' ? '' : `for ${selectedCategory}`}</Text>
                     <View style={styles.input}>
                         <FlatList
                             data={categories}
-                            numColumns={6}
+                            numColumns={4}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
                                 <TouchableOpacity onPress={() => handleInputChange('category', item)}>

@@ -92,6 +92,7 @@ public class Users {
         tx.begin();
         User user = User.fromJson(body);
         entityManager.persist(user);
+        user.setAdminRole(user.getUsuario_ID() == 1);
         tx.commit();
     }
 

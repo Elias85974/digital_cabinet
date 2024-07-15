@@ -15,10 +15,6 @@ export default function RegisterHome({navigation}) {
     const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
 
 
-    const isDirection = (direccion) =>
-        /^[A-Z0-9.]+\s+[A-Z0-9.]+\s+[0-9]+$/i.test(direccion);
-    //!! chequear mas de 1 palabra como se hace!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
-
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
@@ -30,10 +26,7 @@ export default function RegisterHome({navigation}) {
     const handleCreateHome = async () => {
         try {
             if (newHouse.nombre && newHouse.direccion) {
-                if (!isDirection(newHouse.direccion)) {
-                    setModalMessage("Incorrect house format. Please try again."); // Muestra el modal en lugar de un alert
-                    setModalVisible(true);
-                } else {
+
                     await HousesApi.createHouse(newHouse, navigation);
                     setModalMessage("House created successfully!"); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
@@ -42,9 +35,9 @@ export default function RegisterHome({navigation}) {
                         setModalVisible(false);
                         // Navega a la siguiente página después de un retraso
                         navigation.navigate('Homes');
-                    }, 5000);
+                    }, 2500);
 
-                }
+
             }
             else {
                 setModalMessage("Please fill in all fields."); // Muestra el modal en lugar de un alert

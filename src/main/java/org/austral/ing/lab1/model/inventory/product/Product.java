@@ -35,14 +35,15 @@ public class Product {
     private Category category;
 
     @Column(name = "IS_VERIFIED")
-    private boolean isVerified;
+    private Boolean isVerified = null;
 
     public Product() { }
 
-    public Product(String nombre, String marca, String tipoDeCantidad, Long categoria_ID) {
+    public Product(String nombre, String marca, String tipoDeCantidad, Long categoria_ID, Boolean isVerified) {
         this.nombre = nombre;
         this.marca = marca;
         this.tipoDeCantidad = tipoDeCantidad;
+        this.isVerified = isVerified;
     }
 
     public String getNombre() {
@@ -76,6 +77,14 @@ public class Product {
         }
     }
 
+    public Boolean getIsVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -92,10 +101,13 @@ public class Product {
         return new ProductBuilder(nombre);
     }
 
+
+
     public static class ProductBuilder {
         private final String nombre;
         private String marca;
         private String tipoDeCantidad;
+        private Boolean isVerified;
 
         public ProductBuilder(String nombre) {
             this.nombre = nombre;
@@ -111,8 +123,15 @@ public class Product {
             return this;
         }
 
+        public ProductBuilder withIsVerified(Boolean isVerified) {
+            this.isVerified = isVerified;
+            return this;
+        }
+
         public Product build() {
-            return new Product(this);
+            Product product = new Product(this);
+            product.setIsVerified(this.isVerified);
+            return product;
         }
 
     }
@@ -131,6 +150,7 @@ public class Product {
         this.nombre = builder.nombre;
         this.marca = builder.marca;
         this.tipoDeCantidad = builder.tipoDeCantidad;
+        this.isVerified = builder.isVerified;
     }
 
     public static class ProductSerializer implements JsonSerializer<Product> {
@@ -144,6 +164,7 @@ public class Product {
             jsonObject.addProperty("tipoDeCantidad", product.getTipoDeCantidad());
             jsonObject.addProperty("categoria_ID", product.getCategoria_ID());
             jsonObject.addProperty("categoria", product.getCategory().getNombre());
+            jsonObject.addProperty("isVerified", product.getIsVerified());
             return jsonObject;
         }
     }

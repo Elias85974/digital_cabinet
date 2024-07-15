@@ -8,7 +8,7 @@ import {
     ScrollView,
     SafeAreaView,
     TouchableOpacity,
-    FlatList
+    FlatList, Modal
 } from 'react-native';
 import Picker from 'react-native-picker-select';
 import {InventoryApi, ProductsApi} from '../../Api';
@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalAlert from "../Contents/ModalAlert";
 import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
+import {MaterialIcons} from "@expo/vector-icons";
 
 export default function AddProduct({navigation}) {
     const [products, setProducts] = useState([]);
@@ -29,6 +30,21 @@ export default function AddProduct({navigation}) {
 
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
+
+
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    const fetchProducts = async () => {
+        try {
+            const fetchedProducts = await ProductsApi.getAllProducts(navigation);
+            setProducts(fetchedProducts);
+        } catch (error) {
+            console.log("Error fetching products:", error);
+        }
+    }
 
     const handleInputChangeProd = (text) => {
         setQuery(text);
@@ -45,6 +61,7 @@ export default function AddProduct({navigation}) {
         setQuery(suggestion.nombre);
         setSuggestions([]);
         setSelectedProduct(suggestion.producto_ID);
+        console.log(suggestion)
     };
 
 
@@ -71,27 +88,8 @@ export default function AddProduct({navigation}) {
         today.setHours(0, 0, 0, 0);
 
         // Check if the input date is earlier than today
-        if (inputDate < today) {
-            return false;
-        }
-
-        return true;
+        return inputDate >= today;
     };
-
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-
-    const fetchProducts = async () => {
-        try {
-            const fetchedProducts = await ProductsApi.getAllProducts(navigation);
-            setProducts(fetchedProducts);
-            console.log('fetchedProducts:', fetchedProducts)
-        } catch (error) {
-            console.log("Error fetching products:", error);
-        }
-    }
-
     const formatDate = (value) => {
         // Remove all non-digit characters
         const cleaned = value.replace(/\D+/g, '');
@@ -158,6 +156,35 @@ export default function AddProduct({navigation}) {
         }
     }
 
+    const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+    const [selectedProductDetails, setSelectedProductDetails] = useState(null);
+    const [lastPress, setLastPress] = useState(0);
+    const [timerId, setTimerId] = useState(null);
+
+    const handleSingleAndDoubleClick = (product) => {
+        const now = new Date().getTime();
+
+        if (now - lastPress <= 300) { // Si los dos clics ocurren dentro de 300ms
+            // Cancela la apertura del modal si se ha programado
+            if (timerId !== null) {
+                clearTimeout(timerId);
+                setTimerId(null);
+            }
+            handleSuggestionPress(product);
+        } else {
+            // Programa la apertura del modal para que ocurra después de un breve retraso
+            const id = setTimeout(() => {
+                setSelectedProductDetails(product);
+                setDetailsModalVisible(true);
+            }, 300);
+            setTimerId(id);
+            console.log(product)
+        }
+
+        setLastPress(now);
+    };
+
+
 
     return (
         <View style={styles.container}>
@@ -165,8 +192,10 @@ export default function AddProduct({navigation}) {
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
-                        <GoBackButton navigation={navigation}/>
-                        <Text style={styles.title}>Add products!</Text>
+
+                    <GoBackButton navigation={navigation}/>
+                    <Text style={styles.title}>Add products!</Text>
+
                     <View style={styles.addProd}>
                         <Text style={styles.info}>Select a Product</Text>
 
@@ -176,16 +205,55 @@ export default function AddProduct({navigation}) {
                             onChangeText={handleInputChangeProd}
                             placeholder="Select a product"
                         />
+
                         <FlatList
                             data={suggestions}
-                            numColumns={6}
+                            numColumns={2}
                             keyExtractor={(item) => item.producto_ID.toString()}
                             renderItem={({ item }) => (
-                                <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
+                                <TouchableOpacity
+                                    style={{flexDirection: 'row'}}
+                                    onPress={() => handleSingleAndDoubleClick(item)}
+                                >
+                                    {item?.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+
                                     <Text style={styles.prod}>{item.nombre}</Text>
                                 </TouchableOpacity>
                             )}
                         />
+
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={detailsModalVisible}
+                            onRequestClose={() => {
+                                setDetailsModalVisible(!detailsModalVisible);
+                            }}
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style={styles.modalTitle}>Product Details</Text>
+                                    <View style={{flexDirection: 'row'}}>
+                                        {selectedProductDetails?.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+                                        <Text style={styles.modalText}>  Name: {selectedProductDetails?.nombre}</Text>
+                                    </View>
+                                    <Text style={styles.modalText}>Brand: {selectedProductDetails?.marca}</Text>
+                                    <Text style={styles.modalText}>Quantity type: {selectedProductDetails?.tipoDeCantidad}</Text>
+                                    <Text style={styles.modalText}>Category: {selectedProductDetails?.category.nombre}</Text>
+                                    <View style={styles.linksContainer}>
+                                        <Pressable onPress={() => {
+                                            handleSuggestionPress(selectedProductDetails);
+                                            setDetailsModalVisible(false);
+                                        }}>
+                                            <Text style={styles.link}>Select this product</Text>
+                                        </Pressable>
+                                        <Pressable onPress={() => setDetailsModalVisible(false)} >
+                                            <Text style={styles.link}>Close</Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
 
                         <TextInput style={styles.input}
                                    placeholder={"Quantity of products"}
@@ -286,7 +354,6 @@ const styles = StyleSheet.create({
         lineHeight: 30,
     },
     linksContainer: {
-        marginBottom: 20,
         marginTop: 20,
     },
     addProd: {
@@ -319,5 +386,36 @@ const styles = StyleSheet.create({
         flex: 1, // Asegura que el elemento ocupe to do el espacio disponible
         justifyContent: 'center', // Centra el texto verticalmente
         alignItems: 'center', // Centra el texto horizontalmente
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 10,
+            height: 20,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        elevation: 15
+    },
+    modalText: {
+        marginBottom: 20,
+        textAlign: "center"
+    },
+    modalTitle: {
+        marginBottom: 35,
+        fontWeight: 'bold',
+        textAlign: "center",
+        textDecorationStyle: 'dashed',
     },
 });

@@ -19,7 +19,6 @@ export function ExpirationNotification({ navigation, setExpirationsLength }) {
 
     const loadStocks = async () => {
         const nearExpirationStocks = await InboxApi.getNearExpirationStocks(navigation);
-        console.log(nearExpirationStocks);
         setStocks(nearExpirationStocks);
         setExpirationsLength(nearExpirationStocks.length);
     }

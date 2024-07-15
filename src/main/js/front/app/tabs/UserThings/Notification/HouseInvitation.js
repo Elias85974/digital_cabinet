@@ -18,7 +18,6 @@ export function HouseInvitation({ navigation, setInvitationsLength }) {
 
     const loadInvitations = async () => {
         const houseInvitations = await InboxApi.getUsersHouseInvitations(navigation);
-        console.log(houseInvitations);
         setInvitations(houseInvitations);
         setInvitationsLength(houseInvitations.length);
     }

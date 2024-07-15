@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, Modal, Pressable } from 'react-native';
 import TupleStock from './TupleStock';
+import {MaterialIcons} from "@expo/vector-icons";
 
 const ProductInfoModal = ({updateProducts,
     modalProductInfo,
@@ -33,9 +34,14 @@ const ProductInfoModal = ({updateProducts,
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalText}>Producto: {selectedProduct?.product.nombre}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        {selectedProduct?.product.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+                        <Text style={styles.modalText}>  Producto: {selectedProduct?.product.nombre}</Text>
+                    </View>
                     <Text style={styles.modalText}>Marca: {selectedProduct?.product.marca}</Text>
                     <Text style={styles.modalText}>Cantidad total: {selectedProduct?.totalQuantity}</Text>
+                    <Text style={styles.modalText}>Categoría: {selectedProduct?.product.category.nombre}</Text>
+                    <Text style={styles.modalText}>Indicador de bajo stock: {selectedProduct?.lowStockIndicator}</Text>
                     <Text style={styles.modalText}>Próximo a vencer en: {new Date(selectedProduct?.nearestExpirationDate).toLocaleDateString()}</Text>
 
                     <View style={styles.linksContainer}>
@@ -50,7 +56,7 @@ const ProductInfoModal = ({updateProducts,
                             <Text style={styles.link}>Add Stock</Text>
                         </Pressable>
                         <Pressable onPress={() => setModalProductInfo(false)} >
-                            <Text style={styles.link}>Cerrar</Text>
+                            <Text style={styles.link}>Close</Text>
                         </Pressable>
                     </View>
 

@@ -100,7 +100,7 @@ export default function House({navigation}) {
                                     value={query}
                                     placeholder="Search category"
                                 />
-                                <Pressable onPress={() => navigation.navigate('All Products')}>
+                                <Pressable style={{paddingRight:10}} onPress={() => navigation.navigate('All Products')}>
                                     <Text style={styles.allProds}>All Products</Text>
                                 </Pressable>
                             </View>
@@ -135,7 +135,7 @@ export default function House({navigation}) {
                         <View style={styles.linksContainer}>
                             <Pressable onPress={() => navigation.navigate("LowOnStock")}>
                                 <Text style={styles.link}>
-                                    <FontAwesome5 name="cart-arrow-down" size={24} color="white" /> Low on stock products
+                                    <FontAwesome5 name="cart-arrow-down" size={24} color="white" /> Low on stock
                                 </Text>
                             </Pressable>
                             <Pressable onPress={() => navigation.navigate("AddStock")}>
@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
     allProds: {
         color: 'white',
         fontSize: 15,
+        fontWeight: 'bold',
     },
     input: {
         height: 40,

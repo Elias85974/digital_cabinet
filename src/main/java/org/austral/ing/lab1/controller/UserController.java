@@ -15,8 +15,7 @@ import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.Optional;
 
-public class
-UserController {
+public class UserController {
     private final Gson gson = new Gson();
     private final EntityManagerFactory entityManagerFactory;
 

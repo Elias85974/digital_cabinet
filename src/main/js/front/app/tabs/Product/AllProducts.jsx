@@ -10,13 +10,13 @@ import {
     SafeAreaView,
     ScrollView
 } from 'react-native';
-import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {InventoryApi} from "../../Api";
 import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
 import ProductInfoModal from "../Contents/Stock/ProductInfoModal";
-import SearchBar from "../Contents/SearchBar";
+import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
+import FilterModal from "../Contents/FilterModal";
 
 export default function AllProducts({navigation}) {
     const [products, setProducts] = useState([]);
@@ -52,17 +52,6 @@ export default function AllProducts({navigation}) {
         }
     }
 
-    const handleInputChange = (text) => {
-        setQuery(text);
-
-        if (text === '') {
-            setSuggestions(products);
-        } else {
-            const regex = new RegExp(`${text.trim()}`, 'i');
-            setSuggestions(products.filter(product => product.product.nombre.search(regex) >= 0));
-        }
-    };
-
     const handleSuggestionPress = (suggestion) => {
         setQuery(suggestion.product.nombre);
         setSuggestions([]);
@@ -76,6 +65,17 @@ export default function AllProducts({navigation}) {
         setFilteredProducts(filteredProducts);
     }
 
+    const handleSearch = (searchQuery) => {
+        setQuery(searchQuery);
+
+        if (searchQuery === '') {
+            setFilteredProducts(products);
+        } else {
+            const filtered = products.filter(product => product.product.nombre.toLowerCase().includes(searchQuery.toLowerCase()));
+            setFilteredProducts(filtered);
+        }
+    };
+
     // Define la función de actualización
     const updateProducts = (updatedProducts) => {
         setProducts(updatedProducts);
@@ -84,8 +84,9 @@ export default function AllProducts({navigation}) {
     const renderItem = ({ item }) => {
         return (
             <View style={styles.productSquare}>
-                <Pressable onPress={() => handleSuggestionPress(item)}>
-                    <Text style={styles.productText}>{item.product.nombre}</Text>
+                <Pressable style={{flexDirection: 'row'}} onPress={() => handleSuggestionPress(item)}>
+                    {item.product.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+                    <Text style={styles.productText}>  {item.product.nombre}</Text>
                 </Pressable>
             </View>
         );
@@ -99,13 +100,17 @@ export default function AllProducts({navigation}) {
                     <Text style={styles.title}>All Products</Text>
                     <View style={styles.container2}>
 
-                        <SearchBar
-                            styles={styles}
-                            handleInputChange={handleInputChange}
-                            query={query}
-                            products={products}
-                            handleFilteredProducts={handleFilteredProducts}
-                        />
+                        <View style={{backgroundColor: '#3b0317', borderRadius: 30, flex: 3, alignItems: 'center',
+                            flexDirection: 'row', justifyContent: 'space-between',margin: 5,}}>
+                            <FontAwesome style={{paddingLeft:10}} name="search" size={24} color="white" />
+                            <TextInput
+                                style={styles.input}
+                                value={query}
+                                placeholder="Search product"
+                                onChangeText={handleSearch}
+                            />
+                            <FilterModal products={products} onFilter={handleFilteredProducts} currentPage={currentPage} navigation={navigation}/>
+                        </View>
 
                         <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                             <FlatList
@@ -188,7 +193,7 @@ const styles = StyleSheet.create({
         elevation: 15
     },
     modalText: {
-        marginBottom: 15,
+        marginBottom: 20,
         textAlign: "center"
     },
     input: {

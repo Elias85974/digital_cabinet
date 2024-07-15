@@ -9,14 +9,19 @@ public class ProductInfo {
     private Long totalQuantity;
     private Date nearestExpirationDate;
     private double price;
+    private String category; // nuevo campo
+    private Long lowStockIndicator;
 
     // constructor, getters and setters
-    public ProductInfo(Product product, Long totalQuantity, Date nearestExpirationDate, double price) {
+    public ProductInfo(Product product, Long totalQuantity, Date nearestExpirationDate, double price, String category, Long lowStockIndicator) {
         this.product = product;
         this.totalQuantity = totalQuantity;
         this.nearestExpirationDate = nearestExpirationDate;
         this.price = price;
+        this.category = category;
+        this.lowStockIndicator = lowStockIndicator;
     }
+
 
     public Product getProduct() {
         return product;
@@ -48,6 +53,22 @@ public class ProductInfo {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Long getLowStockIndicator() {
+        return lowStockIndicator;
+    }
+
+    public void setLowStockIndicator(Long lowStockIndicator) {
+        this.lowStockIndicator = lowStockIndicator;
     }
 }
 

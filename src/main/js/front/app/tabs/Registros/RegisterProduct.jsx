@@ -18,7 +18,36 @@ import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
 import CustomHover from "../Contents/CustomHover"
 
-
+const CategorySelection = ({ query, handleInputChangeCat, handleCreateCategory, isHovered, suggestions, handleSuggestionPress }) => (
+    <View>
+        <TextInput
+            style={styles.input}
+            placeholder={'Select or create a category'}
+            value={query}
+            onChangeText={handleInputChangeCat}
+        />
+        {suggestions.length === 0 && query.trim() !== '' && (
+            <Pressable style={styles.addButton} onPress={() => handleCreateCategory(query)}>
+                <Text style={styles.addButtonText}>Add Category</Text>
+            </Pressable>
+        )}
+        {isHovered && (
+            <Text style={styles.hoverText}>
+                Click "Add Category" to create or select the category.
+            </Text>
+        )}
+        <FlatList
+            data={suggestions}
+            numColumns={6}
+            keyExtractor={(item) => item.categoria_ID.toString()}
+            renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
+                    <Text style={styles.cat}>{item.nombre}</Text>
+                </TouchableOpacity>
+            )}
+        />
+    </View>
+);
 
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
@@ -109,6 +138,13 @@ export default function RegisterProduct({navigation}) {
             setCategories([...categories, createdCategory]);
             setNewProduct({...newProduct, categoryId: createdCategory.categoria_ID});
             setQuery('');
+            // Show modal with success message
+            setModalMessage("Category Created Successfully!");
+            setModalVisible(true);
+            // Hide modal after 2.5 seconds
+            setTimeout(() => {
+                setModalVisible(false);
+            }, 2500);
         }
         setSuggestions([]);
         setNewCategory('');
@@ -144,84 +180,65 @@ export default function RegisterProduct({navigation}) {
 
 
     return (
-        <View style={styles.container} key = {key}>
+        <View style={styles.container} key={key}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
-                <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
-                <View>
+                    <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+                    <View>
                         <GoBackButton navigation={navigation}/>
                         <Text style={styles.title}>Register your Product</Text>
-                    <View style={styles.createprod}>
-                        <Text style={styles.info}>Please fill in all the fields to create your product:</Text>
+                        <View style={styles.createprod}>
+                            <Text style={styles.info}>Please fill in all the fields to create your product:</Text>
 
-                        <TextInput style={styles.input}
-                                   placeholder="Name"
-                                   value={newProduct.nombre}
-                                   onChangeText={(value) => handleInputChange('nombre', value)}
-                        />
-
-                        <TextInput style={styles.input}
-                                   placeholder="Brand"
-                                   value={newProduct.marca}
-                                   onChangeText={(value) => handleInputChange('marca', value)}
-                        />
-
-                        <View style={styles.quantityTypesContainer}>
-                            {quantityTypes.map((type) => (
-                                <TouchableOpacity
-                                    key={type}
-                                    style={[
-                                        styles.quantityTypeButton,
-                                        selectedQuantityType === type && styles.selectedQuantityTypeButton
-                                    ]}
-                                    onPress={() => handleQuantityTypePress(type)}
-                                >
-                                    <Text
-                                        style={[
-                                            styles.quantityTypeButtonText,
-                                            selectedQuantityType === type && styles.selectedQuantityTypeButtonText
-                                        ]}
-                                    >
-                                        {type}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-
-                        <View
-                            onStartShouldSetResponder={() => true}
-                            onResponderGrant={() => setIsHovered(true)}
-                            onResponderRelease={() => setIsHovered(false)}
-                        >
-                            <TextInput
-                                style={styles.input}
-                                placeholder={'Select a Category'}
-                                value={query}
-                                onChangeText={handleInputChangeCat}
-                                onKeyPress={handleKeyPress}
+                            <TextInput style={styles.input}
+                                       placeholder="Name"
+                                       value={newProduct.nombre}
+                                       onChangeText={(value) => handleInputChange('nombre', value)}
                             />
-                            {isHovered &&
-                                <Text style={styles.quantityTypeButtonText}>
-                                    Pressing enter creates the category, then you will need to search for it again and select it.
-                                </Text>}
-                        </View>
-                        <FlatList
-                            data={suggestions}
-                            numColumns={6}
-                            keyExtractor={(item) => item.categoria_ID.toString()}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
-                                    <Text style={styles.cat}>{item.nombre}</Text>
-                                </TouchableOpacity>
-                            )}
-                        />
 
-                        <Pressable style={styles.link} onPress={handleCreateProduct}>
-                            <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>
-                        </Pressable>
+                            <TextInput style={styles.input}
+                                       placeholder="Brand"
+                                       value={newProduct.marca}
+                                       onChangeText={(value) => handleInputChange('marca', value)}
+                            />
+
+                            <View style={styles.quantityTypesContainer}>
+                                {quantityTypes.map((type) => (
+                                    <TouchableOpacity
+                                        key={type}
+                                        style={[
+                                            styles.quantityTypeButton,
+                                            selectedQuantityType === type && styles.selectedQuantityTypeButton
+                                        ]}
+                                        onPress={() => handleQuantityTypePress(type)}
+                                    >
+                                        <Text
+                                            style={[
+                                                styles.quantityTypeButtonText,
+                                                selectedQuantityType === type && styles.selectedQuantityTypeButtonText
+                                            ]}
+                                        >
+                                            {type}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+
+
+                            <CategorySelection
+                                query={query}
+                                handleInputChangeCat={handleInputChangeCat}
+                                handleCreateCategory={handleCreateCategory}
+                                isHovered={isHovered}
+                                suggestions={suggestions}
+                                handleSuggestionPress={handleSuggestionPress}
+                            />
+
+                            <Pressable style={styles.link} onPress={handleCreateProduct}>
+                                <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>
+                            </Pressable>
+                        </View>
                     </View>
-                    <p></p>
-                </View>
                 </ScrollView>
             </SafeAreaView>
             <NavBar navigation={navigation}/>
@@ -339,5 +356,28 @@ const styles = StyleSheet.create({
     },
     selectedQuantityTypeButtonText: {
         color: 'white',
+    },
+    addButton: {
+        marginTop: 10,
+        backgroundColor: '#4B5940', // A darker shade for the button background
+        padding: 10,
+        borderRadius: 20, // Rounded corners
+        borderWidth: 1,
+        borderColor: '#FFF', // White border
+        shadowColor: '#000', // Black shadow
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        width: 200,
+    },
+    addButtonText: {
+        color: '#FFF', // White text color
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
 });

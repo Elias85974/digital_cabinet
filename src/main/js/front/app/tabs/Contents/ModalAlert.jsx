@@ -25,7 +25,7 @@ export default function ModalAlert({ message, isVisible, onClose }) {
                         style={[styles.button, styles.buttonClose]}
                         onPress={onClose}
                     >
-                        <Text style={styles.textStyle}>Hide Modal</Text>
+                        <Text style={styles.textStyle}>Close</Text>
                     </Pressable>
                 </View>
             </View>

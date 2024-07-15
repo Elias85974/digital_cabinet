@@ -34,9 +34,10 @@ const ProductInfoModal = ({updateProducts,
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalText}>
-                        {item.product.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}  Producto: {selectedProduct?.product.nombre}
-                    </Text>
+                    <View style={{flexDirection: 'row'}}>
+                        {selectedProduct?.product.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+                        <Text style={styles.modalText}>  Producto: {selectedProduct?.product.nombre}</Text>
+                    </View>
                     <Text style={styles.modalText}>Marca: {selectedProduct?.product.marca}</Text>
                     <Text style={styles.modalText}>Cantidad total: {selectedProduct?.totalQuantity}</Text>
                     <Text style={styles.modalText}>Categoría: {selectedProduct?.product.category.nombre}</Text>

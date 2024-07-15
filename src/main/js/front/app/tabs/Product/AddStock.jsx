@@ -31,6 +31,21 @@ export default function AddProduct({navigation}) {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
+
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    const fetchProducts = async () => {
+        try {
+            const fetchedProducts = await ProductsApi.getAllProducts(navigation);
+            setProducts(fetchedProducts);
+        } catch (error) {
+            console.log("Error fetching products:", error);
+        }
+    }
+
     const handleInputChangeProd = (text) => {
         setQuery(text);
 
@@ -74,21 +89,6 @@ export default function AddProduct({navigation}) {
         // Check if the input date is earlier than today
         return inputDate >= today;
     };
-
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-
-    const fetchProducts = async () => {
-        try {
-            const fetchedProducts = await ProductsApi.getAllProducts(navigation);
-            setProducts(fetchedProducts);
-            console.log('fetchedProducts:', fetchedProducts)
-        } catch (error) {
-            console.log("Error fetching products:", error);
-        }
-    }
-
     const formatDate = (value) => {
         // Remove all non-digit characters
         const cleaned = value.replace(/\D+/g, '');
@@ -212,8 +212,7 @@ export default function AddProduct({navigation}) {
                                     style={{flexDirection: 'row'}}
                                     onPress={() => handleSingleAndDoubleClick(item)}
                                 >
-                                    {item.product.isVerified && <MaterialIcons name="verified" size={24} color="#00FFFF" />}
-                                    <Text style={styles.prod}>  {item.nombre}</Text>
+                                    <Text style={styles.prod}>{item.nombre}</Text>
                                 </TouchableOpacity>
                             )}
                         />
@@ -229,7 +228,10 @@ export default function AddProduct({navigation}) {
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
                                     <Text style={styles.modalTitle}>Product Details</Text>
-                                    <Text style={styles.modalText}>Name: {selectedProductDetails?.nombre}</Text>
+                                    <View style={{flexDirection: 'row'}}>
+                                        {selectedProductDetails?.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+                                        <Text style={styles.modalText}>Name: {selectedProductDetails?.nombre}</Text>
+                                    </View>
                                     <Text style={styles.modalText}>Brand: {selectedProductDetails?.marca}</Text>
                                     <Text style={styles.modalText}>Quantity type: {selectedProductDetails?.tipoDeCantidad}</Text>
                                     <Text style={styles.modalText}>Category: {selectedProductDetails?.category.nombre}</Text>

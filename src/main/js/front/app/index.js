@@ -1,11 +1,33 @@
-// src/main/js/front/app/index.js
-import React from 'react';
-import {Pressable, StyleSheet, View, Image, Text} from "react-native";
-
+import React, { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, View, Image, Text, Pressable } from "react-native";
 
 export default function Index({navigation}) {
+    const animatedValue = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(animatedValue, {
+                    toValue: 1,
+                    duration: 4000,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(animatedValue, {
+                    toValue: 0,
+                    duration: 4000,
+                    useNativeDriver: false,
+                }),
+            ])
+        ).start();
+    }, [animatedValue]);
+
+    const backgroundColor = animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['rgb(219,162,123)', 'rgb(237,216,138)'],
+    });
+
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { backgroundColor }]}>
             <Text style={styles.title}>Digital Cabinet</Text>
             <Image
                 style={styles.image}
@@ -14,19 +36,17 @@ export default function Index({navigation}) {
             />
             <View style={styles.linksContainer}>
                 <Pressable style={styles.link} onPress={() => navigation.navigate("LoginPage")}>
-                        <Text style={styles.linkText}>Log In</Text>
+                    <Text style={styles.linkText}>Log In</Text>
                 </Pressable>
             </View>
-        </View>
+        </Animated.View>
     );
 }
-
 
 const styles = StyleSheet.create({
     container: {
         height: '100%',
         width: '100%',
-        backgroundColor: '#BFAC9B',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
@@ -38,25 +58,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 3, // Add border
-        borderColor: '#717336', // Set border color
-        padding: 10, // Add some padding so the text isn't right up against the border
-        backgroundColor: '#717336', // Set background color
-        width: 200, // Set width
+        borderWidth: 3,
+        borderColor: '#717336',
+        padding: 10,
+        backgroundColor: '#717336',
+        width: 200,
         alignSelf: 'center',
         alignContent: 'center',
         borderRadius: 100,
         fontSize: 16,
-    },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        color: 'white',
-        backgroundColor: '#4B5940',
-        padding: 10,
-        justifyContent: 'center',
-        alignContent: 'center',
     },
     title: {
         fontSize: 60,
@@ -68,29 +78,14 @@ const styles = StyleSheet.create({
         fontFamily: 'lucida grande',
         lineHeight: 80,
     },
-    info: {
-        fontSize: 25,
-        fontFamily: 'lucida grande',
-        textAlign: 'center',
-        marginTop: 20,
-        marginBottom: 20,
-        color: '#F2EFE9',
-        lineHeight: 30,
-    },
     linksContainer: {
         marginBottom: 20,
         marginTop: 20,
-    },
-    logInCont: {
-        backgroundColor: '#4B5940',
-        padding: 20,
-        borderRadius: 20,
-        width: 300,
-        alignSelf: 'center',
     },
     linkText: {
         color: '#F2EFE9',
         textDecorationLine: 'underline',
         textAlign: 'center',
     },
+    // Add other styles as needed
 });

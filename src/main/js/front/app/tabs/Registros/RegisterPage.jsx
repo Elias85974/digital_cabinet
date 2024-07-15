@@ -1,14 +1,37 @@
-import React, {useState } from 'react';
-import {View, ScrollView, TextInput, Pressable, StyleSheet, Text, SafeAreaView} from 'react-native';
-import {UsersApi} from '../../Api';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, ScrollView, TextInput, Pressable, StyleSheet, Text, SafeAreaView, Animated } from 'react-native';
+import { UsersApi } from '../../Api';
 import ModalAlert from "../Contents/ModalAlert";
 import GoBackButton from "../NavBar/GoBackButton";
 
-export default function RegisterPage({navigation}) {
-    let [newUser, setNewUser] = useState({mail: '', nombre: '', apellido: '', password: '', age: '', phone: ''});
+export default function RegisterPage({ navigation }) {
+    let [newUser, setNewUser] = useState({ mail: '', nombre: '', apellido: '', password: '', age: '', phone: '' });
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
-    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
-    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+    const animatedValue = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(animatedValue, {
+                    toValue: 1,
+                    duration: 4000,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(animatedValue, {
+                    toValue: 0,
+                    duration: 4000,
+                    useNativeDriver: false,
+                }),
+            ])
+        ).start();
+    }, [animatedValue]);
+
+    const backgroundColor = animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['rgb(219,162,123)', 'rgb(237,216,138)'],
+    });
 
     const isEmail = (email) =>
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
@@ -87,10 +110,10 @@ export default function RegisterPage({navigation}) {
     };
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { backgroundColor }]}>
             <SafeAreaView style={StyleSheet.absoluteFill}>
                 <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
-                <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+                    <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
                 <View>
                     <GoBackButton navigation={navigation}/>
                     <Text style={styles.title}>Sign Up</Text>
@@ -141,7 +164,7 @@ export default function RegisterPage({navigation}) {
                 </View>
                 </ScrollView>
             </SafeAreaView>
-        </View>
+        </Animated.View>
     );
 }
 

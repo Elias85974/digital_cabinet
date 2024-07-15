@@ -1,23 +1,44 @@
-import { useState } from 'react';
-import {TextInput, View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView} from "react-native";
-import {UsersApi} from "../../../Api";
-import {AuthContext} from "../../../context/AuthContext";
-import React from "react"
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { TextInput, View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView, Animated } from "react-native";
+import { UsersApi } from "../../../Api";
+import { AuthContext } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalAlert from "../../Contents/ModalAlert";
 import GoogleLoginButton from "./GoogleLogin";
 
-export default function LoginPage({navigation}) {
-    const {userToken, email} = React.useContext(AuthContext)
-    const {signIn} = React.useContext(AuthContext)
-    const [user, setUser] = useState({mail: '', password: ''});
+export default function LoginPage({ navigation }) {
+    const { signIn } = useContext(AuthContext);
+    const [user, setUser] = useState({ mail: '', password: '' });
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
-    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
-    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+    const animatedValue = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(animatedValue, {
+                    toValue: 1,
+                    duration: 4000,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(animatedValue, {
+                    toValue: 0,
+                    duration: 4000,
+                    useNativeDriver: false,
+                }),
+            ])
+        ).start();
+    }, [animatedValue]);
+
+    const backgroundColor = animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['rgb(219,162,123)', 'rgb(237,216,138)'],
+    });
 
     const handleInputChange = (field, value) => {
-        setUser({...user, [field]: value});
+        setUser({ ...user, [field]: value });
     };
 
     const handleSubmit = async () => {
@@ -61,10 +82,10 @@ export default function LoginPage({navigation}) {
     // Use isLoggedIn state variable to conditionally render components or navigate to different routes
     if (!isLoggedIn) {
         return (
-            <View style={styles.container}>
+            <Animated.View style={[styles.container, { backgroundColor }]}>
                 <SafeAreaView style={StyleSheet.absoluteFill}>
                     <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
-                    <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+                        <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
 
                     <View>
                         <Text style={styles.title}>Digital Cabinet</Text>
@@ -96,9 +117,9 @@ export default function LoginPage({navigation}) {
                             </Pressable>
                         </View>
                     </View>
-                </ScrollView>
+                        </ScrollView>
                 </SafeAreaView>
-            </View>
+            </Animated.View>
         );
     }
 }

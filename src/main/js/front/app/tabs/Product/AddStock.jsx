@@ -204,7 +204,7 @@ export default function AddProduct({navigation}) {
                         />
                         <FlatList
                             data={suggestions}
-                            numColumns={6}
+                            numColumns={3}
                             keyExtractor={(item) => item.producto_ID.toString()}
                             renderItem={({ item }) => (
                                 <TouchableOpacity
@@ -228,6 +228,7 @@ export default function AddProduct({navigation}) {
                                     <Text style={styles.modalTitle}>Product Details</Text>
                                     <Text style={styles.modalText}>Name: {selectedProductDetails?.nombre}</Text>
                                     <Text style={styles.modalText}>Brand: {selectedProductDetails?.marca}</Text>
+                                    <Text style={styles.modalText}>Quantity type: {selectedProductDetails?.tipoDeCantidad}</Text>
                                     <Text style={styles.modalText}>Category: {selectedProductDetails?.category.nombre}</Text>
                                     <View style={styles.linksContainer}>
                                         <Pressable onPress={() => {

@@ -51,7 +51,8 @@ export default function Homes({navigation}) {
                             ))}
                         </View>
                     </View>
-                    <p></p>
+                    <View style={{marginTop: 20}}>
+                    </View>
                     <View style={styles.linksContainer}>
                         <Pressable onPress={() => navigation.navigate("RegisterHome")}>
                             <Text style={styles.link}>Create a Home</Text>

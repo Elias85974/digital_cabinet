@@ -84,10 +84,12 @@ export default function LoginPage({navigation}) {
                             <Pressable style={styles.link} onPress={handleSubmit}>
                                 <Text style={{color: 'white', fontSize: 16}}>Log In</Text>
                             </Pressable>
-                            <p></p>
+                            <View style={{marginTop: 20}}>
+                            </View>
                             <GoogleLoginButton setIsLoggedIn={setIsLoggedIn} navigation={navigation} />
                         </View>
-                        <p></p>
+                        <View style={{marginTop: 20}}>
+                        </View>
                         <View style={styles.linksContainer}>
                             <Pressable onPress={() => navigation.navigate("RegisterPage")}>
                                 <Text style={styles.link}>Sign Up</Text>

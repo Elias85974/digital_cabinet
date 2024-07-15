@@ -113,7 +113,8 @@ export default function House({navigation}) {
                             />
                         </View>
                     </View>
-                    <p></p>
+                    <View style={{marginTop: 20}}>
+                    </View>
                     <View style={styles.linksContainer}>
                         <View style={styles.linksContainer}>
                             <Pressable onPress={()=> navigation.navigate("Homes")}>

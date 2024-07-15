@@ -49,8 +49,11 @@ export function ChatNotification({ navigation, setChatLength }) {
                                         >
                                             <Text style={inboxStyles.textContent}>
                                                 {item.sender} said: "{item.message}"
-                                                <p></p>You have {item.unreadMessages} unread messages on {item.chatName}'s chat
-                                                <p></p>
+                                                <View style={{marginTop: 20}}>
+                                                </View>
+                                                You have {item.unreadMessages} unread messages on {item.chatName}'s chat
+                                                <View style={{marginTop: 20}}>
+                                                </View>
                                             </Text>
                                         </TouchableOpacity>
                                     </View>

@@ -220,7 +220,8 @@ export default function RegisterProduct({navigation}) {
                             <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>
                         </Pressable>
                     </View>
-                    <p></p>
+                    <View style={{marginTop: 20}}>
+                    </View>
                 </View>
                 </ScrollView>
             </SafeAreaView>

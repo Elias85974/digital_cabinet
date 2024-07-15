@@ -105,7 +105,8 @@ const HouseUsersPageDelete = ({ navigation }) => {
                     </View>
                 </View>
             </View>
-            <p></p>
+            <View style={{marginTop: 20}}>
+            </View>
             <View style={styles.deleteUsers}>
                 <Pressable style={{alignSelf:'center'}} onPress={ async () => {
                     await handleDelete(await AsyncStorage.getItem('userId'));

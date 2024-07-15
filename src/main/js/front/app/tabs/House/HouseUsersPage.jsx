@@ -89,7 +89,8 @@ const HouseUsersPage = ({ navigation }) => {
                         </Text>
                     </Pressable>
                 </View>
-                <p></p>
+                    <View style={{marginTop: 20}}>
+                    </View>
                 <View style={styles.deleteUsers}>
                     <Pressable style={{alignSelf:'center'}} onPress={() => navigation.navigate("HouseUsersPageDelete")}>
                         <Text style={styles.linkdel}>
@@ -97,7 +98,8 @@ const HouseUsersPage = ({ navigation }) => {
                         </Text>
                     </Pressable>
                 </View>
-                <p></p>
+                    <View style={{marginTop: 20}}>
+                    </View>
                 </ScrollView>
             </SafeAreaView>
             <NavBar navigation={navigation}/>

@@ -215,7 +215,7 @@ public class Inventories {
         return lowOnStockProducts;
     }
 
-    // Get all the products in stock -------> no funcaaaa puta madre
+    // Get all the products in stock
     public List<ProductTotalInfo> getStockProducts(Long houseId) {
         // Get the house
         House house = entityManager.find(House.class, houseId);

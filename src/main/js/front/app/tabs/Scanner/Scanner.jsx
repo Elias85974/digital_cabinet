@@ -48,44 +48,44 @@ export default function ScannerScreen({ navigation }) {
         <View style={{ flex: 1 }}>
             <Camera
                 quality={0}
-                onBarCodeScanned={(event) => {
-                    console.log('Barcode scanned:', event);
-                    handleBarCodeScanned(event);
-                }}
-                onMountError={(error) => console.error('Camera mount error:', error)}
-                barcodeScannerSettings={{ barcodeTypes: ['all'] }}
                 style={StyleSheet.absoluteFillObject}
                 flashMode={torchOn ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
                 errorCallback={(error) => console.error('Camera error:', error)}
             >
-                {console.log('Camera rendering...')}
-            </Camera>
-            <View
-                style={{
-                    backgroundColor: 'transparent',
-                    justifyContent: 'flex-end',
-                }}
-            >
-                <TouchableOpacity
+                <Camera.BarCodeScanner
+                    onBarCodeScanned={handleBarCodeScanned}
+                    barcodeTypes={[
+                        'qr', 'ean13', 'ean8', 'upc_a', 'upc_e', 'code_39', 'code_93',
+                        'code_128', 'pdf417', 'aztec', 'interleaved_2_of_5', 'itf14', 'data_matrix'
+                    ]}
+                />
+                <View
                     style={{
-                        backgroundColor: 'white',
-                        borderRadius: 5,
-                        padding: 10,
-                        paddingHorizontal: 20,
-                    }}
-                    onPress={() => {
-                        setTorchOn(!torchOn);
+                        backgroundColor: 'transparent',
+                        justifyContent: 'flex-end',
                     }}
                 >
-                    <Text style={{ fontSize: 20 }}>Toggle Torch</Text>
-                </TouchableOpacity>
-                <GoBackButton navigation={navigation} />
-            </View>
-            {scanned && (
-                <Text style={{ position: 'absolute', top: 20, left: 20, color: 'white' }}>
-                    Scanned Data: {scannedData}
-                </Text>
-            )}
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: 'white',
+                            borderRadius: 5,
+                            padding: 10,
+                            paddingHorizontal: 20,
+                        }}
+                        onPress={() => {
+                            setTorchOn(!torchOn);
+                        }}
+                    >
+                        <Text style={{ fontSize: 20 }}>Toggle Torch</Text>
+                    </TouchableOpacity>
+                    <GoBackButton navigation={navigation} />
+                </View>
+                {scanned && (
+                    <Text style={{ position: 'absolute', top: 20, left: 20, color: 'white' }}>
+                        Scanned Data: {scannedData}
+                    </Text>
+                )}
+            </Camera>
         </View>
     );
 }

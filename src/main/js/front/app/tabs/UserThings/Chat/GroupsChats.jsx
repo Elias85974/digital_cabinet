@@ -19,7 +19,7 @@ export default function GroupsChats({ navigation }) {
         if (isFocused){
             getGroupChats();
         }
-    }, [isFocused, key]);
+    }, [isFocused]);
 
     const getGroupChats = async () => {
         try {

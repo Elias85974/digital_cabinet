@@ -29,7 +29,7 @@ public class ProductController {
             try {
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
-                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                Gson gson = new GsonBuilder().create(); //.excludeFieldsWithoutExposeAnnotation() le saco esto y aparece el campo isVerified
                 String productsJson = gson.toJson(productsRepo.listAll());
                 tx.commit();
                 resp.type("application/json");

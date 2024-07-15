@@ -61,6 +61,7 @@ export default function AddProduct({navigation}) {
         setQuery(suggestion.nombre);
         setSuggestions([]);
         setSelectedProduct(suggestion.producto_ID);
+        console.log(suggestion)
     };
 
 
@@ -177,6 +178,7 @@ export default function AddProduct({navigation}) {
                 setDetailsModalVisible(true);
             }, 300);
             setTimerId(id);
+            console.log(product)
         }
 
         setLastPress(now);
@@ -203,15 +205,18 @@ export default function AddProduct({navigation}) {
                             onChangeText={handleInputChangeProd}
                             placeholder="Select a product"
                         />
+
                         <FlatList
                             data={suggestions}
-                            numColumns={3}
+                            numColumns={2}
                             keyExtractor={(item) => item.producto_ID.toString()}
                             renderItem={({ item }) => (
                                 <TouchableOpacity
                                     style={{flexDirection: 'row'}}
                                     onPress={() => handleSingleAndDoubleClick(item)}
                                 >
+                                    {item?.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+
                                     <Text style={styles.prod}>{item.nombre}</Text>
                                 </TouchableOpacity>
                             )}
@@ -230,7 +235,7 @@ export default function AddProduct({navigation}) {
                                     <Text style={styles.modalTitle}>Product Details</Text>
                                     <View style={{flexDirection: 'row'}}>
                                         {selectedProductDetails?.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
-                                        <Text style={styles.modalText}>Name: {selectedProductDetails?.nombre}</Text>
+                                        <Text style={styles.modalText}>  Name: {selectedProductDetails?.nombre}</Text>
                                     </View>
                                     <Text style={styles.modalText}>Brand: {selectedProductDetails?.marca}</Text>
                                     <Text style={styles.modalText}>Quantity type: {selectedProductDetails?.tipoDeCantidad}</Text>

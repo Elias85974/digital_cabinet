@@ -4,6 +4,10 @@ import {Pressable, StyleSheet, View, Image, Text} from "react-native";
 
 
 export default function Index({navigation}) {
+    function handleScan() {
+        navigation.navigate('Scanner');
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Digital Cabinet</Text>
@@ -15,6 +19,9 @@ export default function Index({navigation}) {
             <View style={styles.linksContainer}>
                 <Pressable style={styles.link} onPress={() => navigation.navigate("LoginPage")}>
                         <Text style={styles.linkText}>Log In</Text>
+                </Pressable>
+                <Pressable style={styles.link} onPress={handleScan}>
+                    <Text style={{color: 'white', fontSize: 16}}>Scan a product</Text>
                 </Pressable>
             </View>
         </View>

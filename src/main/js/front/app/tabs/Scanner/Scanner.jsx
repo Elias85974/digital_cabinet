@@ -8,7 +8,7 @@ export default function ScannerScreen({ navigation }) {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [torchOn, setTorchOn] = useState(false);
-    const [scannedData, setScannedData] = useState(''); // Step 1: State to hold scanned data
+    const [scannedData, setScannedData] = useState('');
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

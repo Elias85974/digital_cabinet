@@ -57,16 +57,18 @@ public class Inventories {
         Long totalQuantity = 0L;
         Date nearestExpirationDate = null;
         double totalValue = 0.0;
+        Long lowStockIndicator = 0L;
         for (Stock s : sameProductStocks) {
             totalQuantity += s.getCantidadVencimiento();
             totalValue += s.getPrice();
+            lowStockIndicator = s.getLowStockIndicator();
             if (nearestExpirationDate == null || s.getExpirationDate().before(nearestExpirationDate)) {
                 nearestExpirationDate = s.getExpirationDate();
             }
         }
 
         // Create a new ProductInfo object with the calculated values
-        return new ProductInfo(product, totalQuantity, nearestExpirationDate, totalValue, product.getCategory().getNombre());
+        return new ProductInfo(product, totalQuantity, nearestExpirationDate, totalValue, product.getCategory().getNombre(),lowStockIndicator);
     }
 
     public Inventory persist(Inventory inventory) {
@@ -75,8 +77,6 @@ public class Inventories {
     }
 
     public void addStockToHouse(House house, Product product, Long quantity, Date expiration, Long lowStockIndicator, double price) {
-        LivesIns livesIns = new LivesIns(entityManager);
-
         final Stock stock = Stock.create(quantity).setProduct(product).setExpiration(expiration)
                 .setLowStockIndicator(lowStockIndicator).setPrice(price).build();
         entityManager.persist(stock);
@@ -90,15 +90,7 @@ public class Inventories {
         entityManager.persist(stock);
         entityManager.persist(inventario);
         entityManager.persist(house);
-        /*
-        // Update all LivesIn relationships linked to the house
-        List<LivesIn> livesInsOfHouse = livesIns.getFromHouseId(house.getCasa_ID());
-        for (LivesIn livesIn : livesInsOfHouse) {
-            // Merge the LivesIn entity to persist the changes
-            entityManager.merge(livesIn);
-        }
 
-         */
     }
 
     public void reduceStock(Long houseId, Long productId, Long quantity) {
@@ -208,7 +200,7 @@ public class Inventories {
                 double averagePrice = productQuantities.get(product) > 0 ? productTotalValues.get(product) / productQuantities.get(product) : 0;
 
                 // Add the product to the list of low on stock products
-                lowOnStockProducts.add(new ProductInfo(product, productQuantities.get(product), productExpirationDates.get(product), averagePrice, productCategories.get(product)));
+                lowOnStockProducts.add(new ProductInfo(product, productQuantities.get(product), productExpirationDates.get(product), averagePrice, productCategories.get(product), productLowStockLimits.get(product)));
             }
         }
 

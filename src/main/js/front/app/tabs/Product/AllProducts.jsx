@@ -63,14 +63,19 @@ export default function AllProducts({navigation}) {
     const handleFilteredProducts = (filteredProducts) => {
         console.log("Filtered products in stock:", filteredProducts);
         setFilteredProducts(filteredProducts);
+        setIsSearching(false);
     }
+
+    const [isSearching, setIsSearching] = useState(false);
 
     const handleSearch = (searchQuery) => {
         setQuery(searchQuery);
 
         if (searchQuery === '') {
             setFilteredProducts(products);
+            setIsSearching(false);
         } else {
+            setIsSearching(true);
             const filtered = products.filter(product => product.product.nombre.toLowerCase().includes(searchQuery.toLowerCase()));
             setFilteredProducts(filtered);
         }
@@ -109,12 +114,12 @@ export default function AllProducts({navigation}) {
                                 placeholder="Search product"
                                 onChangeText={handleSearch}
                             />
-                            <FilterModal products={products} onFilter={handleFilteredProducts} currentPage={currentPage} navigation={navigation}/>
+                            <FilterModal  products={products} onFilter={handleFilteredProducts} currentPage={currentPage} navigation={navigation}/>
                         </View>
 
                         <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                             <FlatList
-                                data={filteredProducts.length > 0 ? filteredProducts : products}
+                                data={isSearching ? (filteredProducts.length > 0 ? filteredProducts : []) : (filteredProducts.length > 0 ? filteredProducts : products)}
                                 renderItem={renderItem}
                                 keyExtractor={(item, index) => index.toString()}
                                 numColumns={2}

@@ -68,24 +68,30 @@ export default function LowOnStockProducts({navigation}) {
     const handleFilteredProducts = (filteredProducts) => {
         console.log("Filtered products in lowstock:", filteredProducts);
         setFilteredProducts(filteredProducts);
+        setIsSearching(false);
     }
 
-    // Define la función de actualización
-    const updateProducts = (updatedProducts) => {
-        setProducts(updatedProducts);
-        navigation.navigate('LowOnStock', {key: refreshKey});
-    }
+    const [isSearching, setIsSearching] = useState(false);
 
     const handleSearch = (searchQuery) => {
         setQuery(searchQuery);
 
         if (searchQuery === '') {
             setFilteredProducts(products);
+            setIsSearching(false);
         } else {
+            setIsSearching(true);
             const filtered = products.filter(product => product.product.nombre.toLowerCase().includes(searchQuery.toLowerCase()));
             setFilteredProducts(filtered);
         }
     };
+
+
+    // Define la función de actualización
+    const updateProducts = (updatedProducts) => {
+        setProducts(updatedProducts);
+        navigation.navigate('LowOnStock', {key: refreshKey});
+    }
 
     const renderItem = ({ item }) => {
         return (
@@ -120,7 +126,7 @@ export default function LowOnStockProducts({navigation}) {
 
                             <ScrollView style={[styles.contentContainer, {marginBottom: 95}]} showsVerticalScrollIndicator={false}>
                                 <FlatList
-                                    data={filteredProducts.length > 0 ? filteredProducts : products}
+                                    data={isSearching ? (filteredProducts.length > 0 ? filteredProducts : []) : (filteredProducts.length > 0 ? filteredProducts : products)}
                                     renderItem={renderItem}
                                     keyExtractor={(item, index) => index.toString()}
                                     numColumns={2}

@@ -15,7 +15,6 @@ const AddStockModal = ({updateProducts,
     const [newPrice, setNewPrice] = useState('');
 
 
-
     const handleAddStock = async () => {
         const houseId = await AsyncStorage.getItem('houseId');
         if (currentPage === 'lowStock') {
@@ -37,6 +36,16 @@ const AddStockModal = ({updateProducts,
         setModalProductInfo(false);
         setQuantityToAdd('');
 
+        let stock = await getProducts();
+
+        console.log("Products loaded after adding stock", stock);
+        updateProducts(stock);
+        setModalProductInfo(false);
+        setModalAdd(false);
+        return stock;
+    }
+
+    const getProducts = async () => {
         let stock;
         const category = await AsyncStorage.getItem('categoryName');
         if (currentPage === 'allProds') {
@@ -51,11 +60,6 @@ const AddStockModal = ({updateProducts,
         } else {
             console.error('Invalid page');
         }
-
-        console.log("Products loaded after adding stock", stock);
-        updateProducts(stock);
-        setModalProductInfo(false);
-        setModalAdd(false);
         return stock;
     }
 
@@ -100,20 +104,24 @@ const AddStockModal = ({updateProducts,
                         inputMode="numeric"
                         placeholder="Enter quantity to add"
                     />
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={(value) => handleChanges(value, 'price')}
-                        value={newPrice}
-                        inputMode="numeric"
-                        placeholder="Enter new total price"
-                    />
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={(value) => handleChanges(value, 'expiration')}
-                        value={expirationDate}
-                        inputMode="text"
-                        placeholder="Enter expiration DD/MM/YYYY"
-                    />
+                    {currentPage !== 'lowStock' && (
+                        <>
+                            <TextInput
+                                style={styles.input}
+                                onChangeText={(value) => handleChanges(value, 'price')}
+                                value={newPrice}
+                                inputMode="numeric"
+                                placeholder="Enter new total price"
+                            />
+                            <TextInput
+                                style={styles.input}
+                                onChangeText={(value) => handleChanges(value, 'expiration')}
+                                value={expirationDate}
+                                inputMode="text"
+                                placeholder="Enter expiration DD/MM/YYYY"
+                            />
+                            </>
+                        )}
                     <View style={styles.linksContainer}>
                         <Pressable onPress={handleAddStock}>
                             <Text style={styles.link}>Confirm Addition</Text>

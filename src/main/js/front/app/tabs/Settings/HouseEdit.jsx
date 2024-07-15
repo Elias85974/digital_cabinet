@@ -5,6 +5,7 @@ import React, {useEffect, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import {UsersApi} from "../../Api";
 import {settingStyles} from "./SettingStyles";
+import {Feather} from "@expo/vector-icons";
 
 export function HouseEdit({ navigation }) {
     const [houseData, setHouseData] = useState({name: '', address: ''});
@@ -40,7 +41,8 @@ export function HouseEdit({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => setIsCollapsed(!isCollapsed)}>
+            <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setIsCollapsed(!isCollapsed)}>
+                <Feather name="edit" size={24} color="black" />
                 <Text style={settingStyles.typesContainer}>House</Text>
             </TouchableOpacity>
             <Collapsible collapsed={isCollapsed}>

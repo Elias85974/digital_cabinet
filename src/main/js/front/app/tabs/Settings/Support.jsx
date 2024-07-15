@@ -5,13 +5,15 @@ import React, {useEffect, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import {UsersApi} from "../../Api";
 import {settingStyles} from "./SettingStyles";
+import {AntDesign} from "@expo/vector-icons";
 
 export function Support({ navigation }) {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => setIsCollapsed(!isCollapsed)}>
+            <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setIsCollapsed(!isCollapsed)}>
+                <AntDesign name="customerservice" size={24} color="black" />
                 <Text style={settingStyles.typesContainer}>Support</Text>
             </TouchableOpacity>
             <Collapsible collapsed={isCollapsed}>

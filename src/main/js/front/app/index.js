@@ -23,7 +23,7 @@ export default function Index({navigation}) {
 
     const backgroundColor = animatedValue.interpolate({
         inputRange: [0, 1],
-        outputRange: ['rgb(219,162,123)', 'rgb(237,216,138)'],
+        outputRange: ['#BFAC9B', 'rgb(171,133,93)'],
     });
 
     return (

@@ -37,7 +37,8 @@ export function UserAccount({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => setIsCollapsed(!isCollapsed)}>
+            <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setIsCollapsed(!isCollapsed)}>
+                <Feather name="edit" size={24} color="black" />
                 <Text style={settingStyles.typesContainer}>Account</Text>
             </TouchableOpacity>
             <Collapsible collapsed={isCollapsed}>

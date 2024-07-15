@@ -68,7 +68,7 @@ const GoogleLogin = ({navigation, setIsLoggedIn}) => {
     };
 
     return (
-        <View>
+        <View style={{justifyContent: 'center', alignContent: 'center', alignSelf: 'center',}}>
             {Platform.OS === 'web' ? (
                 <div id="signInDiv"></div>  // This div will contain the Google Sign-In button
             ) : (

@@ -49,10 +49,18 @@ const GoogleLogin = ({navigation, setIsLoggedIn}) => {
                 signIn(userInfoResponse.token, userInfoResponse.email);
                 setIsLoggedIn(true);
 
+                const userId = userInfoResponse.userId;
                 // Save user ID to AsyncStorage
-                await AsyncStorage.setItem('userId', userInfoResponse.userId);
+                await AsyncStorage.setItem('userId', userId);
 
-                navigation.navigate("Homes");
+                // Check if the user is the admin (i.e., user ID is 1)
+                if (userId === '1') {
+                    // Navigate to the admin page
+                    navigation.navigate("Products Verification");
+                } else {
+                    // Navigate to the homes page
+                    navigation.navigate("Homes"); //homes
+                }
             }
         } catch (error) {
             console.error('Error fetching user info:', error);

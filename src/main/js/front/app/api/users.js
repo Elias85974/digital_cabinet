@@ -40,11 +40,6 @@ export const googleLogin = async (accessToken) => {
     }
 };
 
-// Function to log out a User
-export const logoutUser = async (navigation) => {
-    await FetchApi.deleteFetch({}, `/logout`, 'Failed to logout user:', navigation);
-}
-
 // Function to get the houses of the user
 export const getUserHouses = async (navigation) => {
     return await FetchApi.getFetch(`/users/user/getHouses`, 'Failed to get user houses:', navigation);

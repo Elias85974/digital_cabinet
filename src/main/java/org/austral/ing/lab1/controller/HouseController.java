@@ -71,7 +71,11 @@ public class HouseController {
             } catch (Exception e) {
                 resp.status(500);
                 resp.type("application/json");
-                return gson.toJson(e.getMessage());
+                if (e instanceof IllegalArgumentException) {
+                    return gson.toJson(e.getMessage());
+                } else {
+                    return "An error occurred while inviting the user, please try again";
+                }
             } finally {
                 entityManager.close();
             }

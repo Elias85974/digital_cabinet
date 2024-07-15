@@ -132,9 +132,15 @@ export const unauthenticatedPost = async (postData, url, errorMessage) => {
 };
 
 const validateResponse = async (response, navigation) => {
-    console.log(response);
     if (!response.ok) {
-        const errorMessage = await response.text();
+        const contentType = response.headers.get('Content-Type');
+        console.log(contentType);
+        let errorMessage;
+        if (contentType && contentType.includes('application/json')) {
+            throw new Error(await response.json());
+        } else {
+            errorMessage = await response.text(); // Otherwise, return as text
+        }
         if (errorMessage === "Unauthorized") {
             await AsyncStorage.clear();
             if (navigation) {

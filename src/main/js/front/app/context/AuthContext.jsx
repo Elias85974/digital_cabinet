@@ -41,7 +41,6 @@ export function AuthProvider({ children }) {
 
     const signOut = async () => {
         try {
-            await UsersApi.logoutUser();
             await AsyncStorage.clear();
             setUserToken(null);
             setEmail(null);

@@ -28,10 +28,11 @@ export default function LoginPage({navigation}) {
                     signIn(response.token, response.email);
                     setIsLoggedIn(true);
                     console.log(response)
-                    // Save user ID to AsyncStorage
-                    await AsyncStorage.setItem('userId', response.userId);
+                    const userId = response.userId;
 
-                    const userId = await AsyncStorage.getItem('userId');
+                    // Save user ID to AsyncStorage
+                    await AsyncStorage.setItem('userId', userId);
+
                     // Check if the user is the admin (i.e., user ID is 1)
                     if (userId === '1') {
                         // Navigate to the admin page

@@ -3,7 +3,6 @@ import { View, Button, Alert, Platform } from 'react-native';
 import {FetchApi, UsersApi} from "../../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AuthContext} from "../../../context/AuthContext";
-import jwtDecode from 'jwt-decode';
 
 const GoogleLogin = ({navigation, setIsLoggedIn}) => {
     const {signIn} = React.useContext(AuthContext);

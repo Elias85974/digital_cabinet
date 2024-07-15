@@ -132,15 +132,17 @@ export const unauthenticatedPost = async (postData, url, errorMessage) => {
 };
 
 const validateResponse = async (response, navigation) => {
+    console.log(response);
     if (!response.ok) {
         const errorMessage = await response.text();
         if (errorMessage === "Unauthorized") {
-            await AsyncStorage.removeItem('userId');
-            await AsyncStorage.removeItem('userToken');
+            await AsyncStorage.clear();
             if (navigation) {
                 navigation.navigate("Index");
             }
         }
-        throw new Error(errorMessage);
+    }
+    else {
+        await AsyncStorage.setItem("userToken", response.headers.get('Token'));
     }
 }

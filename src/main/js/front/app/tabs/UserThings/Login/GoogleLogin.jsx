@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { View, Button, Alert, Platform } from 'react-native';
-import {UsersApi} from "../../../Api";
+import {FetchApi, UsersApi} from "../../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AuthContext} from "../../../context/AuthContext";
+import jwtDecode from 'jwt-decode';
 
 const GoogleLogin = ({navigation, setIsLoggedIn}) => {
     const {signIn} = React.useContext(AuthContext);
@@ -30,6 +31,7 @@ const GoogleLogin = ({navigation, setIsLoggedIn}) => {
         window.google.accounts.id.initialize({
             client_id: '213797815882-10kd2qmj4hmmla4oa3s4kphqp8c4btvj.apps.googleusercontent.com',
             callback: handleCredentialResponse,
+            scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
         });
         window.google.accounts.id.renderButton(
             document.getElementById('signInDiv'),
@@ -38,18 +40,23 @@ const GoogleLogin = ({navigation, setIsLoggedIn}) => {
     };
 
     const handleCredentialResponse = async(response) => {
-        console.log('Encoded JWT ID token: ' + response.credential);
-        const userInfo = await UsersApi.googleLogin(response.credentials); // Assume loginUser returns a promise
-        if (userInfo) { // Boolean indicating success of login
-            signIn(userInfo.token, userInfo.email);
-            setIsLoggedIn(true);
+        console.log('Google info: ' + JSON.stringify(response, null, 2));
+        const accessToken = response.credential; // This is the OAuth2 access token
 
-            // Save user ID to AsyncStorage
-            await AsyncStorage.setItem('userId', userInfo.userId);
+        try {
+            const userInfoResponse = await UsersApi.googleLogin(accessToken);
+            if (userInfoResponse) { // Boolean indicating success of login
+                signIn(userInfoResponse.token, userInfoResponse.email);
+                setIsLoggedIn(true);
 
-            navigation.navigate("Homes");
+                // Save user ID to AsyncStorage
+                await AsyncStorage.setItem('userId', userInfoResponse.userId);
+
+                navigation.navigate("Homes");
+            }
+        } catch (error) {
+            console.error('Error fetching user info:', error);
         }
-        // Use the JWT token to authenticate the user on your backend
     };
 
     return (

@@ -17,10 +17,7 @@ public class Application {
 
         Spark.port(4321);
 
-        // Pasar googleAuthService como argumento al constructor de UserController
         new UserController(entityManagerFactory).init();
-
-
         new HouseController(entityManagerFactory).init();
         new InventoryController(entityManagerFactory).init();
         new WishListController(entityManagerFactory).init();
@@ -29,6 +26,8 @@ public class Application {
         new CategoryController(entityManagerFactory).init();
         new ChatController(entityManagerFactory).init();
         new SchedulerInitializer(entityManagerFactory).init();
+        new GoogleController(entityManagerFactory).init();
+        TokenValidator.setEntityManagerFactory(entityManagerFactory);
 
         Spark.options("/*", (req, res) -> {
             String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
@@ -49,6 +48,8 @@ public class Application {
             res.header("Access-Control-Allow-Origin", "*");
             // Explicitly specify which headers are allowed
             res.header("Access-Control-Allow-Headers", "Content-Type,UserId,Token");
+            // Expose Token header to the frontend
+            res.header("Access-Control-Expose-Headers", "Token");
             res.type("application/json");
         });
 

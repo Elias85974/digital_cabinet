@@ -1,16 +1,22 @@
 package org.austral.ing.lab1.repository.users;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import org.austral.ing.lab1.controller.TokenValidator;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.model.user.WishList;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
 public class Users {
 
     private final EntityManager entityManager;
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     public Users(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -87,5 +93,29 @@ public class Users {
         User user = User.fromJson(body);
         entityManager.persist(user);
         tx.commit();
+    }
+
+    public User createGoogleUser(String email, String name, String surname) {
+        byte[] randomBytes = new byte[24];
+        secureRandom.nextBytes(randomBytes);
+        String rndpwd = base64Encoder.encodeToString(randomBytes);
+        User user = new User();
+        user.setMail(email);
+        user.setNombre(name);
+        user.setApellido(surname);
+        user.setPassword(rndpwd);
+        entityManager.persist(user);
+        return user;
+    }
+
+    public void setUserToken(Long userId, String newToken) {
+        entityManager.getTransaction().begin();
+        User user = entityManager.find(User.class, userId);
+        if (user == null) {
+            entityManager.getTransaction().rollback();
+            throw new JWTVerificationException("User not found");
+        }
+        user.setToken(newToken);
+        entityManager.getTransaction().commit();
     }
 }

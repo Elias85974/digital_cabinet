@@ -77,7 +77,11 @@ UserController {
                     //jsonResponse.addProperty("token", token);
                     jsonResponse.addProperty("email", foundUser.getMail()); // Correo electrónico del usuario
                     jsonResponse.addProperty("userId", foundUser.getUsuario_ID()); // ID del usuario
-                    jsonResponse.addProperty("token", TokenValidator.addNewToken(foundUser.getUsuario_ID()));
+                    String token = TokenValidator.generateToken(foundUser.getUsuario_ID());
+                    entityManager.getTransaction().begin();
+                    foundUser.setToken(token);
+                    entityManager.getTransaction().commit();
+                    jsonResponse.addProperty("token", token);
 
                     // Establecer el encabezado Content-Type
                     resp.type("application/json");
@@ -95,24 +99,6 @@ UserController {
                 resp.status(500);
                 System.out.println(e.getMessage());
                 return "An error occurred while logging in, please try again";
-            } finally {
-                entityManager.close();
-            }
-        });
-
-        // Route to remove the token of a user that wants to log out
-        Spark.delete("/logout", (req, resp) -> {
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            try {
-                Long userId = Long.parseLong(req.headers("UserId"));
-
-                TokenValidator.removeToken(userId);
-                resp.status(200);
-                return "User logged out successfully";
-            } catch (Exception e) {
-                resp.status(500);
-                System.out.println(e.getMessage());
-                return "An error occurred while logging out, please try again";
             } finally {
                 entityManager.close();
             }

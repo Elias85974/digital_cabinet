@@ -1,4 +1,5 @@
 import {FetchApi} from "../Api";
+import {API_URL} from "../constants";
 
 // Function to create a user
 export const createUser = async (userData) => {
@@ -20,10 +21,24 @@ export const loginUser = async (credentials) => {
     return await FetchApi.unauthenticatedPost(credentials, '/login', 'Failed to login user:');
 }
 
-// Function to login a Google User
-export const googleLogin = async (credential) => {
-    return await FetchApi.unauthenticatedPost({credential}, '/google-login', 'Failed to login user:');
-}
+export const googleLogin = async (accessToken) => {
+    try {
+        const response = await fetch(`http://localhost:4321/google-login`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            },
+        });
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to login with google: ", error);
+        throw error;
+    }
+};
 
 // Function to log out a User
 export const logoutUser = async (navigation) => {

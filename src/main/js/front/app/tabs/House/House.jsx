@@ -116,8 +116,28 @@ export default function House({navigation}) {
                     </View>
                     <View style={{marginTop: 20}}>
                     </View>
+
+
+                    <Pressable onPress={() => navigation.navigate("Scanner")}>
+                        <Text style={styles.link}>
+                            <Ionicons name="camera" size={24} color="white" /> Scan a product
+                        </Text>
+                    </Pressable>
+
                     <View style={styles.linksContainer}>
                         <View style={styles.linksContainer}>
+                            <Pressable style={{flexDirection: 'row', alignContent: 'center'}} onPress={()=> navigation.navigate("PieChart")}>
+                                <Text style={styles.link}>
+                                    <AntDesign name="piechart" size={24} color="white" /> See expenses
+                                </Text>
+                            </Pressable>
+
+                            <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
+                                <Text style={styles.link}>
+                                    <AntDesign name="user" size={24} color="white" /> Manage users
+                                </Text>
+                            </Pressable>
+
                             <Pressable onPress={()=> {
                                 navigation.navigate("Homes")
                                 AsyncStorage.removeItem('houseId');
@@ -127,33 +147,22 @@ export default function House({navigation}) {
                                     <AntDesign name="home" size={24} color="white" /> Select another home
                                 </Text>
                             </Pressable>
-                            <Pressable style={{flexDirection: 'row', alignContent: 'center'}} onPress={()=> navigation.navigate("PieChart")}>
-                                <Text style={styles.link}>
-                                    <AntDesign name="piechart" size={24} color="white" /> See expenses
-                                </Text>
-                            </Pressable>
-                            <Pressable onPress={()=> navigation.navigate("HouseUsersPage")}>
-                                <Text style={styles.link}>
-                                    <AntDesign name="user" size={24} color="white" /> Manage users
-                                </Text>
-                            </Pressable>
+
                         </View>
                         <View style={styles.linksContainer}>
-                            <Pressable onPress={() => navigation.navigate("Scanner")}>
-                                <Text style={styles.link}>
-                                    <Ionicons name="camera" size={24} color="white" /> Scan a product
-                                </Text>
-                            </Pressable>
+
                             <Pressable onPress={() => navigation.navigate("LowOnStock")}>
                                 <Text style={styles.link}>
                                     <FontAwesome5 name="cart-arrow-down" size={24} color="white" /> Low on stock
                                 </Text>
                             </Pressable>
+
                             <Pressable onPress={() => navigation.navigate("AddStock")}>
                                 <Text style={styles.link}>
                                     <FontAwesome6 name="cart-plus" size={24} color="white" /> Add a Product
                                 </Text>
                             </Pressable>
+
                             <Pressable onPress={()=> navigation.navigate("RegisterProduct")}>
                                 <Text style={styles.link}>
                                     <Ionicons name="create" size={24} color="white" /> Create a Product
@@ -204,7 +213,7 @@ const styles = StyleSheet.create({
         lineHeight: 30,
     },
     linksContainer: {
-        marginTop: 20,
+        marginTop: 5,
         width: '95%',
         alignSelf: 'center',
         flex: 3,

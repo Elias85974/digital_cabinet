@@ -5,9 +5,10 @@ import React, {useEffect, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import {UsersApi} from "../../Api";
 import {settingStyles} from "./SettingStyles";
+import {getUserData} from "../../api/users";
 
 export function UserAccount({ navigation }) {
-    const [userData, setUserData] = useState({mail: '', nombre: '', apellido: '', password: '', edad: '', telefono: ''});
+    const [userData, setUserData] = useState({mail: '', nombre: '', apellido: '', password: '', age: '', phone: ''});
     const [isCollapsed, setIsCollapsed] = useState(true);
     const isFocused = useIsFocused();
 
@@ -19,8 +20,8 @@ export function UserAccount({ navigation }) {
 
     const loadUserData = async () => {
         const userId = await AsyncStorage.getItem('userId');
-        //const userAccount = await UsersApi.getUser(userId);
-        //setUserData(userAccount);
+        const userAccount = await UsersApi.getUserData(userId);
+        setUserData(userAccount);
     }
 
     const handleInputChange = (name, value) => {
@@ -61,13 +62,13 @@ export function UserAccount({ navigation }) {
                     />
                     <TextInput style={styles.input}
                                placeholder="Edad"
-                               value={userData.edad}
-                               onChangeText={(value) => handleInputChange('edad', value)}
+                               value={userData.age}
+                               onChangeText={(value) => handleInputChange('age', value)}
                     />
                     <TextInput style={styles.input}
                                placeholder="Teléfono"
-                               value={userData.telefono}
-                               onChangeText={(value) => handleInputChange('telefono', value)}
+                               value={userData.phone}
+                               onChangeText={(value) => handleInputChange('phone', value)}
                     />
                     <TextInput style={styles.input}
                                secureTextEntry={true}

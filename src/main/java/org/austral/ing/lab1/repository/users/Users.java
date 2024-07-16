@@ -1,7 +1,6 @@
 package org.austral.ing.lab1.repository.users;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import org.austral.ing.lab1.controller.TokenValidator;
 import org.austral.ing.lab1.model.user.User;
 import org.austral.ing.lab1.model.user.WishList;
 
@@ -52,22 +51,26 @@ public class Users {
     }
 
     // para cuando hagamos que pueda cambiar el mail o el nombre o lo q sea en ajustes
-    public User modify(Long id, User newUserData) {
+    public void modify(Long id,String mail, String password, String nombre, String apellido, String phone, int age ) {
         Optional<User> userOptional = findById(id);
 
-        if (!userOptional.isPresent()) {
-            return null;
+        if (userOptional.isEmpty()) { //? no se q hacer si es vacio
+            return;
         }
 
         User user = userOptional.get();
 
         // Here you can set the new values for the user fields
         // For example, if User has a field called 'nombre', you can do:
-        // user.setNombre(newUserData.getNombre());
+        user.setNombre(nombre);
+        user.setApellido(apellido);
+        user.setMail(mail);
+        user.setPassword(password);
+        user.setAge(age);
+        user.setPhone(phone);
 
         entityManager.merge(user);
 
-        return user;
     }
 
     public void addProductToWishList(Long userId, String product) {

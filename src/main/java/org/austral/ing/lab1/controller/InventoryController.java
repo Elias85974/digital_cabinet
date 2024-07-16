@@ -168,7 +168,7 @@ public class InventoryController {
                 Date expiration = formatter.parse(expirationString);
 
                 EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
+                tx.begin(); // hi there, no tengo copilot :(
                 final Optional<House> houseOptional = houses.findById(Long.valueOf(houseId));
                 final Optional<Product> productOptional = products.findById(Long.valueOf(productId));
 

@@ -138,6 +138,22 @@ public class User {
         return password;
     }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
     public String getWishlistsAsJson() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");

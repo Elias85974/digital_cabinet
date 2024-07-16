@@ -7,8 +7,8 @@ export const createUser = async (userData) => {
 }
 
 // Function to edit the user
-export const editUser = async (userData, navigation) => {
-    await FetchApi.postFetch(userData, '/users/editUser', 'Failed to edit user:', navigation);
+export const editUser = async (userId, userData, navigation) => {
+    await FetchApi.postFetch(userData, `/users/editUser/${userId}`, 'Failed to edit user:', navigation);
 }
 
 // Function to delete the user
@@ -43,4 +43,10 @@ export const googleLogin = async (accessToken) => {
 // Function to get the houses of the user
 export const getUserHouses = async (navigation) => {
     return await FetchApi.getFetch(`/users/user/getHouses`, 'Failed to get user houses:', navigation);
+}
+
+
+// Function to get data of the user
+export const getUserData = async (userId, navigation) => {
+    return await FetchApi.getFetch(`/users/${userId}/getData`, 'Failed to get user data:', navigation);
 }

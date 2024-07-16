@@ -8,6 +8,7 @@ import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../NavBar/NavBar";
 import {AntDesign, FontAwesome, FontAwesome5, FontAwesome6, Ionicons} from "@expo/vector-icons";
 import GoBackButton from "../NavBar/GoBackButton";
+import Scanner from "../Scanner/Scanner";
 
 
 export default function House({navigation}) {
@@ -138,6 +139,11 @@ export default function House({navigation}) {
                             </Pressable>
                         </View>
                         <View style={styles.linksContainer}>
+                            <Pressable onPress={() => navigation.navigate("Scanner")}>
+                                <Text style={styles.link}>
+                                    <Ionicons name="camera" size={24} color="white" /> Scan a product
+                                </Text>
+                            </Pressable>
                             <Pressable onPress={() => navigation.navigate("LowOnStock")}>
                                 <Text style={styles.link}>
                                     <FontAwesome5 name="cart-arrow-down" size={24} color="white" /> Low on stock

@@ -42,4 +42,8 @@ public class BarCode {
     public void setBarCode(String barCode) {
         this.barCode = barCode;
     }
+
+    public Long getBarCodeId() {
+        return barCodeId;
+    }
 }

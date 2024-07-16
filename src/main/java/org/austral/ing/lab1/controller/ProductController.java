@@ -75,7 +75,7 @@ public class ProductController {
         });
 
         // Route to get a product by its barcode
-        Spark.get("/products/barcode/:barcode", (req, resp) -> {
+        Spark.get("/products/:barcode", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Barcodes barcodes = new Barcodes(entityManager);
             try {

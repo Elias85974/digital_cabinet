@@ -11,12 +11,13 @@ import {
     SafeAreaView
 } from "react-native";
 
-import {CategoriesApi, ProductsApi} from "../../Api";
+import {CategoriesApi, ProductsApi, ScannerApi} from "../../Api";
 import ModalAlert from "../Contents/ModalAlert";
 import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
 import CustomHover from "../Contents/CustomHover"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
@@ -132,10 +133,19 @@ export default function RegisterProduct({navigation}) {
     const handleCreateProduct = async() => {
         try {
             if (newProduct.nombre && newProduct.marca && newProduct.tipoDeCantidad && newProduct.categoryId) {
-                ProductsApi.createProduct(newProduct, navigation).then(r => {
-                    setModalMessage("Product created successfully!"); // Muestra el modal en lugar de un alert
-                    setModalVisible(true)
-                });
+                const barCode = await AsyncStorage.getItem("barCode");
+                if (barCode) {
+                   ScannerApi.createProductByBarcode(barCode, newProduct.categoryId, newProduct, navigation).then(r => {
+                       setModalMessage("Product created successfully!"); // Muestra el modal en lugar de un alert
+                       setModalVisible(true)
+                   });
+                }
+                else {
+                    ProductsApi.createProduct(newProduct, navigation).then(r => {
+                        setModalMessage("Product created successfully!"); // Muestra el modal en lugar de un alert
+                        setModalVisible(true)
+                    });
+                }
                 setTimeout(() => {
                     setModalVisible(false);
                     // Navega a la siguiente página después de un retraso

@@ -1,13 +1,13 @@
 import { Camera, CameraType } from 'expo-camera/legacy';
 import { useState } from 'react';
-import {getAllProducts} from '../../api/scanner';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GoBackButton from "../NavBar/GoBackButton";
+import {ScannerApi} from "../../Api";
 
-export default function App({navigation}) {
+export default function Scanner({navigation}) {
+    let scanned = false;
     const [type, setType] = useState(CameraType.back);
-    const [scanned, setScanned] = useState(false);
     const [scannedData, setScannedData] = useState(null);
     const [permission, requestPermission] = Camera.useCameraPermissions();
 
@@ -32,10 +32,8 @@ export default function App({navigation}) {
 
     const handleBarCodeScanned = async ({ type, data }) => {
         console.log(`Scanned state before processing: ${scanned}`); // Debugging log
-        if (scanned) return; // Check if already scanned, then return early
 
         console.log(`Scanned type: ${type}, data: ${data}`);
-        setScanned(true); // Set scanned to true to prevent further scanning
         console.log('Scanned state set to true'); // Debugging log
         setScannedData(data); // Store the scanned data
 
@@ -46,14 +44,14 @@ export default function App({navigation}) {
                 return;
             }
 
-            const stockProducts = await getAllProducts(houseId);
-            console.log(stockProducts); // Debugging log
-            const productExists = stockProducts.some(product => product.productId === data); // Adjust the condition based on your data structure
+            const product = await ScannerApi.getProductByBarcode(data);
 
-            if (productExists) {
-                navigation.navigate('AddStock', { productId: data }); // Pass the scanned product ID to AddStock
+            console.log(product);
+            if (product.wasFound) {
+                navigation.navigate('AddStock'); // Pass the scanned product ID to AddStock
             } else {
-                navigation.navigate('RegisterProduct', { productId: data }); // Optionally pass the scanned product ID to RegisterProduct
+                await AsyncStorage.setItem("barCode", data); // Store the barcode in AsyncStorage
+                navigation.navigate('RegisterProduct'); // Optionally pass the scanned product ID to RegisterProduct
             }
         } catch (error) {
             console.error('Error scanning barcode or fetching products:', error);
@@ -65,9 +63,11 @@ export default function App({navigation}) {
         <View style={styles.container}>
 
             <Camera
-                onBarCodeScanned={(event) => {
+                onBarCodeScanned={async(event) => {
+                    if (scanned) return; // Check if already scanned, then return early
+                    scanned = true; // Set scanned state to true
                     console.log('Barcode scanned:', event);
-                    handleBarCodeScanned(event);
+                    await handleBarCodeScanned(event);
                 }}
                 barCodeScannerSettings={{
                     barCodeTypes:
@@ -86,7 +86,7 @@ export default function App({navigation}) {
                         style={styles.button}
                         onPress={() => {
                             console.log('Resetting scanned state to false'); // Debugging log
-                            setScanned(false);
+                            scanned = false; // Reset the scanned state to false
                         }}
                     >
                         <Text style={styles.text}>Scan Again</Text>

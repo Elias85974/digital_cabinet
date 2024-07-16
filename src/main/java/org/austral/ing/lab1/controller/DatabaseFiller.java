@@ -19,14 +19,13 @@ public class DatabaseFiller {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        createCategories(entityManager);
 //        createProducts(entityManager);
-//        addStocks(entityManager);
+        addStocks(entityManager);
     }
 
     public void createCategories(EntityManager entityManager) {
         List<String> categoryNames = List.of(
-                "Dairy", "Fats and Oils", "Edible Ices", "Fruits and Vegetables",
-                "Confectionery", "Cereals", "Bakery", "Meat", "Fishery",
-                "Eggs", "Sweeteners", "Condiments", "Special Nutritional", "Beverages", "Preserved Foods"
+                "Lacteos", "Grasas y Aceites", "Helados Comestibles", "Frutas y Verduras", "Confiteria", "Cereales", "Panaderia", "Carne", "Pesca",
+                "Huevos", "Edulcorantes", "Condimentos", "Bebidas", "Nutricion Especial", "Alimentos Conservados"
         );
 
         Categories categories = new Categories(entityManager);
@@ -41,25 +40,23 @@ public class DatabaseFiller {
     public void createProducts(EntityManager entityManager) {
         Products products = new Products(entityManager);
         List<String> categoryNames = List.of(
-                "Dairy", "Fats and Oils", "Edible Ices", "Fruits and Vegetables", "Confectionery", "Cereals", "Bakery", "Meat", "Fishery",
-                "Eggs", "Sweeteners", "Condiments", "Special Nutritional", "Beverages", "Preserved Foods"
+                "Lacteos", "Grasas y Aceites", "Helados Comestibles", "Frutas y Verduras", "Confiteria", "Cereales", "Panaderia", "Carne", "Pesca",
+                "Huevos", "Edulcorantes", "Condimentos", "Bebidas", "Nutricion Especial", "Alimentos Conservados"
         );
         List<List<String>> allProductNames = List.of(
-                List.of("Milk", "Cheese", "Yogurt", "Butter", "Cream", "Almond Milk", "Cottage Cheese", "Sour Cream", "Whipped Cream", "Margarine"),
-                List.of("Olive Oil", "Sunflower Oil", "Palm Oil", "Coconut Oil", "Canola Oil", "Soybean Oil", "Corn Oil", "Sesame Oil", "Peanut Oil", "Cottonseed Oil"),
-                List.of("Ice Cream", "Sorbet", "Gelato", "Frozen Yogurt", "Sherbet", "Granita", "Ice Milk", "Frozen Custard", "Frozen Pudding", "Frozen Mousse"),
-                List.of("Apple", "Banana", "Orange", "Grape", "Strawberry", "Blueberry", "Raspberry", "Blackberry", "Pineapple", "Mango"),
-                List.of("Chocolate", "Candy", "Gum", "Licorice", "Toffee", "Caramel", "Fudge", "Marshmallow", "Nougat", "Taffy"),
-                List.of("Rice", "Wheat", "Corn", "Barley", "Oats", "Rye", "Millet", "Sorghum", "Triticale", "Buckwheat"),
-                List.of("Bread", "Bagel", "Croissant", "Muffin", "Donut", "Roll", "Biscuit", "Scone", "Pancake", "Waffle"),
-                List.of("Beef", "Pork", "Chicken", "Turkey", "Duck", "Goose", "Lamb", "Mutton", "Veal", "Venison"),
-                List.of("Salmon", "Tuna", "Cod", "Trout", "Haddock", "Herring", "Sardine", "Anchovy", "Mackerel", "Pollock"),
-                List.of("Chicken Egg", "Duck Egg", "Goose Egg", "Quail Egg", "Turkey Egg", "Ostrich Egg", "Emu Egg", "Rhea Egg", "Guinea Fowl Egg", "Pheasant Egg"),
-                List.of("Sugar", "Honey", "Maple Syrup", "Agave Nectar", "Stevia", "Aspartame", "Sucralose", "Saccharin", "Acesulfame Potassium", "Monk Fruit"),
-                List.of("Ketchup", "Mustard", "Mayonnaise", "Soy Sauce", "Vinegar", "Relish", "Barbecue Sauce", "Hot Sauce", "Worcestershire Sauce", "Fish Sauce"),
-                List.of("Gluten-Free", "Organic", "Non-GMO", "Low-Carb", "Low-Fat", "Low-Sodium", "Low-Sugar", "High-Protein", "High-Fiber", "Vegan"),
-                List.of("Water", "Coffee", "Tea", "Smoothie", "Juice", "Soda", "Beer", "Wine", "Liquor", "Cocktail"),
-                List.of("Canned Food", "Frozen Food", "Dried Food", "Pickled Food", "Smoked Food", "Salted Food", "Cured Food", "Fermented Food", "Dehydrated Food", "Freeze-Dried Food")
+            List.of("Leche", "Queso", "Yogur", "Mantequilla", "Crema", "Leche de Almendra", "Queso Cottage", "Crema Agria", "Crema Batida", "Margarina"),
+            List.of("Aceite de Oliva", "Aceite de Girasol", "Aceite de Palma", "Aceite de Coco", "Aceite de Canola", "Aceite de Soja", "Aceite de Maiz", "Aceite de Sesamo", "Aceite de Cacahuete", "Aceite de Algodon"),
+            List.of("Helado", "Sorbete", "Gelato", "Yogur Congelado", "Sherbet", "Granita", "Leche Helada", "Custard Congelado", "Pudin Congelado", "Mousse Congelado"),
+            List.of("Manzana", "Platano", "Naranja", "Uva", "Fresa", "Arandano", "Frambuesa", "Mora", "Pina", "Mango"),
+            List.of("Chocolate", "Caramelo", "Goma de Mascar", "Regaliz", "Toffee", "Chicle", "Dulce de Azucar", "Malvavisco", "Nougat", "Taffy"),
+            List.of("Arroz", "Trigo", "Maiz", "Cebada", "Avena", "Centeno", "Mijo", "Sorgo", "Triticale", "Alforfon"),
+            List.of("Pan", "Bagel", "Croissant", "Muffin", "Donut", "Roll", "Galleta", "Scone", "Panqueque", "Gofre"),
+            List.of("Carne de Res", "Cerdo", "Pollo", "Pavo", "Pato", "Ganso", "Cordero", "Carnero", "Ternera", "Venado"),
+            List.of("Salmon", "Atun", "Bacalao", "Trucha", "Merluza", "Arenque", "Sardina", "Anchoa", "Caballa", "Abadejo"),
+            List.of("Huevo de Gallina", "Huevo de Pato", "Huevo de Ganso", "Huevo de Codorniz", "Huevo de Pavo", "Huevo de Avestruz", "Huevo de Emu", "Huevo de Nandu", "Huevo de Gallina de Guinea", "Huevo de Faisan"),
+            List.of("Azucar", "Miel", "Jarabe de Arce", "Nectar de Agave", "Stevia", "Aspartamo", "Sucralosa", "Sacarina", "Acesulfamo de Potasio", "Monje de Fruta"),
+            List.of("Ketchup", "Mostaza", "Mayonesa", "Salsa de Soja", "Vinagre", "Relish", "Salsa Barbacoa", "Salsa Picante", "Salsa Worcestershire", "Salsa de Pescado"),
+            List.of("Agua", "Cafe", "Te", "Batido", "Jugo", "Soda", "Cerveza", "Vino", "Licor", "Coctel")
         );
         List<List<String>> allBrands = List.of(
                 List.of("Dairyland", "Lactalis", "Danone", "Chobani", "Fage", "Yoplait", "Kraft", "Sargento", "Philadelphia", "Anchor"), // For Dairy
@@ -74,9 +71,7 @@ public class DatabaseFiller {
                 List.of("Eggland's Best", "Cal-Maine Foods", "Sunny Farms", "Land O' Lakes", "Nellie's Free Range Eggs", "Pete and Gerry's", "Happy Egg Co.", "Organic Valley", "Vital Farms", "Wilcox Farms"), // For Eggs
                 List.of("Domino", "C&H", "Tate & Lyle", "Wholesome", "Truvia", "Splenda", "Stevia in the Raw", "Monk Fruit in the Raw", "Equal", "Sweet'N Low"), // For Sweeteners
                 List.of("Heinz", "French's", "Hellmann's", "Kikkoman", "Tabasco", "Hidden Valley", "Kraft", "Lea & Perrins", "Sriracha", "Frank's RedHot"), // For Condiments
-                List.of("Ensure", "Soylent", "Boost", "Orgain", "Muscle Milk", "SlimFast", "Garden of Life", "Vega", "Quest Nutrition", "Optimum Nutrition"), // For Special Nutritional
-                List.of("Coca-Cola", "Pepsi", "Nestle", "Red Bull", "Monster", "Gatorade", "Tropicana", "Lipton", "Starbucks", "Keurig"), // For Beverages
-                List.of("Campbell's", "Green Giant", "Birds Eye", "Del Monte", "Libby's", "B&M", "Heinz", "Hormel", "McCain", "Tyson") // For Preserved Foods
+                List.of("Coca-Cola", "Pepsi", "Nestle", "Red Bull", "Monster", "Gatorade", "Tropicana", "Lipton", "Starbucks", "Keurig") // For Beverages
         );
 
         List<List<String>> allQuantityTypes = List.of(
@@ -92,11 +87,9 @@ public class DatabaseFiller {
                 List.of("Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades"), // For Eggs
                 List.of("Gramos", "Litros", "Litros", "Litros", "Gramos", "Gramos", "Gramos", "Gramos", "Gramos", "Gramos"), // For Sweeteners
                 List.of("Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades"), // For Condiments
-                List.of("Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades"), // For Special Nutritional
-                List.of("Litros", "Litros", "Litros", "Unidades", "Unidades", "Litros", "Litros", "Litros", "Unidades", "Unidades"), // For Beverages
-                List.of("Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades", "Unidades") // For Preserved Foods
+                List.of("Litros", "Litros", "Litros", "Unidades", "Unidades", "Litros", "Litros", "Litros", "Unidades", "Unidades") // For Beverages
         );
-        for (int i = 0; i < categoryNames.size(); i++) {
+        for (int i = 0; i < categoryNames.size() - 2; i++) {
             for (int j = 0; j < allProductNames.get(i).size(); j++) {
                 entityManager.getTransaction().begin();
                 products.createProduct2(allProductNames.get(i).get(j), allBrands.get(i).get(j), allQuantityTypes.get(i).get(j), categoryNames.get(i));
@@ -108,11 +101,11 @@ public class DatabaseFiller {
     public void addStocks(EntityManager entityManager)  {
         Inventories inventories = new Inventories(entityManager);
         List<String> productNames = List.of(
-                "Milk", "Olive Oil", "Ice Cream", "Apple", "Chocolate", "Rice", "Bread", "Beef", "Salmon", "Chicken Egg",
-                "Sugar", "Ketchup", "Gluten-Free", "Water", "Canned Food", "Cheese", "Sunflower Oil", "Sorbet", "Banana", "Candy",
-                "Wheat", "Bagel", "Pork", "Tuna", "Duck Egg", "Honey", "Mustard", "Organic", "Coffee", "Frozen Food",
-                "Yogurt", "Palm Oil", "Gelato", "Orange", "Gum", "Corn", "Croissant", "Turkey", "Cod", "Goose Egg",
-                "Maple Syrup", "Mayonnaise", "Non-GMO", "Tea", "Dried Food", "Butter", "Coconut Oil", "Frozen Yogurt", "Grape", "Licorice"
+            "Leche", "Queso", "Yogur", "Mantequilla", "Crema", "Leche de Almendra", "Queso Cottage", "Crema Agria", "Crema Batida", "Margarina",
+            "Aceite de Oliva", "Aceite de Girasol", "Aceite de Palma", "Aceite de Coco", "Aceite de Canola", "Aceite de Soja", "Aceite de Maiz", "Aceite de Sesamo", "Aceite de Cacahuete", "Aceite de Algodon",
+            "Helado", "Sorbete", "Gelato", "Yogur Congelado", "Sherbet", "Granita", "Leche Helada", "Custard Congelado", "Pudin Congelado", "Mousse Congelado",
+            "Manzana", "Platano", "Naranja", "Uva", "Fresa", "Arandano", "Frambuesa", "Mora", "Pina", "Mango",
+            "Chocolate", "Caramelo", "Goma de Mascar", "Regaliz", "Toffee", "Chicle", "Dulce de Azucar", "Malvavisco", "Nougat", "Taffy"
         );
         List<Long> quantities = List.of(
                 100L, 50L, 200L, 300L, 150L, 120L, 80L, 90L, 60L, 110L,

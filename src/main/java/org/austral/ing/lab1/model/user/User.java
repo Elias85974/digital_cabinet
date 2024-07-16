@@ -186,7 +186,13 @@ public class User {
     }
 
     public String asJson() {
-        return "{\"id\":" + usuario_ID + ",\"name\":\"" + nombre + "\",\"lastName\":\"" + apellido + "\",\"email\":\"" + mail + "\",\"password\":\"" + password + "\",\"phone\":\"" + phone + "\"}";
+        return "{\"userId\": " + usuario_ID +
+               ", \"name\": \"" + nombre +
+               "\", \"lastName\": \"" + apellido +
+               "\", \"email\": \"" + mail +
+               "\", \"age\": " + age +
+               ", \"phone\": \"" + phone +
+               "\", \"password\": \"" + password + "\"}";
     }
 
 

@@ -6,9 +6,10 @@ import {useIsFocused} from "@react-navigation/native";
 import {UsersApi} from "../../Api";
 import {settingStyles} from "./SettingStyles";
 import {getUserData} from "../../api/users";
+import {Feather} from "@expo/vector-icons";
 
 export function UserAccount({ navigation }) {
-    const [userData, setUserData] = useState({mail: '', nombre: '', apellido: '', password: '', age: '', phone: ''});
+    const [userData, setUserData] = useState({email: '', name: '', lastName: '', password: '', age: '', phone: ''});
     const [isCollapsed, setIsCollapsed] = useState(true);
     const isFocused = useIsFocused();
 
@@ -21,7 +22,16 @@ export function UserAccount({ navigation }) {
     const loadUserData = async () => {
         const userId = await AsyncStorage.getItem('userId');
         const userAccount = await UsersApi.getUserData(userId);
-        setUserData(userAccount);
+
+        setUserData({
+            email: userAccount.email === 'null' ? '' : userAccount.email,
+            name: userAccount.name === 'null' ? '' : userAccount.name,
+            lastName: userAccount.lastName === 'null' ? '' : userAccount.lastName,
+            password: userAccount.password === 'null' ? '' : userAccount.password,
+            age: userAccount.age === null ? '' : userAccount.age,
+            phone: userAccount.phone === 'null' ? '' : userAccount.phone,
+        });
+        console.log('data user',userAccount);
     }
 
     const handleInputChange = (name, value) => {
@@ -32,7 +42,9 @@ export function UserAccount({ navigation }) {
     };
 
     const handleSave = async () => {
-        await UsersApi.editUser(userData, navigation);
+        const userId = await AsyncStorage.getItem('userId');
+
+        await UsersApi.editUser(userId, userData, navigation);
         // Aquí puedes agregar código para manejar lo que sucede después de que los datos del usuario se guardan exitosamente
     };
 
@@ -47,18 +59,18 @@ export function UserAccount({ navigation }) {
                     <Text style={styles.info}>Edit user</Text>
                     <TextInput style={styles.input}
                                placeholder="Mail"
-                               value={userData.mail}
-                               onChangeText={(value) => handleInputChange('mail', value)}
+                               value={userData.email}
+                               onChangeText={(value) => handleInputChange('email', value)}
                     />
                     <TextInput style={styles.input}
                                placeholder="Nombre"
-                               value={userData.nombre}
-                               onChangeText={(value) => handleInputChange('nombre', value)}
+                               value={userData.name}
+                               onChangeText={(value) => handleInputChange('name', value)}
                     />
                     <TextInput style={styles.input}
                                placeholder="Apellido"
-                               value={userData.apellido}
-                               onChangeText={(value) => handleInputChange('apellido', value)}
+                               value={userData.lastName}
+                               onChangeText={(value) => handleInputChange('lastName', value)}
                     />
                     <TextInput style={styles.input}
                                placeholder="Edad"

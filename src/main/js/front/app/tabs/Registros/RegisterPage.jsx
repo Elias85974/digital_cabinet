@@ -98,7 +98,7 @@ export default function RegisterPage({ navigation }) {
                 setModalVisible(true);
 
             }
-            setNewUser({mail: '', nombre: '', apellido: '', password: '', age: '', phone: ''});
+            setNewUser({mail: '', name: '', lastName: '', password: '', age: '', phone: ''});
         } catch (error) {
             console.log("Error creating user:", error);
         }

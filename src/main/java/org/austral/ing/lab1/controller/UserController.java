@@ -10,6 +10,7 @@ import spark.Spark;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Map;
@@ -197,16 +198,18 @@ public class UserController {
         });
 
         // Route to get edit the data from a User
-        Spark.put("/users/editUser/:userId", (req, resp) -> {
+        Spark.post("/users/editUser/:userId", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Users users = new Users(entityManager);
             try {
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
                 final String userId = req.params("userId");
                 JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
-                final String mail = jsonObject.get("mail").getAsString();
+                final String mail = jsonObject.get("email").getAsString();
                 final String password = jsonObject.get("password").getAsString();
-                final String name = jsonObject.get("nombre").getAsString();
-                final String surname = jsonObject.get("apellido").getAsString();
+                final String name = jsonObject.get("name").getAsString();
+                final String surname = jsonObject.get("lastName").getAsString();
                 final String phone = jsonObject.get("phone").getAsString();
                 final String age = jsonObject.get("age").getAsString();
 
@@ -215,11 +218,12 @@ public class UserController {
                 if (user.isEmpty()) {
                     resp.status(404);
                     return "User not found";
-
                 }
 
                 users.modify(user.get().getUsuario_ID(), mail, password, name, surname, phone, Integer.parseInt(age));
-                resp.type("application/json");
+                tx.commit();
+
+                resp.type("message");
                 return "User data edited successfully";
 
             } catch (Exception e) {

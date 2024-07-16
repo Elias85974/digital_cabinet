@@ -30,7 +30,7 @@ export default function RegisterHome({navigation}) {
                     await HousesApi.createHouse(newHouse, navigation);
                     setModalMessage("House created successfully!"); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
-                    setNewHouse(prevState => ({...prevState, nombre: '', direccion: ''}));
+                    setNewHouse(prevState => ({...prevState, name: '', direccion: ''}));
                     setTimeout(() => {
                         setModalVisible(false);
                         // Navega a la siguiente página después de un retraso

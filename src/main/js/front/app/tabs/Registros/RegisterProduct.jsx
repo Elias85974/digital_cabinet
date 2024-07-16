@@ -18,37 +18,6 @@ import NavBar from "../NavBar/NavBar";
 import GoBackButton from "../NavBar/GoBackButton";
 import CustomHover from "../Contents/CustomHover"
 
-const CategorySelection = ({ query, handleInputChangeCat, handleCreateCategory, isHovered, suggestions, handleSuggestionPress }) => (
-    <View>
-        <TextInput
-            style={styles.input}
-            placeholder={'Select or create a category'}
-            value={query}
-            onChangeText={handleInputChangeCat}
-        />
-        {suggestions.length === 0 && query.trim() !== '' && (
-            <Pressable style={styles.addButton} onPress={() => handleCreateCategory(query)}>
-                <Text style={styles.addButtonText}>Add Category</Text>
-            </Pressable>
-        )}
-        {isHovered && (
-            <Text style={styles.hoverText}>
-                Click "Add Category" to create or select the category.
-            </Text>
-        )}
-        <FlatList
-            data={suggestions}
-            numColumns={6}
-            keyExtractor={(item) => item.categoria_ID.toString()}
-            renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
-                    <Text style={styles.cat}>{item.nombre}</Text>
-                </TouchableOpacity>
-            )}
-        />
-    </View>
-);
-
 export default function RegisterProduct({navigation}) {
     let [newProduct, setNewProduct] = useState({nombre: '', marca: '', tipoDeCantidad: ''});
     let [categories, setCategories] = useState([]);
@@ -224,35 +193,38 @@ export default function RegisterProduct({navigation}) {
                                 ))}
                             </View>
 
-                            <View>
+                            <View
+                                onStartShouldSetResponder={() => true}
+                                onResponderGrant={() => setIsHovered(true)}
+                                onResponderRelease={() => setIsHovered(false)}
+                            >
                                 <TextInput
                                     style={styles.input}
                                     placeholder={'Select or create a category'}
                                     value={query}
                                     onChangeText={handleInputChangeCat}
+                                    onKeyPress={handleKeyPress}
                                 />
+                                {isHovered &&
+                                    <Text style={styles.quantityTypeButtonText}>
+                                        Pressing enter creates the category or the button, then you will need to search for it again and select it.
+                                    </Text>}
                                 {suggestions.length === 0 && query.trim() !== '' && (
-                                    <Pressable style={styles.addButton} onPress={() => handleCreateCategory(query)}>
-                                        <Text style={styles.addButtonText}>Add Category</Text>
+                                    <Pressable style={styles.link} onPress={() => handleCreateCategory(query)}>
+                                        <Text style={{color: 'white', fontSize: 16}}>Add a new Category</Text>
                                     </Pressable>
                                 )}
-                                {isHovered && (
-                                    <Text style={styles.hoverText}>
-                                        Click "Add Category" to create or select the category.
-                                    </Text>
-                                )}
-                                <FlatList
-                                    data={suggestions}
-                                    numColumns={6}
-                                    keyExtractor={(item) => item.categoria_ID.toString()}
-                                    renderItem={({ item }) => (
-                                        <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
-                                            <Text style={styles.cat}>{item.nombre}</Text>
-                                        </TouchableOpacity>
-                                    )}
-                                />
                             </View>
-
+                            <FlatList
+                                data={suggestions}
+                                numColumns={4}
+                                keyExtractor={(item) => item.categoria_ID.toString()}
+                                renderItem={({ item }) => (
+                                    <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
+                                        <Text style={styles.cat}>{item.nombre}</Text>
+                                    </TouchableOpacity>
+                                )}
+                            />
 
                             <Pressable style={styles.link} onPress={handleCreateProduct}>
                                 <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>
@@ -376,28 +348,5 @@ const styles = StyleSheet.create({
     },
     selectedQuantityTypeButtonText: {
         color: 'white',
-    },
-    addButton: {
-        marginTop: 10,
-        backgroundColor: '#4B5940', // A darker shade for the button background
-        padding: 10,
-        borderRadius: 20, // Rounded corners
-        borderWidth: 1,
-        borderColor: '#FFF', // White border
-        shadowColor: '#000', // Black shadow
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        width: 200,
-    },
-    addButtonText: {
-        color: '#FFF', // White text color
-        fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'center',
     },
 });

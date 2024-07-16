@@ -13,8 +13,10 @@ export function Support({ navigation }) {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setIsCollapsed(!isCollapsed)}>
-                <AntDesign name="customerservice" size={24} color="black" />
-                <Text style={settingStyles.typesContainer}>Support</Text>
+
+                <Text style={settingStyles.typesContainer}>
+                    <AntDesign name="customerservice" size={24} color="white" />  Support
+                </Text>
             </TouchableOpacity>
             <Collapsible collapsed={isCollapsed}>
                 <View style={styles.signInCont}>

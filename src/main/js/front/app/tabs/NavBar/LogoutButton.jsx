@@ -14,7 +14,7 @@ const LogoutButton = ({navigation}) => {
     return (
         <><TouchableOpacity onPress={handleSignOut}  style={styles.logoutButton}>
             <Ionicons name="log-out-outline" size={24} color="white" />
-            <Text style={styles.logoutText}> Logout</Text>
+            <Text style={styles.logoutText}>  Logout</Text>
         </TouchableOpacity>
         </>
     );

@@ -15,7 +15,7 @@ export function UserAccount({ navigation }) {
 
     useEffect(() => {
         if (isFocused) {
-            loadUserData().then(r => console.log('Stocks loaded'), e => console.error('Error loading stocks', e));
+            loadUserData().then(r => console.log('User data loaded'), e => console.error('Error loading user data', e));
         }
     }, [isFocused]);
 
@@ -31,7 +31,6 @@ export function UserAccount({ navigation }) {
             age: userAccount.age === null ? '' : userAccount.age,
             phone: userAccount.phone === 'null' ? '' : userAccount.phone,
         });
-        console.log('data user',userAccount);
     }
 
     const handleInputChange = (name, value) => {
@@ -43,7 +42,6 @@ export function UserAccount({ navigation }) {
 
     const handleSave = async () => {
         const userId = await AsyncStorage.getItem('userId');
-
         await UsersApi.editUser(userId, userData, navigation);
         // Aquí puedes agregar código para manejar lo que sucede después de que los datos del usuario se guardan exitosamente
     };

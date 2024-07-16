@@ -6,6 +6,7 @@ import {useIsFocused} from "@react-navigation/native";
 import {UsersApi} from "../../Api";
 import {settingStyles} from "./SettingStyles";
 import {Feather} from "@expo/vector-icons";
+import {editHouse, getHouseData} from "../../api/houses";
 
 export function HouseEdit({ navigation }) {
     const [houseData, setHouseData] = useState({name: '', address: ''});
@@ -14,16 +15,17 @@ export function HouseEdit({ navigation }) {
 
     useEffect(() => {
         if (isFocused) {
-            loadHouseData().then(r => console.log('Stocks loaded'), e => console.error('Error loading stocks', e));
+            loadHouseData().then(r => console.log('Data House loaded'), e => console.error('Error loading house data', e));
         }
     }, [isFocused]);
 
     const loadHouseData = async () => {
-        const userId = await AsyncStorage.getItem('userId');
-        const houseName = await AsyncStorage.getItem('houseName');
-        setHouseData({name: houseName, address: ''})
-        //const userAccount = await UsersApi.getUser(userId);
-        //setUserData(userAccount);
+        const houseId = await AsyncStorage.getItem('houseId');
+        const houseData = await getHouseData(houseId);
+        setHouseData({
+            name: houseData.name === 'null' ? '' : houseData.name,
+            address: houseData.address === 'null' ? '' : houseData.address,
+        });
     }
 
     const handleInputChange = (name, value) => {
@@ -34,8 +36,8 @@ export function HouseEdit({ navigation }) {
     };
 
     const handleSave = async () => {
-        const userId = await AsyncStorage.getItem('userId');
-        //await UsersApi.editUser(userId, userData);
+        const houseId = await AsyncStorage.getItem('houseId');
+        await editHouse(houseId, houseData, navigation);
         // Aquí puedes agregar código para manejar lo que sucede después de que los datos del usuario se guardan exitosamente
     };
 
@@ -49,14 +51,14 @@ export function HouseEdit({ navigation }) {
                 <View style={styles.signInCont}>
                     <Text style={styles.info}>Edit {houseData.name}</Text>
                     <TextInput style={styles.input}
-                               placeholder="Mail"
+                               placeholder="Nombre de la casa"
                                value={houseData.name}
-                               onChangeText={(value) => handleInputChange('Nombre', value)}
+                               onChangeText={(value) => handleInputChange('name', value)}
                     />
                     <TextInput style={styles.input}
-                               placeholder="Nombre"
+                               placeholder="Dirección"
                                value={houseData.address}
-                               onChangeText={(value) => handleInputChange('Dirección', value)}
+                               onChangeText={(value) => handleInputChange('address', value)}
                     />
                     <Pressable style={styles.link} onPress={handleSave}>
                         <Text style={{color: 'white', fontSize: 16}} >Save changes</Text>

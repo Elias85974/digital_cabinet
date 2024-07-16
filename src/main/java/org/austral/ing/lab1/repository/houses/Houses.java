@@ -120,4 +120,22 @@ public class Houses {
         invitedUser.addNotification(houseInvitation);
         return houseInvitation;
     }
+
+    public void modify(Long id, String nombre, String address) {
+        Optional<House> houseOptional = findById(id);
+
+        if (houseOptional.isEmpty()) { //? no se q hacer si es vacio
+            return;
+        }
+
+        House house = houseOptional.get();
+
+        // Here you can set the new values for the house fields
+        // For example, if User has a field called 'nombre', you can do:
+        house.setNombre(nombre);
+        house.setDireccion(address);
+
+        entityManager.merge(house);
+
+    }
 }

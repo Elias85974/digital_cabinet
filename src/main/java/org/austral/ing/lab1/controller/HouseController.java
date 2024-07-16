@@ -237,6 +237,65 @@ public class HouseController {
                 entityManager.close();
             }
         });
+
+        // Route to get edit the data from a User
+        Spark.post("/houses/:houseId/editHouse", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Houses houses = new Houses(entityManager);
+            try {
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                final String houseId = req.params("houseId");
+                JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
+                final String name = jsonObject.get("name").getAsString();
+                final String address = jsonObject.get("address").getAsString();
+
+                Optional<House> houseOptional = houses.findById(Long.parseLong(houseId));
+
+                if (houseOptional.isEmpty()) {
+                    resp.status(404);
+                    return "User not found";
+                }
+
+                houses.modify(houseOptional.get().getCasa_ID(),name, address);
+                tx.commit();
+
+                resp.type("message");
+                return "House data edited successfully";
+
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while editing the house data, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        // Route to get all the data from a house
+        Spark.get("/houses/:houseId/getData", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Houses houses = new Houses(entityManager);
+            try {
+                final String houseId = req.params("houseId");
+                Optional<House> houseOptional = houses.findById(Long.parseLong(houseId));
+
+                if (houseOptional.isPresent()) {
+                    resp.type("application/json");
+                    return houseOptional.get().asJson2();
+                } else {
+                    resp.status(404);
+                    return "House not found";
+                }
+
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the house data, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
     }
 
     // This method requires the users and houses repositories well initialized

@@ -24,3 +24,14 @@ export const deleteUserFromHouse = async (houseId, userId, navigation) => {
 export const processInvitation = async (invitation, navigation) => {
     return await FetchApi.postFetch(invitation, '/houses/inbox/processInvitation', 'Failed to process invitations:', navigation);
 }
+
+// Function to edit data of a house
+export const editHouse = async (houseId, houseData, navigation) => {
+    return await FetchApi.postFetch(houseData, `/houses/${houseId}/editHouse`, 'Failed to edit house:', navigation);
+}
+
+// Function to get data of the house
+export const getHouseData = async (houseId, navigation) => {
+    return await FetchApi.getFetch(`/houses/${houseId}/getData`, 'Failed to get house data:', navigation);
+}
+

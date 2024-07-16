@@ -93,6 +93,11 @@ public class House {
         return inventario.asJson();
     }
 
+    public String asJson2() {
+        return "{\"name\": \"" + nombre +
+                "\", \"address\": \"" + direccion + "\"}";
+    }
+
     public static class HouseBuilder {
         private final Inventory inventario;
         private String nombre;

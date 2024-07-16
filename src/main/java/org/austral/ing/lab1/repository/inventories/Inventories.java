@@ -11,6 +11,8 @@ import org.austral.ing.lab1.repository.houses.LivesIns;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -90,7 +92,27 @@ public class Inventories {
         entityManager.persist(stock);
         entityManager.persist(inventario);
         entityManager.persist(house);
+    }
 
+    public void addStockToHouse2(Long houseId, String productName, Long quantity, String expirationString, Long lowStockIndicator, double price) {
+        try {       // Get the house
+            House house = entityManager.find(House.class, houseId);
+
+            // Get the product
+            Product product = entityManager.createQuery("SELECT p FROM Product p WHERE p.nombre = :name", Product.class)
+                    .setParameter("name", productName)
+                    .getSingleResult();
+
+            // Get the expiration date
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date expiration = formatter.parse(expirationString);
+
+            // Add the stock to the house
+            addStockToHouse(house, product, quantity, expiration, lowStockIndicator, price);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Error al agregar stock al inventario de la casa");
+        }
     }
 
     public void reduceStock(Long houseId, Long productId, Long quantity) {

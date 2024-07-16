@@ -6,8 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomesButton = ({navigation}) => {
 
-    const handleGoBack = () => {
-        let houseId = AsyncStorage.getItem('houseId');
+    const handleGoBack = async() => {
+        let houseId = await AsyncStorage.getItem('houseId');
         console.log('houseId', houseId)
         if (houseId) {
             navigation.navigate('House');

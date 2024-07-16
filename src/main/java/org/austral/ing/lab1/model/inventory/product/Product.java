@@ -39,7 +39,7 @@ public class Product {
 
     public Product() { }
 
-    public Product(String nombre, String marca, String tipoDeCantidad, Long categoria_ID, Boolean isVerified) {
+    public Product(String nombre, String marca, String tipoDeCantidad, Boolean isVerified) {
         this.nombre = nombre;
         this.marca = marca;
         this.tipoDeCantidad = tipoDeCantidad;

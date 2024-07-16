@@ -16,4 +16,30 @@ public class BarCode {
     @OneToOne
     @JoinColumn(name = "PRODUCTO_ID", referencedColumnName = "PRODUCTO_ID")
     private Product product;
+
+    @Column(name = "BARCODE")
+    private String barCode;
+
+    public BarCode() { }
+
+    public BarCode(Product product, String barCode) {
+        this.product = product;
+        this.barCode = barCode;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public String getBarCode() {
+        return barCode;
+    }
+
+    public void setBarCode(String barCode) {
+        this.barCode = barCode;
+    }
 }

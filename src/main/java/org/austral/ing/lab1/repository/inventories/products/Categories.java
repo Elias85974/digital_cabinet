@@ -14,6 +14,11 @@ public class Categories {
         this.entityManager = entityManager;
     }
 
+    public void createCategory(String categoryName) {
+        Category newCategory = new Category.CategoryBuilder(categoryName).build();
+        entityManager.persist(newCategory);
+    }
+
     public List<Category> findByName(String name) {
         return entityManager
                 .createQuery("SELECT c FROM Category c WHERE c.nombre LIKE :name", Category.class)

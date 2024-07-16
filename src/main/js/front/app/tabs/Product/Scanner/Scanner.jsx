@@ -59,15 +59,17 @@ export default function Scanner({navigation}) {
                 if (product.lowStock > 0) {
                     // show info with the data of the product
                     setModalProductInfo(true);
+                    scanned = false; // Reset the scanned state to false
 
                 } else{
                     await AsyncStorage.setItem('productNameScanner', product.name);
                     await AsyncStorage.setItem('productIdScanner', product.id);
                     setModalMessage("This product already exists but you don't have a stock of it, please add it to your house"); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
+                    scanned = false; // Reset the scanned state to false
+
                     navigation.navigate('AddStock'); // Pass the scanned product ID to AddStock
                 }
-
             } else {
                 await AsyncStorage.setItem("barCode", data); // Store the barcode in AsyncStorage
                 setModalMessage("There is no product with this codeBar, please register it"); // Muestra el modal en lugar de un alert
@@ -84,7 +86,6 @@ export default function Scanner({navigation}) {
 
     return (
         <View style={styles.container}>
-
             <Camera
                 onBarCodeScanned={async(event) => {
                     if (scanned) return; // Check if already scanned, then return early
@@ -102,6 +103,8 @@ export default function Scanner({navigation}) {
             >
 
                 <View style={styles.buttonContainer}>
+                    <GoBackButton navigation={navigation} />
+
                     <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
                         <Text style={styles.text}>Flip Camera</Text>
                     </TouchableOpacity>
@@ -123,7 +126,6 @@ export default function Scanner({navigation}) {
                 />
 
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
-                <GoBackButton navigation={navigation} />
 
             </Camera>
         </View>
@@ -141,9 +143,13 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flex: 1,
+        backgroundColor: '#BFAC9B',
+
         flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
+        margin: 10,
+        position: 'absolute', // Posiciona el contenedor de botones de forma absoluta
+        top: 0, // Asegura que esté en la parte superior de la pantalla
+        width: '100%',
     },
     button: {
         flex: 1,

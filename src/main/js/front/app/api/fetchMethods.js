@@ -18,7 +18,7 @@ export const putFetch = async (putData, url, errorMessage, navigation) => {
             body: JSON.stringify(putData)
         });
 
-        console.log(response);
+        //console.log(response);
         await validateResponse(response, navigation);
         return await response.text();
     } catch (error) {
@@ -43,7 +43,7 @@ export const postFetch = async (postData, url, errorMessage, navigation) => {
             },
             body: JSON.stringify(postData)
         });
-        console.log(response);
+        //console.log(response);
         await validateResponse(response, navigation);
         return await returnResponse(response);
     } catch (error) {
@@ -77,7 +77,7 @@ export const getFetch = async (url, errorMessage, navigation) => {
                 'Token': token,
             },
         });
-        console.log(response);
+        //console.log(response);
         await validateResponse(response, navigation);
         return await response.json();
     } catch (error) {
@@ -102,7 +102,7 @@ export const deleteFetch = async (deleteData, url, errorMessage, navigation) => 
             },
             body: JSON.stringify(deleteData)
         });
-        console.log(response);
+        //console.log(response);
         await validateResponse(response, navigation);
         return await response.text();
     } catch (error) {

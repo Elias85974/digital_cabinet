@@ -1,10 +1,11 @@
 import { Camera, CameraType } from 'expo-camera/legacy';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GoBackButton from "../../NavBar/GoBackButton";
 import {ScannerApi} from "../../../Api";
 import ProductInfoModalScanner from "../../Contents/Scanner/ProductInfoModalScanner";
+import ModalAlert from "../../Contents/ModalAlert";
 
 export default function Scanner({navigation}) {
     let scanned = false;
@@ -15,6 +16,8 @@ export default function Scanner({navigation}) {
     const [modalProductInfo, setModalProductInfo] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
 
     if (!permission) {
         // Camera permissions are still loading
@@ -53,18 +56,22 @@ export default function Scanner({navigation}) {
             setSelectedProduct(product);
             console.log(product);
             if (product.wasFound) {
-                if (product.lowStockIndicator > 0) {
+                if (product.lowStock > 0) {
                     // show info with the data of the product
                     setModalProductInfo(true);
 
                 } else{
                     await AsyncStorage.setItem('productNameScanner', product.name);
                     await AsyncStorage.setItem('productIdScanner', product.id);
+                    setModalMessage("This product already exists but you don't have a stock of it, please add it to your house"); // Muestra el modal en lugar de un alert
+                    setModalVisible(true);
                     navigation.navigate('AddStock'); // Pass the scanned product ID to AddStock
                 }
 
             } else {
                 await AsyncStorage.setItem("barCode", data); // Store the barcode in AsyncStorage
+                setModalMessage("There is no product with this codeBar, please register it"); // Muestra el modal en lugar de un alert
+                setModalVisible(true);
                 navigation.navigate('RegisterProduct'); // Optionally pass the scanned product ID to RegisterProduct
             }
 
@@ -74,13 +81,10 @@ export default function Scanner({navigation}) {
         // Note: The automatic reset of the `scanned` state to false is intentionally removed
     };
 
-    const checkProductInStock = async (houseId, productId) => {
-        return await ScannerApi.checkProductInStock(houseId, productId);
-    }
 
     return (
         <View style={styles.container}>
-            <GoBackButton navigation={navigation} />
+
             <Camera
                 onBarCodeScanned={async(event) => {
                     if (scanned) return; // Check if already scanned, then return early
@@ -118,6 +122,8 @@ export default function Scanner({navigation}) {
                     navigation={navigation}
                 />
 
+                <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+                <GoBackButton navigation={navigation} />
 
             </Camera>
         </View>

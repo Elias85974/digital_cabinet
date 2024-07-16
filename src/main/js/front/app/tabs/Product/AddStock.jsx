@@ -33,19 +33,23 @@ export default function AddProduct({navigation}) {
 
 
     useEffect(() => {
+        fetchProducts();
+
         const fetchProductData = async () => {
             const productNameScanner = await AsyncStorage.getItem('productNameScanner');
             const productIdScanner = await AsyncStorage.getItem('productIdScanner');
-            if (productNameScanner) {
-                // Asume que el objeto tiene propiedades 'name' y 'id'
-
+            if (productNameScanner && productIdScanner) {
                 setQuery(productNameScanner);
+                // Buscar el producto en la lista de productos por ID para asegurar la selección correcta
+                const foundProduct = products.find(product => product.producto_ID.toString() === productIdScanner);
+                if (foundProduct) {
+                    setSelectedProduct(foundProduct.producto_ID); // Asegúrate de que esto coincida con cómo identificas los productos en tu estado
+                }
             }
         };
         fetchProductData();
 
-        fetchProducts();
-    }, []);
+    }, [products]);
 
     const fetchProducts = async () => {
         try {

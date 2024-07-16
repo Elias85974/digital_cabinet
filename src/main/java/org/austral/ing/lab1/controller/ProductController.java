@@ -5,8 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.austral.ing.lab1.model.inventory.product.Category;
 import org.austral.ing.lab1.model.inventory.product.Product;
+import org.austral.ing.lab1.repository.inventories.products.Barcodes;
 import org.austral.ing.lab1.repository.inventories.products.Categories;
 import org.austral.ing.lab1.repository.inventories.products.Products;
+import org.jetbrains.annotations.NotNull;
 import spark.Spark;
 
 import javax.persistence.EntityManager;
@@ -60,6 +62,59 @@ public class ProductController {
                 }
                 productsRepo.createProduct(product, categoryOptional.get());
                 resp.type("application/json");
+                resp.status(201);
+                tx.commit();
+                return "Product created";
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while creating the product, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        // Route to get a product by its barcode
+        Spark.get("/products/barcode/:barcode", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Barcodes barcodes = new Barcodes(entityManager);
+            try {
+                final String barcode = req.params("barcode");
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                Product possibleProduct = barcodes.getProduct(barcode);
+                tx.commit();
+
+                resp.type("application/json");
+                return getBarCodeProductJson(possibleProduct);
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while getting the product, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+        // Route to create a product and relate it to a barcode
+        Spark.put("/products/:categoryId/barcode/:barcode", "application/json", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Products productsRepo = new Products(entityManager);
+            Categories categoriesRepo = new Categories(entityManager);
+            Barcodes barcodes = new Barcodes(entityManager);
+            try {
+                final String barcode = req.params("barcode");
+                final Long categoryId = Long.valueOf(req.params("categoryId"));
+                final Product product = Product.fromJson(req.body());
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                Optional<Category> categoryOptional = categoriesRepo.findById(categoryId);
+                if (categoryOptional.isEmpty()) {
+                    resp.status(404);
+                    return "Category not found to create your product";
+                }
+                productsRepo.createProduct(product, categoryOptional.get());
+                barcodes.createBarcode(product, barcode);
                 resp.status(201);
                 tx.commit();
                 return "Product created";
@@ -202,5 +257,23 @@ public class ProductController {
             }
         });
 
+    }
+
+    private static @NotNull JsonObject getBarCodeProductJson(Product possibleProduct) {
+        JsonObject productJson = new JsonObject();
+        if (possibleProduct != null) {
+            productJson.addProperty("id", possibleProduct.getProducto_ID());
+            productJson.addProperty("name", possibleProduct.getNombre());
+            productJson.addProperty("brand", possibleProduct.getMarca());
+            productJson.addProperty("quantityType", possibleProduct.getTipoDeCantidad());
+            productJson.addProperty("isVerified", possibleProduct.getIsVerified());
+            productJson.addProperty("category", possibleProduct.getCategory().getNombre());
+            productJson.addProperty("categoryId", possibleProduct.getCategoria_ID());
+            productJson.addProperty("wasFound", true);
+        }
+        else {
+            productJson.addProperty("wasFound", false);
+        }
+        return productJson;
     }
 }

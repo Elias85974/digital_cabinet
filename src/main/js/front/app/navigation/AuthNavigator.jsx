@@ -20,7 +20,7 @@ import GroupsChats from "../tabs/UserThings/Chat/GroupsChats";
 import PieChart from "../tabs/Product/PieChart";
 import AllProducts from "../tabs/Product/AllProducts";
 import ProductsVerification from "../tabs/Administrator/ProductsVerification";
-import ScannerScreen from "../tabs/Scanner/Scanner";
+import ScannerScreen from "../tabs/Product/Scanner/Scanner";
 
 import Test from "../test.";
 import {NavigationContainer} from "@react-navigation/native";

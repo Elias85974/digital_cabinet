@@ -126,4 +126,7 @@ public class Products {
             throw new IllegalArgumentException("Product with id " + productId + " does not exist.");
         }
     }
+
+    // Metodo en donde se busca si el user tiene un producto en especifico en su stock
+
 }

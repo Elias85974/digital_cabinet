@@ -139,6 +139,7 @@ export default function RegisterProduct({navigation}) {
                        setModalMessage("Product created successfully!"); // Muestra el modal en lugar de un alert
                        setModalVisible(true)
                    });
+                   await AsyncStorage.removeItem("barCode");
                 }
                 else {
                     ProductsApi.createProduct(newProduct, navigation).then(r => {

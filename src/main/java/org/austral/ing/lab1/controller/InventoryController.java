@@ -312,5 +312,31 @@ public class InventoryController {
                 entityManager.close();
             }
         });
+
+        // Route to check if a house has certain product
+        Spark.get("/houses/:houseId/inventory/:productId", (req, resp) -> {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Inventories inventoriesRepo = new Inventories(entityManager);
+            try {
+                Long houseId = Long.parseLong(req.params("houseId"));
+                Long productId = Long.parseLong(req.params("productId"));
+
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                boolean hasProduct = inventoriesRepo.isProductInStock(houseId, productId);
+                tx.commit();
+
+                resp.type("application/json");
+                return gson.toJson(hasProduct);
+            } catch (Exception e) {
+                resp.status(500);
+                System.out.println(e.getMessage());
+                return "An error occurred while checking the product, please try again";
+            } finally {
+                entityManager.close();
+            }
+        });
+
+
     }
 }

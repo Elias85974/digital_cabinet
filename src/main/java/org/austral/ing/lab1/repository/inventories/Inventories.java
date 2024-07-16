@@ -359,4 +359,20 @@ public class Inventories {
 
         return filteredProducts;
     }
+
+
+    // check if a product is in stock of a house
+    public boolean isProductInStock(Long houseId, Long productId) {
+        // Get the house
+        House house = entityManager.find(House.class, houseId);
+
+        // Get the inventory of the house
+        Inventory inventory = house.getInventario();
+
+        // Get the stocks of the inventory
+        List<Stock> stocks = inventory.getStocks();
+
+        // Check if the product is in stock
+        return stocks.stream().anyMatch(stock -> stock.getProduct().getProducto_ID().equals(productId));
+    }
 }

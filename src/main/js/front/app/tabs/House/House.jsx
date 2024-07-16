@@ -8,7 +8,7 @@ import {useIsFocused} from "@react-navigation/native";
 import NavBar from "../NavBar/NavBar";
 import {AntDesign, FontAwesome, FontAwesome5, FontAwesome6, Ionicons} from "@expo/vector-icons";
 import GoBackButton from "../NavBar/GoBackButton";
-import Scanner from "../Scanner/Scanner";
+import Scanner from "../Product/Scanner/Scanner";
 
 
 export default function House({navigation}) {

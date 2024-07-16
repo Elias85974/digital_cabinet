@@ -163,6 +163,23 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         width: '80%',
     },
+    link: {
+        marginTop: 5,
+        marginBottom: 1,
+        color: '#F2EFE9',
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 3, // Add border
+        borderColor: '#717336', // Set border color
+        padding: 15, // Add some padding so the text isn't right up against the border
+        backgroundColor: '#717336', // Set background color
+        width: 'auto', // Set width
+        alignSelf: 'center',
+        alignContent: 'center',
+        borderRadius: 100,
+        fontSize: 16,
+    },
     acceptButton: {
         backgroundColor: 'green',
         padding: 10,

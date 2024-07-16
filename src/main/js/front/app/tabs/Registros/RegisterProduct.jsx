@@ -35,11 +35,27 @@ export default function RegisterProduct({navigation}) {
     const [selectedQuantityType, setSelectedQuantityType] = useState('');
     const [isHovered, setIsHovered] = useState(false);
 
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        if (isFocused){
+            fetchCategories();
+        } else{
+            setQuery('');
+            setSuggestions(categories);
+        }
+    }, [isFocused]);
+
+
+    const fetchCategories = async () => {
+        const fetchedCategories = await CategoriesApi.getCategories(navigation);
+        setCategories(fetchedCategories);
+    };
+
     const handleQuantityTypePress = (type) => {
         setSelectedQuantityType(type);
         handleInputChange('tipoDeCantidad', type);
     };
-
 
     const handleInputChangeCat = (text) => {
         setQuery(text);
@@ -60,23 +76,6 @@ export default function RegisterProduct({navigation}) {
             setSuggestions([]);
             setNewProduct({...newProduct, categoryId: suggestion.categoria_ID});
         }
-    };
-
-    const isFocused = useIsFocused();
-
-    useEffect(() => {
-        if (isFocused){
-            fetchCategories();
-        } else{
-            setQuery('');
-            setSuggestions(categories);
-        }
-    }, [isFocused]);
-
-
-    const fetchCategories = async () => {
-        const fetchedCategories = await CategoriesApi.getCategories(navigation);
-        setCategories(fetchedCategories);
     };
 
     const capitalizeFirstLetter = (string) => {
@@ -208,12 +207,8 @@ export default function RegisterProduct({navigation}) {
                                 {isHovered &&
                                     <Text style={styles.quantityTypeButtonText}>
                                         Pressing enter creates the category or the button, then you will need to search for it again and select it.
-                                    </Text>}
-                                {suggestions.length === 0 && query.trim() !== '' && (
-                                    <Pressable style={styles.link} onPress={() => handleCreateCategory(query)}>
-                                        <Text style={{color: 'white', fontSize: 16}}>Add a new Category</Text>
-                                    </Pressable>
-                                )}
+                                    </Text>
+                                }
                             </View>
                             <FlatList
                                 data={suggestions}
@@ -225,6 +220,13 @@ export default function RegisterProduct({navigation}) {
                                     </TouchableOpacity>
                                 )}
                             />
+
+                            { query.trim() !== '' && suggestions.length === 0 && (
+                                <Pressable style={styles.link} onPress={() => handleCreateCategory(query)}>
+                                    <Text style={{color: 'white', fontSize: 16}}>Add a new Category</Text>
+                                </Pressable>
+                            )
+                        }
 
                             <Pressable style={styles.link} onPress={handleCreateProduct}>
                                 <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>

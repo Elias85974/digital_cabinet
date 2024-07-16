@@ -19,7 +19,7 @@ public class DatabaseFiller {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        createCategories(entityManager);
 //        createProducts(entityManager);
-        addStocks(entityManager);
+//        addStocks(entityManager);
     }
 
     public void createCategories(EntityManager entityManager) {

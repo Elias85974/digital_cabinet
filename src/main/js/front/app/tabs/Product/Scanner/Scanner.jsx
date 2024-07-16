@@ -58,6 +58,8 @@ export default function Scanner({navigation}) {
                     setModalProductInfo(true);
 
                 } else{
+                    await AsyncStorage.setItem('productNameScanner', product.name);
+                    await AsyncStorage.setItem('productIdScanner', product.id);
                     navigation.navigate('AddStock'); // Pass the scanned product ID to AddStock
                 }
 
@@ -92,7 +94,7 @@ export default function Scanner({navigation}) {
                             'code_128', 'pdf417', 'aztec', 'interleaved_2_of_5', 'itf14', 'qr','data_matrix'
                         ]
                 }}
-                style={[StyleSheet.absoluteFillObject, { transform: [{ scaleX: -1 }] }]}
+                style={[StyleSheet.absoluteFillObject]}
             >
 
                 <View style={styles.buttonContainer}>

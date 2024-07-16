@@ -10,7 +10,6 @@ import {
     TouchableOpacity,
     FlatList, Modal
 } from 'react-native';
-import Picker from 'react-native-picker-select';
 import {InventoryApi, ProductsApi} from '../../Api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalAlert from "../Contents/ModalAlert";
@@ -34,6 +33,17 @@ export default function AddProduct({navigation}) {
 
 
     useEffect(() => {
+        const fetchProductData = async () => {
+            const productNameScanner = await AsyncStorage.getItem('productNameScanner');
+            const productIdScanner = await AsyncStorage.getItem('productIdScanner');
+            if (productNameScanner) {
+                // Asume que el objeto tiene propiedades 'name' y 'id'
+
+                setQuery(productNameScanner);
+            }
+        };
+        fetchProductData();
+
         fetchProducts();
     }, []);
 

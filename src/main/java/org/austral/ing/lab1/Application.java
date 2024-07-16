@@ -17,6 +17,7 @@ public class Application {
 
         Spark.port(4321);
 
+        new DatabaseFiller(entityManagerFactory).init();
         new UserController(entityManagerFactory).init();
         new HouseController(entityManagerFactory).init();
         new InventoryController(entityManagerFactory).init();

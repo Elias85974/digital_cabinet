@@ -58,6 +58,17 @@ public class Products {
         entityManager.persist(newProduct);
     }
 
+    public void createProduct2(String name, String brand, String quantityType, String categoryName) {
+        Category category = entityManager.createQuery("SELECT c FROM Category c WHERE c.nombre = :categoryName", Category.class)
+                .setParameter("categoryName", categoryName).getResultList()
+                .stream()
+                .findFirst().get();
+
+        Product product = new Product(name, brand, quantityType, null);
+        product.setCategory(category);
+        entityManager.persist(product);
+    }
+
     public Product modify(String name, Product newProductData) {
         Optional<Product> productOptional = findByName(name);
 

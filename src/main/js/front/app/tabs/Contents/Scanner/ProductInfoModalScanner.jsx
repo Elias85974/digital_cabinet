@@ -3,6 +3,7 @@ import {View, Text, Modal, Pressable, StyleSheet, TextInput} from 'react-native'
 import {MaterialIcons} from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {InventoryApi} from "../../../Api";
+import ModalAlert from "../ModalAlert";
 
 const ProductInfoModalScanner = ({
                               modalProductInfo,
@@ -15,6 +16,9 @@ const ProductInfoModalScanner = ({
     const [quantityToAdd, setQuantityToAdd] = useState('');
     const [expirationDate, setExpirationDate] = useState('');
     const [newPrice, setNewPrice] = useState('');
+
+    const [modalMessage, setModalMessage] = useState(''); // Nuevo estado para el mensaje del modal
+    const [modalVisible, setModalVisible] = useState(false); // Nuevo estado para la visibilidad del modal
 
 
     const handleAddStock = async () => {
@@ -32,7 +36,11 @@ const ProductInfoModalScanner = ({
         setQuantityToAdd('');
         console.log("Products loaded after adding stock");
         setModalProductInfo(false);
-        navigation.navigate('House');
+        setModalMessage("Inventory updated successfully!"); // Muestra el modal en lugar de un alert
+        setModalVisible(true);
+        setTimeout(() => {
+            navigation.navigate('House')
+        }, 2500);
     }
 
     const handleChanges = (value, type) => {
@@ -115,6 +123,8 @@ const ProductInfoModalScanner = ({
                     </View>
                 </View>
             </Modal>
+            <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+
         </View>
     );
 };

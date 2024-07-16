@@ -117,7 +117,11 @@ export default function House({navigation}) {
                     </View>
                     <View style={styles.linksContainer}>
                         <View style={styles.linksContainer}>
-                            <Pressable onPress={()=> navigation.navigate("Homes")}>
+                            <Pressable onPress={()=> {
+                                navigation.navigate("Homes")
+                                AsyncStorage.removeItem('houseId');
+                                AsyncStorage.removeItem('houseName');
+                            }}>
                                 <Text style={styles.link}>
                                     <AntDesign name="home" size={24} color="white" /> Select another home
                                 </Text>

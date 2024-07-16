@@ -78,6 +78,10 @@ export default function RegisterProduct({navigation}) {
         }
     };
 
+    const queryMatchesExistingCategory = categories.some(category =>
+        category.nombre.toLowerCase() === query.trim().toLowerCase()
+    );
+
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
@@ -221,12 +225,11 @@ export default function RegisterProduct({navigation}) {
                                 )}
                             />
 
-                            { query.trim() !== '' && suggestions.length === 0 && (
+                            { query.trim() !== '' && suggestions.length === 0 && !queryMatchesExistingCategory && (
                                 <Pressable style={styles.link} onPress={() => handleCreateCategory(query)}>
                                     <Text style={{color: 'white', fontSize: 16}}>Add a new Category</Text>
                                 </Pressable>
-                            )
-                        }
+                            )}
 
                             <Pressable style={styles.link} onPress={handleCreateProduct}>
                                 <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>

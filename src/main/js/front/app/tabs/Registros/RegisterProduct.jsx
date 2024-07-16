@@ -224,15 +224,35 @@ export default function RegisterProduct({navigation}) {
                                 ))}
                             </View>
 
+                            <View>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder={'Select or create a category'}
+                                    value={query}
+                                    onChangeText={handleInputChangeCat}
+                                />
+                                {suggestions.length === 0 && query.trim() !== '' && (
+                                    <Pressable style={styles.addButton} onPress={() => handleCreateCategory(query)}>
+                                        <Text style={styles.addButtonText}>Add Category</Text>
+                                    </Pressable>
+                                )}
+                                {isHovered && (
+                                    <Text style={styles.hoverText}>
+                                        Click "Add Category" to create or select the category.
+                                    </Text>
+                                )}
+                                <FlatList
+                                    data={suggestions}
+                                    numColumns={6}
+                                    keyExtractor={(item) => item.categoria_ID.toString()}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
+                                            <Text style={styles.cat}>{item.nombre}</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                />
+                            </View>
 
-                            <CategorySelection
-                                query={query}
-                                handleInputChangeCat={handleInputChangeCat}
-                                handleCreateCategory={handleCreateCategory}
-                                isHovered={isHovered}
-                                suggestions={suggestions}
-                                handleSuggestionPress={handleSuggestionPress}
-                            />
 
                             <Pressable style={styles.link} onPress={handleCreateProduct}>
                                 <Text style={{color: 'white', fontSize: 16}}>Create Product</Text>

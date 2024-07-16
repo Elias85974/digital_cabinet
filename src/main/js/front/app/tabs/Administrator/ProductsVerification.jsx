@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, ScrollView} from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    FlatList,
+    SafeAreaView,
+    ScrollView,
+    Pressable,
+    Modal
+} from 'react-native';
 import {useIsFocused} from "@react-navigation/native";
 import {getUnverifiedProducts, verifyProduct} from "../../api/products";
 import Collapsible from "react-native-collapsible";
@@ -7,10 +17,12 @@ import {inboxStyles} from "../UserThings/Notification/InboxStyles";
 import LogoutButton from "../NavBar/LogoutButton";
 import {CategoriesApi} from "../../Api";
 import {getCategories} from "../../api/categories";
+import {MaterialIcons} from "@expo/vector-icons";
 
 export default function ProductsVerification({navigation}) {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [detailsModalVisible, setDetailsModalVisible] = useState(false);
 
     const [isCollapsed, setIsCollapsed] = useState({});
 
@@ -93,13 +105,38 @@ export default function ProductsVerification({navigation}) {
                                         keyExtractor={item => item.producto_ID.toString()}
                                         renderItem={({item}) => (
                                             <View style={styles.product}>
-                                                <Text style={styles.productName}>{item.nombre}</Text>
+                                                <Text onPress={() => setDetailsModalVisible(true)} style={styles.productName}>{item.nombre}</Text>
                                                 <TouchableOpacity style={styles.acceptButton} onPress={() => handleAccept(item.producto_ID)}>
                                                     <Text style={styles.buttonText}>Accept</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity style={styles.rejectButton} onPress={() => handleReject(item.producto_ID)}>
                                                     <Text style={styles.buttonText}>Reject</Text>
                                                 </TouchableOpacity>
+                                                <Modal
+                                                    animationType="slide"
+                                                    transparent={true}
+                                                    visible={detailsModalVisible}
+                                                    onRequestClose={() => {
+                                                        setDetailsModalVisible(!detailsModalVisible);
+                                                    }}
+                                                >
+                                                    <View style={styles.centeredView}>
+                                                        <View style={styles.modalView}>
+                                                            <Text style={styles.modalTitle}>Product Details</Text>
+                                                            <View style={{flexDirection: 'row'}}>
+                                                                <Text style={styles.modalText}>Name: {item.nombre}</Text>
+                                                            </View>
+                                                            <Text style={styles.modalText}>Brand: {item.marca}</Text>
+                                                            <Text style={styles.modalText}>Quantity type: {item.tipoDeCantidad}</Text>
+                                                            <Text style={styles.modalText}>Category: {item.category.nombre}</Text>
+                                                            <View style={styles.linksContainer}>
+                                                                <Pressable onPress={() => setDetailsModalVisible(false)} >
+                                                                    <Text style={styles.link}>Close</Text>
+                                                                </Pressable>
+                                                            </View>
+                                                        </View>
+                                                    </View>
+                                                </Modal>
                                             </View>
                                         )}
                                     />
@@ -179,6 +216,31 @@ const styles = StyleSheet.create({
         fontFamily: 'sans-serif',
         justifyContent: 'center',
         textAlign: 'center',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 10,
+            height: 20,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        elevation: 15
+    },
+    modalText: {
+        marginBottom: 20,
+        textAlign: "center"
+    },
+    modalTitle: {
+        marginBottom: 35,
+        fontWeight: 'bold',
+        textAlign: "center",
+        textDecorationStyle: 'dashed',
     },
 });
 

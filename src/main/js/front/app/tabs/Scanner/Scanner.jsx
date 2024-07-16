@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Camera } from 'expo-camera';
+import {Camera, CameraView} from 'expo-camera';
 import GoBackButton from "../NavBar/GoBackButton";
 import { StyleSheet } from 'react-native';
 
 export default function ScannerScreen({ navigation }) {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
-    const [torchOn, setTorchOn] = useState(false);
+    //const [torchOn, setTorchOn] = useState(false);
     const [scannedData, setScannedData] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -23,16 +23,9 @@ export default function ScannerScreen({ navigation }) {
 
     const handleBarCodeScanned = ({ type, data }) => {
         console.log('Barcode scanning callback called!');
-        try {
-            console.log(`Scanned type: ${type}, data: ${data}`);
-            setScanned(true);
-            setScannedData(data);
-            alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-        } catch (error) {
-            console.error('Error scanning barcode:', error);
-        } finally {
-            setScanned(false); // Reset scanning state
-        }
+        setScanned(true);
+        setScannedData(data);
+        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     };
 
     if (hasPermission === null) {
@@ -45,26 +38,27 @@ export default function ScannerScreen({ navigation }) {
         return <Text>Loading...</Text>;
     }
 
+
+    // Define allowed barcode types
+    const allowedBarcodeTypes = [
+        'qr', 'ean13', 'ean8', 'upc_a', 'upc_e', 'code_39', 'code_93',
+        'code_128', 'pdf417', 'aztec', 'interleaved_2_of_5', 'itf14', 'data_matrix'
+    ];
+
+// Your barcodeTypes array
+    const barcodeTypes = [
+        'qr', 'ean13', 'ean8', 'upc_a', 'upc_e', 'code_39', 'code_93',
+        'code_128', 'pdf417', 'aztec', 'interleaved_2_of_5', 'itf14', 'data_matrix'
+    ];
+
     return (
         <View style={{ flex: 1 }}>
             <Camera
-                quality={0}
-                onBarCodeScanned={(event) => {
-                    console.log('Barcode scanned:', event);
-                    handleBarCodeScanned(event);
-                }}
-                onMountError={(error) => console.error('Camera mount error:', error)}
+                onBarCodeScanned={handleBarCodeScanned}
                 barcodeScannerSettings={{
-                    barcodeTypes: [
-                        'qr', 'ean13', 'ean8', 'upc_a', 'upc_e', 'code_39', 'code_93',
-                        'code_128', 'pdf417', 'aztec', 'interleaved_2_of_5', 'itf14', 'data_matrix'
-                    ]
+                    barcodeTypes: barcodeTypes
                 }}
-                style={[StyleSheet.absoluteFillObject, { transform: [{ scaleX: -1 }] }]}
-                flashMode={torchOn ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
-                errorCallback={(error) => console.error('Camera error:', error)}
             >
-                {console.log('Camera rendering...')}
             </Camera>
             <View
                 style={{
@@ -79,12 +73,10 @@ export default function ScannerScreen({ navigation }) {
                         padding: 10,
                         paddingHorizontal: 20,
                     }}
-                    onPress={() => {
-                        setTorchOn(!torchOn);
-                    }}
                 >
                     <Text style={{ fontSize: 20 }}>Toggle Torch</Text>
                 </TouchableOpacity>
+
                 <GoBackButton navigation={navigation} />
             </View>
             {scanned && (

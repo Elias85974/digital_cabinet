@@ -10,6 +10,7 @@ import WishlistButton from "../NavBar/WishlistButton";
 import InboxButton from "../NavBar/InboxButton";
 import GoBackButton from "../NavBar/GoBackButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {KnowAboutUs} from "./KnowAboutUs";
 
 export default function Settings({navigation}) {
     const [houseId, setHouseId] = useState(null);
@@ -30,8 +31,11 @@ export default function Settings({navigation}) {
               <Text style={settingStyles.title}>Settings</Text>
             <View style={{flexDirection: 'column', justifyContent: 'center'}}>
                 <UserAccount navigation={navigation}/>
+
                 {houseId && <HouseEdit navigation={navigation} houseId={houseId}/>}
+
                 <Support navigation={navigation}/>
+                <KnowAboutUs navigation={navigation}/>
 
                 <TouchableOpacity onPress={() => navigation.navigate("Inbox")}   style={styles.logoutButton}>
                     <Ionicons
@@ -46,8 +50,6 @@ export default function Settings({navigation}) {
                     <MaterialCommunityIcons name="playlist-star" size={24} color="white" />
                     <Text style={styles.logoutText}>  WishList</Text>
                 </TouchableOpacity>
-
-
 
                 <LogoutButton navigation={navigation}/>
             </View>

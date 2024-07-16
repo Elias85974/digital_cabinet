@@ -5,9 +5,9 @@ import React, {useEffect, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import {UsersApi} from "../../Api";
 import {settingStyles} from "./SettingStyles";
-import {AntDesign} from "@expo/vector-icons";
+import {AntDesign, MaterialIcons} from "@expo/vector-icons";
 
-export function Support({ navigation }) {
+export function KnowAboutUs({ navigation }) {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
     return (
@@ -15,21 +15,32 @@ export function Support({ navigation }) {
             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setIsCollapsed(!isCollapsed)}>
 
                 <Text style={settingStyles.typesContainer}>
-                    <AntDesign name="customerservice" size={24} color="white" />  Support
+                    <MaterialIcons name="personal-video" size={24} color="white" />  Know about us
                 </Text>
             </TouchableOpacity>
             <Collapsible collapsed={isCollapsed}>
                 <View style={styles.signInCont}>
-                    <Text style={styles.info}>How this app works</Text>
-                    <Text style={{flexWrap: 'wrap' ,color: 'white', fontSize: 16, textAlign: 'justify' }} >  Lo primero que debes haces es crear tu propia casa con nombre y dirección.</Text>
+                    <Text style={styles.info}>Know about us!</Text>
                     <Text style={styles.info}></Text>
-                    <Text style={{flexWrap: 'wrap' ,color: 'white', fontSize: 16, textAlign: 'justify' }} >  Luego podrás crear infinitos productos, que serán verificados con el tiempo dejándoles un tilde azul, para agregarlos a tu casa y alacena, solo deberás buscarlos en el add a product con el carrito de compra con el +.</Text>
+                    <Text style={styles.info}>¿Quiénes Somos?</Text>
+                    <Text style={{flexWrap: 'wrap' ,color: 'white', fontSize: 16, textAlign: 'justify' }} >  Somos más que una simple aplicación; somos tu aliado perfecto para mantener un registro detallado de los productos en la alacena de tu hogar. Con nuestra app, llevar el control de la cantidad y tipos de productos almacenados es fácil y accesible, permitiéndote gestionar no solo una, sino varias alacenas a la vez, gracias a nuestra funcionalidad Multicasa.
+                    </Text>
+
                     <Text style={styles.info}></Text>
-                    <Text style={{flexWrap: 'wrap' ,color: 'white', fontSize: 16, textAlign: 'justify'}} >  Si quieres ver los productos que tienes en tu casa, solo deberás ir a la pestaña que mas prefieras depende de como es que quieras verlos, ya sea por categoría, los que estén en bajo stock o todos juntos!</Text>
+                    <Text style={styles.info}>Nuestra Propuesta de Valor</Text>
+                    <Text style={{flexWrap: 'wrap' ,color: 'white', fontSize: 16, textAlign: 'justify' }} >  A diferencia de otras aplicaciones, ofrecemos una experiencia comunitaria alrededor de la gestión de alacenas. No solo puedes administrar el stock por casa, sino también disfrutar de funcionalidades diseñadas para mejorar la comunicación y la planificación financiera de tu hogar.
+                    </Text>
+
                     <Text style={styles.info}></Text>
-                    <Text style={{flexWrap: 'wrap' ,color: 'white', fontSize: 16, textAlign: 'justify'}} >  También si quieres ver cuanto gastaste en el mes, solo deberás ir a la pestaña de gastos y ahí podrás ver cuanto gastaste en el mes y en que productos si pones elegir verlo por categoría.</Text>
+                    <Text style={styles.info}>Demostración Práctica</Text>
+                    <Text style={{flexWrap: 'wrap' ,color: 'white', fontSize: 16, textAlign: 'justify' }} >  Imagina que, después de un evento importante, decides verificar si tienes suficiente stock para un asado. Con nuestra app, puedes revisar rápidamente la categoría de Carnes, identificar qué productos están en bajo stock, y agregar lo necesario a tu wishlist. Después del asado, mientras actualizas tu alacena y revisas los próximos vencimientos, puedes incluso planificar tu próxima receta basada en los productos que necesitas utilizar pronto.
+                    </Text>
+
                     <Text style={styles.info}></Text>
-                    <Text style={{flexWrap: 'wrap' ,color: 'white', fontSize: 16, textAlign: 'justify'}} >  Por ultimo podes invitar a mas personas a tu casa para que puedan ver los productos que tenes y agregar los suyos, solo deberás ir a la pestaña de invitaciones y ahí podrás invitar a quien quieras!</Text>
+                    <Text style={styles.info}>Únete a Nuestra Comunidad</Text>
+                    <Text style={{flexWrap: 'wrap' ,color: 'white', fontSize: 16, textAlign: 'justify' }} >  Descubre la facilidad de administrar tus alacenas con nuestra app. Ya sea que estés gestionando los productos de tu hogar o coordinando la compra de la semana con tu familia, nuestra aplicación está aquí para simplificar tu vida. ¡Bienvenido a la comunidad!
+                    </Text>
+
                 </View>
             </Collapsible>
         </View>

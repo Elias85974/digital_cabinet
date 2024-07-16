@@ -46,7 +46,7 @@ export function HouseEdit({ navigation }) {
             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setIsCollapsed(!isCollapsed)}>
 
                 <Text style={settingStyles.typesContainer}>
-                    <Feather name="edit" size={24} color="black" />  House
+                    <Feather name="edit" size={24} color="white" />  House
                 </Text>
             </TouchableOpacity>
             <Collapsible collapsed={isCollapsed}>

@@ -6,6 +6,7 @@ import GoBackButton from "../../NavBar/GoBackButton";
 import {ScannerApi} from "../../../Api";
 import ProductInfoModalScanner from "../../Contents/Scanner/ProductInfoModalScanner";
 import ModalAlert from "../../Contents/ModalAlert";
+import {Ionicons} from "@expo/vector-icons";
 
 export default function Scanner({navigation}) {
     let scanned = false;
@@ -66,7 +67,6 @@ export default function Scanner({navigation}) {
                     await AsyncStorage.setItem('productIdScanner', product.id);
                     setModalMessage("This product already exists but you don't have a stock of it, please add it to your house"); // Muestra el modal en lugar de un alert
                     setModalVisible(true);
-                    scanned = false; // Reset the scanned state to false
 
                     navigation.navigate('AddStock'); // Pass the scanned product ID to AddStock
                 }
@@ -99,25 +99,11 @@ export default function Scanner({navigation}) {
                             'code_128', 'pdf417', 'aztec', 'interleaved_2_of_5', 'itf14', 'qr','data_matrix'
                         ]
                 }}
-                style={[StyleSheet.absoluteFillObject]}
+                style={[StyleSheet.absoluteFillObject,{width: '100%', height: '100%',position: 'absolute',bottom: 0}]}
             >
+                <GoBackButton navigation={navigation} />
 
-                <View style={styles.buttonContainer}>
-                    <GoBackButton navigation={navigation} />
 
-                    <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-                        <Text style={styles.text}>Flip Camera</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                            console.log('Resetting scanned state to false'); // Debugging log
-                            scanned = false; // Reset the scanned state to false
-                        }}
-                    >
-                        <Text style={styles.text}>Scan Again</Text>
-                    </TouchableOpacity>
-                </View>
                 <ProductInfoModalScanner
                     setModalProductInfo={setModalProductInfo}
                     modalProductInfo={modalProductInfo}
@@ -128,6 +114,7 @@ export default function Scanner({navigation}) {
                 <ModalAlert message={modalMessage} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
 
             </Camera>
+
         </View>
     );
 }
@@ -143,13 +130,14 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flex: 1,
-        backgroundColor: '#BFAC9B',
-
         flexDirection: 'row',
-        margin: 10,
+        padding: 10,
         position: 'absolute', // Posiciona el contenedor de botones de forma absoluta
         top: 0, // Asegura que esté en la parte superior de la pantalla
         width: '100%',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        alignSelf: 'center',
     },
     button: {
         flex: 1,

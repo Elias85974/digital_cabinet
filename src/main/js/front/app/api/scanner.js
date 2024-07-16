@@ -1,8 +1,8 @@
 import {FetchApi} from '../Api';
 
 // Function to get the product by its barcode
-export const getProductByBarcode = async (data, navigation) => {
-    return await FetchApi.getFetch(`/products/${data}`, 'Failed to get product:', navigation);
+export const getProductByBarcode = async (houseId, data, navigation) => {
+    return await FetchApi.getFetch(`/products/${houseId}/${data}`, 'Failed to get product:', navigation);
 }
 
 // Function to create a product with the barcode

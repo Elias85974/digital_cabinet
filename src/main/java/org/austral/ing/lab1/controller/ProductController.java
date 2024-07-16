@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.austral.ing.lab1.model.inventory.product.Category;
 import org.austral.ing.lab1.model.inventory.product.Product;
+import org.austral.ing.lab1.repository.inventories.Stocks;
 import org.austral.ing.lab1.repository.inventories.products.Barcodes;
 import org.austral.ing.lab1.repository.inventories.products.Categories;
 import org.austral.ing.lab1.repository.inventories.products.Products;
@@ -75,18 +76,21 @@ public class ProductController {
         });
 
         // Route to get a product by its barcode
-        Spark.get("/products/:barcode", (req, resp) -> {
+        Spark.get("/products/:houseId/:barcode", (req, resp) -> {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             Barcodes barcodes = new Barcodes(entityManager);
+            Stocks stocks = new Stocks(entityManager);
             try {
                 final String barcode = req.params("barcode");
+                final Long houseId = Long.parseLong(req.params("houseId"));
                 EntityTransaction tx = entityManager.getTransaction();
                 tx.begin();
                 Product possibleProduct = barcodes.getProduct(barcode);
+                Long lowStockIndicator = stocks.getLowStockIndicator(houseId, possibleProduct);
                 tx.commit();
 
                 resp.type("application/json");
-                return getBarCodeProductJson(possibleProduct);
+                return getBarCodeProductJson(possibleProduct, lowStockIndicator);
             } catch (Exception e) {
                 resp.status(500);
                 System.out.println(e.getMessage());
@@ -259,7 +263,7 @@ public class ProductController {
 
     }
 
-    private static @NotNull JsonObject getBarCodeProductJson(Product possibleProduct) {
+    private static @NotNull JsonObject getBarCodeProductJson(Product possibleProduct, Long lowStockIndicator) {
         JsonObject productJson = new JsonObject();
         if (possibleProduct != null) {
             productJson.addProperty("id", possibleProduct.getProducto_ID());
@@ -274,6 +278,7 @@ public class ProductController {
         else {
             productJson.addProperty("wasFound", false);
         }
+        productJson.addProperty("lowStock", lowStockIndicator);
         return productJson;
     }
 }

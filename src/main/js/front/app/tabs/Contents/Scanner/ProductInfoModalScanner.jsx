@@ -32,12 +32,12 @@ const ProductInfoModalScanner = ({
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={{flexDirection: 'row'}}>
-                            {selectedProduct?.product.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
-                            <Text style={styles.modalText}>  Producto: {selectedProduct?.product.nombre}</Text>
+                            {selectedProduct?.isVerified && <MaterialIcons name="verified" size={24} color= '#00FFFF' />}
+                            <Text style={styles.modalText}>  Producto: {selectedProduct?.name}</Text>
                         </View>
-                        <Text style={styles.modalText}>Marca: {selectedProduct?.product.marca}</Text>
+                        <Text style={styles.modalText}>Marca: {selectedProduct?.brand}</Text>
                         <Text style={styles.modalText}>Tipo de cantidad: {selectedProduct?.quantityType}</Text>
-                        <Text style={styles.modalText}>Categoría: {selectedProduct?.product.category.nombre}</Text>
+                        <Text style={styles.modalText}>Categoría: {selectedProduct?.category}</Text>
 
                         <View style={styles.linksContainer}>
                             <Pressable onPress={() => {

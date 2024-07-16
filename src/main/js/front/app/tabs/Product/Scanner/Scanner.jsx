@@ -49,7 +49,7 @@ export default function Scanner({navigation}) {
                 return;
             }
 
-            const product = await ScannerApi.getProductByBarcode(data);
+            const product = await ScannerApi.getProductByBarcode(houseId, data);
             setSelectedProduct(product);
             console.log(product);
             if (product.wasFound) {
@@ -65,6 +65,7 @@ export default function Scanner({navigation}) {
                 await AsyncStorage.setItem("barCode", data); // Store the barcode in AsyncStorage
                 navigation.navigate('RegisterProduct'); // Optionally pass the scanned product ID to RegisterProduct
             }
+
         } catch (error) {
             console.error('Error scanning barcode or fetching products:', error);
         }
@@ -77,7 +78,7 @@ export default function Scanner({navigation}) {
 
     return (
         <View style={styles.container}>
-
+            <GoBackButton navigation={navigation} />
             <Camera
                 onBarCodeScanned={async(event) => {
                     if (scanned) return; // Check if already scanned, then return early
@@ -115,7 +116,7 @@ export default function Scanner({navigation}) {
                     navigation={navigation}
                 />
 
-                <GoBackButton navigation={navigation} />
+
             </Camera>
         </View>
     );
@@ -123,7 +124,8 @@ export default function Scanner({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        width: '100%',
+        height: '100%',
         justifyContent: 'center',
     },
     camera: {
